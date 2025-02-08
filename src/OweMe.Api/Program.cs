@@ -12,7 +12,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(opt=>
+        opt.Servers=[] // Clear the default servers so it shows only the one the browser is running on
+    );
 }
 
 app.UseHttpsRedirection();
