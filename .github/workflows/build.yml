@@ -57,7 +57,7 @@ jobs:
 
           $solutionPath = ".\src\OweMe.Api.sln"
 
-          dir /s /b /o:gn
+          dir
           # Restore dependencies before build
           dotnet restore $solutionPath
 
