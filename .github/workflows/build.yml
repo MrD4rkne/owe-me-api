@@ -55,11 +55,12 @@ jobs:
           # Run SonarScanner Begin
           & $scannerPath begin /k:"MrD4rkne_owe-me-api" /o:"mrd4rkne" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
+          $solutionPath = "src/OweMe.Api.sln"
           # Restore dependencies before build
-          dotnet restore src/YourSolution.sln
+          dotnet restore $solutionPath
 
           # Build the solution
-          dotnet build src/YourSolution.sln --no-restore --configuration Release
+          dotnet build $solutionPath --no-restore --configuration Release
 
           # Run SonarScanner End
           & $scannerPath end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
