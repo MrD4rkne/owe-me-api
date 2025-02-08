@@ -1,0 +1,37 @@
+﻿services:
+  oweme.api:
+    image: oweme.api
+    build:
+      context: .
+      dockerfile: OweMe.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/queflity.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=queflity1234
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+  loki:
+    container_name: loki
+    image: grafana/loki:master
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: wget -q --tries=1 -O- http://localhost:3100/ready
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:master
+    ports:
+      - "3000:3000"
+    depends_on:
+      loki:
+        condition: service_healthy
