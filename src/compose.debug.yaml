@@ -9,29 +9,17 @@
       - "8081:8081"
     environment:
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/queflity.pfx
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=queflity1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dotnet.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1qaz@WSX
     volumes:
       - ~/.aspnet/https:/https:ro
-
-  loki:
-    container_name: loki
-    image: grafana/loki:master
+  oweme.seq:
+    image: datalust/seq:latest
+    container_name: seq
     ports:
-      - 3100:3100
-    command: -config.file=/etc/loki/local-config.yaml
-    healthcheck:
-      test: wget -q --tries=1 -O- http://localhost:3100/ready
-      interval: 3s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:master
-    ports:
-      - "3000:3000"
-    depends_on:
-      loki:
-        condition: service_healthy
+      - "5341:5341"
+      - "9001:80"
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - ./seq:/data

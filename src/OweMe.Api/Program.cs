@@ -9,7 +9,6 @@ builder.Services.AddOpenApi();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
     .CreateLogger();
 
 builder.Host.UseSerilog();
