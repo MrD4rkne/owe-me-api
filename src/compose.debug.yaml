@@ -16,6 +16,7 @@
       - Serilog__WriteTo__1__Args__Endpoint=http://seq:5341/ingest/otlp/v1/logs
       - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
       - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
+      - Serilog__Enrich__0=WithSpan
     volumes:
       - ~/.aspnet/https:/https:ro
   oweme.seq:
