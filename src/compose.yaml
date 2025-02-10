@@ -10,3 +10,4 @@
     environment:
         - ASPNETCORE_URLS=https://+:8081;http://+:8080
         - Serilog__WriteTo__0__Name=Console
+        - Serilog__Enrich__0=WithSpan
