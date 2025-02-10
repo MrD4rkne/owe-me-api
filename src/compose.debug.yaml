@@ -11,6 +11,11 @@
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dotnet.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1qaz@WSX
+      - Serilog__WriteTo__0__Name=Console
+      - Serilog__WriteTo__1__Name=OpenTelemetry
+      - Serilog__WriteTo__1__Args__Endpoint=http://seq:5341/ingest/otlp/v1/logs
+      - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
+      - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
     volumes:
       - ~/.aspnet/https:/https:ro
   oweme.seq:
