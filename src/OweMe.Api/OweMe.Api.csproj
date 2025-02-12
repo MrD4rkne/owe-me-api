@@ -37,4 +37,11 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj" />
+      <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj" />
+      <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj" />
+      <ProjectReference Include="..\OweMe.Persistence\OweMe.Persistence.csproj" />
+    </ItemGroup>
 </Project>

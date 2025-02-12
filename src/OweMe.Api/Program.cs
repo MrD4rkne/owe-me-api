@@ -1,5 +1,8 @@
 using Scalar.AspNetCore;
 using Serilog;
+using OweMe.Application;
+using OweMe.Infrastructure;
+using OweMe.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,10 @@ var logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(logger);
 builder.Services.AddSerilog(logger);
+
+builder.AddApplication();
+builder.AddInfrastructure();
+builder.AddPersistence();
 
 var app = builder.Build();
 
