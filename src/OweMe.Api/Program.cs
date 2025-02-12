@@ -2,7 +2,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using OweMe.Application;
 using OweMe.Infrastructure;
-using OweMe.Persistance;
+using OweMe.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ builder.Services.AddSerilog(logger);
 
 builder.AddApplication();
 builder.AddInfrastructure();
-builder.AddPersistance();
+builder.AddPersistence();
 
 var app = builder.Build();
 
