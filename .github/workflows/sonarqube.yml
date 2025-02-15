@@ -48,13 +48,16 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
         working-directory: ./src
         shell: powershell
         run: |
           $scannerPath = (Get-Location).Path + "\.sonar\scanner\dotnet-sonarscanner"
 
-          # Run SonarScanner Begin
-          & $scannerPath begin /k:"MrD4rkne_owe-me-api" /o:"mrd4rkne" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          # Run SonarScanner Begin securely using secrets
+          & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" /o:"$env:SONAR_ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="$env:SONAR_HOST_URL"
 
           # Restore dependencies before build
           dotnet restore
@@ -62,5 +65,5 @@ jobs:
           # Build the solution
           dotnet build --no-restore --configuration Release
 
-          # Run SonarScanner End
-          & $scannerPath end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          # Run SonarScanner End securely
+          & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
