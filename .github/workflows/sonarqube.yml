@@ -23,10 +23,13 @@ jobs:
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis
 
+      - name: Define Cache Directory Variable
+        run: echo "CACHE_DIR=$HOME/.sonar" >> $GITHUB_ENV
+
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
-          path: ~\sonar\cache
+          path: ${{ env.CACHE_DIR }}/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
@@ -34,16 +37,17 @@ jobs:
         id: cache-sonar-scanner
         uses: actions/cache@v4
         with:
-          path: .sonar/scanner
+          path: ${{ env.CACHE_DIR }}/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        working-directory: ${{ env.CACHE_DIR }}
         shell: powershell
         run: |
-          New-Item -Path .sonar/scanner -ItemType Directory -Force
-          dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
+          New-Item -Path $env:CACHE_DIR/scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path $env:CACHE_DIR/scanner
 
       - name: Build and analyze
         env:
@@ -54,7 +58,7 @@ jobs:
         working-directory: ./src
         shell: powershell
         run: |
-          $scannerPath = (Get-Location).Path + "\.sonar\scanner\dotnet-sonarscanner"
+          $scannerPath = "$env:CACHE_DIR/scanner/dotnet-sonarscanner"
 
           # Run SonarScanner Begin securely using secrets
           & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" /o:"$env:SONAR_ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="$env:SONAR_HOST_URL"
