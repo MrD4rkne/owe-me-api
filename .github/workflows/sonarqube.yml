@@ -1,33 +1,63 @@
-name: SonarQube scan
-
+name: SonarQube
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarqube:
-    name: SonarQube
-    runs-on: ubuntu-latest
+  build:
+    name: Build and analyze
+    runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          fetch-depth: 0  
-      - name: SonarQubeScan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          java-version: 17
+          distribution: 'zulu'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-            projectBaseDir: ./src
-      - name: Quality Gate
+          fetch-depth: 0  # Full history for SonarCloud analysis
+
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: .sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarQube Cloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .sonar/scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
+
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        working-directory: ./src
+        shell: powershell
         run: |
-          status=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
-            'https://sonarcloud.io/api/qualitygates/project_status?projectKey=my_project' | jq -r .projectStatus.status)
-          if [ "$status" != "OK" ]; then
-            echo "Quality gate failed"
-            exit 1
-          fi
+          $scannerPath = (Get-Location).Path + "\.sonar\scanner\dotnet-sonarscanner"
+
+          # Run SonarScanner Begin
+          & $scannerPath begin /k:"MrD4rkne_owe-me-api" /o:"mrd4rkne" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+
+          # Restore dependencies before build
+          dotnet restore
+
+          # Build the solution
+          dotnet build --no-restore --configuration Release
+
+          # Run SonarScanner End
+          & $scannerPath end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
