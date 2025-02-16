@@ -60,8 +60,8 @@ jobs:
         run: |
           $scannerPath = "$env:CACHE_DIR/scanner/dotnet-sonarscanner"
 
-          # Run SonarScanner Begin securely using secrets
-          & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" /o:"$env:SONAR_ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="$env:SONAR_HOST_URL"
+          # Run SonarScanner Begin with quality gate waiting enabled
+          & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" /o:"$env:SONAR_ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="$env:SONAR_HOST_URL" /d:sonar.qualitygate.wait=true /d:sonar.qualitygate.timeout=300
 
           # Restore dependencies before build
           dotnet restore
@@ -71,3 +71,12 @@ jobs:
 
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
+
+      - name: Fail pipeline if quality gate fails
+        shell: bash
+        run: |
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT_KEY }}" | jq -r '.projectStatus.status')
+          if [[ "$STATUS" == "ERROR" ]]; then
+            echo "SonarQube quality gate failed. Failing pipeline."
+            exit 1
+          fi
