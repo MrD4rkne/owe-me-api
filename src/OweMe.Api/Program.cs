@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using OweMe.Api.Configuration.Identity;
 using Scalar.AspNetCore;
 using Serilog;
 using OweMe.Application;
@@ -6,9 +9,10 @@ using OweMe.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -16,6 +20,26 @@ var logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(logger);
 builder.Services.AddSerilog(logger);
+
+builder.Services.AddControllers();
+
+builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SECTION_NAME));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer();
+
+builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(Constants.POLICY_API_SCOPE, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", Constants.POLICY_API_SCOPE_CLAIM);
+    });
 
 builder.AddApplication();
 builder.AddInfrastructure();
@@ -29,12 +53,15 @@ app.UseSerilogRequestLogging();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(opt=>
-        opt.Servers=[] // Clear the default servers so it shows only the one the browser is running on
-    );
+    app.MapScalarApiReference(opt =>
+    {
+        opt.Servers = []; // Clear the default servers so it shows only the one the browser is running on,
+    });
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 var summaries = new[]
 {
@@ -53,11 +80,24 @@ app.MapGet("/weatherforecast", () =>
             .ToArray();
         return forecast;
     })
-    .WithName("GetWeatherForecast");
+    .WithName("GetWeatherForecast")
+    .RequireAuthorization(Constants.POLICY_API_SCOPE);
 
-app.Run();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseEndpoints(builder =>
+{
+    builder.MapControllers()
+        .RequireAuthorization(Constants.POLICY_API_SCOPE);
+});
+
+await app.RunAsync();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+record Test(string Name){}
