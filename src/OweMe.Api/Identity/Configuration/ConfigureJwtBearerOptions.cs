@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace OweMe.Api.Configuration.Identity;
+namespace OweMe.Api.Identity.Configuration;
 
 public class ConfigureJwtBearerOptions(IOptions<IdentityServerOptions> identityServerOptions,
     IHostEnvironment environment) : IConfigureNamedOptions<JwtBearerOptions>

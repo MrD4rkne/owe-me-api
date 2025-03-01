@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using OweMe.Api.Configuration.Identity;
-using Scalar.AspNetCore;
-using Serilog;
+using OweMe.Api;
+using OweMe.Api.Identity;
+using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
 using OweMe.Infrastructure;
 using OweMe.Persistence;
+using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,9 +96,10 @@ app.UseEndpoints(builder =>
 
 await app.RunAsync();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+namespace OweMe.Api
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    {
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
 }
-
-record Test(string Name){}

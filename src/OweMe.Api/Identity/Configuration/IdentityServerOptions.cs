@@ -1,4 +1,4 @@
-﻿namespace OweMe.Api.Configuration.Identity;
+﻿namespace OweMe.Api.Identity.Configuration;
 
 public class IdentityServerOptions
 {
