@@ -9,7 +9,7 @@
       - "8081:8081"
     environment:
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dotnet.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1qaz@WSX
       - Serilog__WriteTo__0__Name=Console
       - Serilog__WriteTo__1__Name=OpenTelemetry
@@ -17,6 +17,9 @@
       - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
       - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
       - Serilog__Enrich__0=WithSpan
+      - IdentityServer__Authority=http://identity:8180
+      - IdentityServer__ValidIssuer=https://localhost:8181
+      - IdentityServer__ValidateAudience=false
     volumes:
       - ~/.aspnet/https:/https:ro
   oweme.seq:
