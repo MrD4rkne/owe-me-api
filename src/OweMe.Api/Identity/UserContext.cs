@@ -3,9 +3,9 @@ using OweMe.Application;
 
 namespace OweMe.Api.Identity;
 
-public class UserContextContext : IUserContext
+public class UserContext : IUserContext
 {
-    public UserContextContext(IHttpContextAccessor httpContextAccessor, ILogger<UserContextContext> logger)
+    public UserContext(IHttpContextAccessor httpContextAccessor, ILogger<UserContext> logger)
     {
         var id = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         Id = string.IsNullOrWhiteSpace(id) ? Guid.Empty : Guid.Parse(id);

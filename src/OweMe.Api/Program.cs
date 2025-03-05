@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserContext, UserContextContext>();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 
