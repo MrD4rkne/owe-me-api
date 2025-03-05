@@ -1,4 +1,6 @@
+using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using OweMe.Api;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
@@ -7,6 +9,7 @@ using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
 using Serilog;
+using ILogger = Serilog.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,9 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserContext, UserContextContext>();
 
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 
@@ -69,8 +75,10 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", ([FromServices] IUserContext user, [FromServices] ILogger logger) =>
     {
+        logger.Information("User {email} with id {userId} requested weather forecast", user.Email, user.Id);
+        
         var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast
                 (
