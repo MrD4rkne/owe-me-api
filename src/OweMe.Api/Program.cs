@@ -96,11 +96,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(builder =>
-{
-    builder.MapControllers()
-        .RequireAuthorization(Constants.POLICY_API_SCOPE);
-});
+app.MapControllers()
+    .RequireAuthorization(Constants.POLICY_API_SCOPE);
 
 await app.RunAsync();
 
