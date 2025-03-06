@@ -66,9 +66,9 @@ jobs:
             /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.host.url="$env:SONAR_HOST_URL" `
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
-            /d:sonar.scanner.scanAll=false
+            /d:sonar.scanner.scanAll=false `
             /d:sonar.qualitygate.wait=true `
-            /d:sonar.qualitygate.timeout=300 `
+            /d:sonar.qualitygate.timeout=300
 
           # Restore dependencies before build
           dotnet restore
