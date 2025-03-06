@@ -70,17 +70,17 @@ jobs:
             /o:"$env:SONAR_ORG" `
             /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.host.url="$env:SONAR_HOST_URL" `
-            /d:sonar.cs.dotcover.reportsPaths="dotCover.Output.html" `
+            /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
             /d:sonar.scanner.scanAll=false `
             /d:sonar.qualitygate.wait=true `
             /d:sonar.qualitygate.timeout=300
 
           dotnet build –no-incremental
-          dotnet dotcover test --dcReportType="HTML"
+          dotnet dotcover test --dcReportType=HTML
 
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
-
+          
       - name: Fail pipeline if quality gate fails
         shell: bash
         run: |
