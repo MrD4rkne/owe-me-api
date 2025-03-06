@@ -31,7 +31,7 @@ public class ConfigureJwtBearerOptions(IOptions<IdentityServerOptions> identityS
         }
     }
 
-    public void Configure(string name, JwtBearerOptions options)
+    public void Configure(string? name, JwtBearerOptions options)
     {
         Configure(options);
     }
