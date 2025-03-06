@@ -80,7 +80,7 @@ jobs:
 
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
-          
+         
       - name: Fail pipeline if quality gate fails
         shell: bash
         run: |
