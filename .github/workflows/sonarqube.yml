@@ -61,13 +61,22 @@ jobs:
           $scannerPath = "$env:CACHE_DIR/scanner/dotnet-sonarscanner"
 
           # Run SonarScanner Begin with quality gate waiting enabled
-          & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" /o:"$env:SONAR_ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="$env:SONAR_HOST_URL" /d:sonar.qualitygate.wait=true /d:sonar.qualitygate.timeout=300
+          & $scannerPath begin /k:"$env:SONAR_PROJECT_KEY" `
+            /o:"$env:SONAR_ORG" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
+            /d:sonar.host.url="$env:SONAR_HOST_URL" `
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
+            /d:sonar.scanner.scanAll=false `
+            /d:sonar.qualitygate.wait=true `
+            /d:sonar.qualitygate.timeout=300
 
           # Restore dependencies before build
           dotnet restore
 
           # Build the solution
           dotnet build --no-restore --configuration Release
+
+          dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
