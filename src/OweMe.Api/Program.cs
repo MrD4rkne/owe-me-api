@@ -27,7 +27,7 @@ builder.Services.AddSerilog(logger);
 
 builder.Services.AddControllers();
 
-builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SECTION_NAME));
+builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
 builder.Services.AddAuthentication(options =>
 {

@@ -2,9 +2,9 @@
 
 public class IdentityServerOptions
 {
-    public const string SECTION_NAME = "IdentityServer";
+    public const string SectionName = "IdentityServer";
     
-    public string Authority { get; set; }
+    public string? Authority { get; set; }
     
     public bool ValidateAudience { get; set; } = true;
     
