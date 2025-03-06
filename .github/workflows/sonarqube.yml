@@ -1,4 +1,5 @@
 name: SonarQube
+
 on:
   push:
     branches:
@@ -70,13 +71,16 @@ jobs:
             /o:"$env:SONAR_ORG" `
             /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.host.url="$env:SONAR_HOST_URL" `
-            /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
+            /d:sonar.cs.dotcover.reportsPaths="coverage.xml" `
             /d:sonar.scanner.scanAll=false `
             /d:sonar.qualitygate.wait=true `
             /d:sonar.qualitygate.timeout=300
 
-          dotnet build –no-incremental
-          dotnet dotcover test --dcReportType=HTML
+          # Build the project
+          dotnet build --no-incremental
+
+          # Run tests with DotCover and generate coverage report
+          dotnet dotcover test --dcReportType=DetailedXML --output=coverage.xml
 
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
