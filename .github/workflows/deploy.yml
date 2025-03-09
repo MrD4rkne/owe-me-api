@@ -42,7 +42,7 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          context: ${{ env.SOLUTION_PATH }}/OweMe.Api
+          context: ${{ env.SOLUTION_PATH }}
           file: ${{ env.SOLUTION_PATH }}/OweMe.Api/Dockerfile
 
       - name: Azure Login
