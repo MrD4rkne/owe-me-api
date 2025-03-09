@@ -9,6 +9,7 @@ env:
   AZURE_CONTAINER_REGISTRY: owemeapi
   CONTAINER_APP_NAME: owemeapi
   RESOURCE_GROUP: owe-me
+  SOLUTION_PATH: src/
 
 jobs:
   build:
@@ -24,6 +25,7 @@ jobs:
 
       - name: Build
         run: dotnet build --configuration Release
+        working-directory: ${{ env.SOLUTION_PATH }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -40,7 +42,7 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          file: src/OweMe.Api/Dockerfile
+          file: ${{ env.SOLUTION_PATH }}/OweMe.Api/Dockerfile
 
       - name: Azure Login
         uses: azure/login@v2
