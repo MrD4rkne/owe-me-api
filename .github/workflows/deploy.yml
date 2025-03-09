@@ -42,9 +42,8 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          working-directory: ${{ env.SOLUTION_PATH }}
-          context: ./OweMe.Api
-          file: ./OweMe.Api/Dockerfile
+          context: ${{ env.SOLUTION_PATH }}/OweMe.Api
+          file: ${{ env.SOLUTION_PATH }}/OweMe.Api/Dockerfile
 
       - name: Azure Login
         uses: azure/login@v2
