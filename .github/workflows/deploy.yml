@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
+  pull_request:
 
 env:
   AZURE_CONTAINER_REGISTRY: owemeapi
