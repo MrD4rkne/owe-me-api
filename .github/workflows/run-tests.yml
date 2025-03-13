@@ -17,6 +17,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+
+    - name: Install dotcover
+      shell: powershell
+      run: |
+        dotnet tool install --global JetBrains.dotCover.GlobalTool
+        
     - name: Restore dependencies
       run: dotnet restore
       working-directory: ./src
@@ -24,5 +30,5 @@ jobs:
       run: dotnet build --no-restore
       working-directory: ./src
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet dotcover test --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
       working-directory: ./src
