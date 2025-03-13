@@ -109,5 +109,7 @@ jobs:
         working-directory: ./src
         shell: powershell
         run: |
+          $scannerPath = "$env:CACHE_DIR/scanner/dotnet-sonarscanner"
+          
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
