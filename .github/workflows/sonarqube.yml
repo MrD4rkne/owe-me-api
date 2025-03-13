@@ -80,19 +80,25 @@ jobs:
             /d:sonar.scanner.scanAll=false `
             /d:sonar.qualitygate.wait=true `
             /d:sonar.qualitygate.timeout=300
-          
-      - name: Run tests with code coverage
+
+      - name: Dotnet restore
         working-directory: ./src
         shell: powershell
         run: |
-          # Restore
           dotnet restore
           
-          # Build the project
+      - name: Build
+        working-directory: ./src
+        shell: powershell
+        run: |
           dotnet build --configuration Release --no-restore
-
-          # Run tests with DotCover and generate coverage report
-          dotnet dotcover test --configuration Release --no-restore --no-build --verbosity normal --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
+          
+      - name: Test with coverage
+        working-directory: ./src
+        shell: powershell
+        run: |
+          dotnet dotcover test --configuration Release --no-restore --no-build --verbosity normal `
+          --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
 
       - name: SonarQube End
         env:
