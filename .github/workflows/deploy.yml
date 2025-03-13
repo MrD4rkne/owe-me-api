@@ -6,12 +6,12 @@ on:
     branches: [master]
 
 env:
-  AZURE_WEBAPP_NAME: owemeapi
+  AZURE_WEBAPP_NAME: oweme-api
   AZURE_WEBAPP_PACKAGE_PATH: "./src/OweMe.Api/publish"
   SOLUTION_PATH: "./src/OweMe.Api.sln"
   API_PROJECT_PATH: "./src/OweMe.Api"
   PUBLISH_DIR: "./publish"
-  PUBLISH_ARTIFACT: "owemeapi"
+  PUBLISH_ARTIFACT: "oweme-api"
 
 jobs:
   build-and-test:
