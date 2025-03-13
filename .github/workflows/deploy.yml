@@ -27,7 +27,6 @@ jobs:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
       - name: Dotnet restore
-        working-directory: ./src
         run: dotnet restore ${{ env.SOLUTION_PATH }}
           
       - name: Build
