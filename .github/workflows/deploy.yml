@@ -28,15 +28,12 @@ jobs:
 
       - name: Dotnet restore
         working-directory: ./src
-        shell: powershell
         run: dotnet restore ${{ env.SOLUTION_PATH }}
           
       - name: Build
-        shell: powershell
         run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
           
       - name: Test
-        shell: powershell
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-restore --no-build --verbosity normal
 
       - name: Publish
