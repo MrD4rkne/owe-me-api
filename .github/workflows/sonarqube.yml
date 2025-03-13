@@ -60,7 +60,7 @@ jobs:
         run: |
           dotnet tool install --global JetBrains.dotCover.GlobalTool
 
-      - name: Build and analyze
+      - name: SonarQube Begin
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -80,12 +80,28 @@ jobs:
             /d:sonar.scanner.scanAll=false `
             /d:sonar.qualitygate.wait=true `
             /d:sonar.qualitygate.timeout=300
-
+          
+      - name: Run tests with code coverage
+        working-directory: ./src
+        shell: powershell
+        run: |
+          # Restore
+          dotnet restore
+          
           # Build the project
-          dotnet build --no-incremental
+          dotnet build --configuration Release --no-restore
 
           # Run tests with DotCover and generate coverage report
-          dotnet dotcover test --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
+          dotnet dotcover test --configuration Release --no-restore --no-build --verbosity normal --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
 
+      - name: SonarQube End
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+        working-directory: ./src
+        shell: powershell
+        run: |
           # Run SonarScanner End securely
           & $scannerPath end /d:sonar.token="$env:SONAR_TOKEN"
