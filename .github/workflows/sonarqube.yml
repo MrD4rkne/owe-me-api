@@ -98,7 +98,8 @@ jobs:
         shell: powershell
         run: |
           dotnet dotcover cover-dotnet -- test --configuration Release --no-restore --no-build --verbosity normal `
-          --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
+          --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute `
+          --output=dotCover.Output.html
 
       - name: SonarQube End
         env:
