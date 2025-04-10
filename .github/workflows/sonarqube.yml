@@ -97,7 +97,7 @@ jobs:
         working-directory: ./src
         shell: powershell
         run: |
-          dotnet dotcover test --configuration Release --no-restore --no-build --verbosity normal `
+          dotnet dotcover cover-dotnet -- test --configuration Release --no-restore --no-build --verbosity normal `
           --dcReportType=HTML --dcattributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
 
       - name: SonarQube End
