@@ -9,4 +9,6 @@ public readonly record struct UserId(Guid Id)
     public static implicit operator UserId(Guid id) => new(id);
     
     public static UserId Empty => new(Guid.Empty);
+    
+    public static UserId New() => new(Guid.NewGuid());
 }

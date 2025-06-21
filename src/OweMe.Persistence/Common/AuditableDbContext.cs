@@ -19,16 +19,31 @@ public class AuditableDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        modelBuilder.Entity<AuditableEntity>()
-            .Property(a => a.CreatedBy)
-            .IsRequired();
-        
-        modelBuilder.Entity<AuditableEntity>()
-            .Property(a => a.CreatedAt)
-            .IsRequired();
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                     .Where(t => typeof(AuditableEntity).IsAssignableFrom(t.ClrType) &&
+                                 t.ClrType != typeof(AuditableEntity)))
+        {
+            modelBuilder.Entity(entityType.ClrType)
+                .Property(nameof(AuditableEntity.CreatedBy))
+                .HasConversion(new UserIdConverter())
+                .IsRequired();
+
+            modelBuilder.Entity(entityType.ClrType)
+                .Property(nameof(AuditableEntity.CreatedAt))
+                .IsRequired();
+
+            modelBuilder.Entity(entityType.ClrType)
+                .Property(nameof(AuditableEntity.UpdatedBy))
+                .HasConversion(new UserIdConverter())
+                .IsRequired(false);
+
+            modelBuilder.Entity(entityType.ClrType)
+                .Property(nameof(AuditableEntity.UpdatedAt))
+                .IsRequired(false);
+        }
     }
-    
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
