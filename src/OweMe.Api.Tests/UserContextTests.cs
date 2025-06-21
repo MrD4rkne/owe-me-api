@@ -1,10 +1,10 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Api.Identity;
+using OweMe.Domain.Users;
 using Shouldly;
 
 namespace OweMe.Api.Tests;
@@ -21,7 +21,7 @@ public class UserContextTests
     public void UserContext_WhenUserIsAuthenticated_ShouldShowUserData()
     {
         // Arrange
-        var id = Guid.NewGuid();
+        var id = new UserId();
         const string email = "user@oweme.pl";
 
         var claims = new List<Claim>
@@ -61,7 +61,7 @@ public class UserContextTests
         var userContext = new UserContext(_httpContextAccessor.Object, _logger.Object);
 
         // Assert
-        userContext.Id.ShouldBe(Guid.Empty);
+        userContext.Id.ShouldBe(UserId.Empty);
         userContext.Email.ShouldBeNull();
         userContext.IsAuthenticated.ShouldBeFalse();
     }

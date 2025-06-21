@@ -1,4 +1,6 @@
-﻿namespace OweMe.Application;
+﻿using OweMe.Domain.Users;
+
+namespace OweMe.Application;
 
 /// <summary>
 /// Represents the user context.
@@ -8,7 +10,7 @@ public interface IUserContext
     /// <summary>
     /// User's id.  <see cref="Guid.Empty"/> if not authenticated <see cref="IsAuthenticated"/>.
     /// </summary>
-    Guid Id { get; }
+    UserId Id { get; }
     
     /// <summary>
     /// User's email. <see langword="null"/> if not authenticated <see cref="IsAuthenticated"/>.

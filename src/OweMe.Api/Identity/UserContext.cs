@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using OweMe.Application;
+using OweMe.Domain.Users;
 
 namespace OweMe.Api.Identity;
 
@@ -7,8 +8,8 @@ public class UserContext : IUserContext
 {
     public UserContext(IHttpContextAccessor httpContextAccessor, ILogger<UserContext> logger)
     {
-        var id = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        Id = string.IsNullOrWhiteSpace(id) ? Guid.Empty : Guid.Parse(id);
+        string? id = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        Id = new UserId(string.IsNullOrWhiteSpace(id) ? Guid.Empty : Guid.Parse(id));
         
         Email = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
 
@@ -22,9 +23,9 @@ public class UserContext : IUserContext
         }
     }
     
-    public Guid Id { get; }
+    public UserId Id { get; }
     
     public string? Email { get; }
     
-    public bool IsAuthenticated => Id != Guid.Empty && !string.IsNullOrWhiteSpace(Email);
+    public bool IsAuthenticated => Id != UserId.Empty && !string.IsNullOrWhiteSpace(Email);
 }

@@ -50,7 +50,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.AddApplication();
 builder.AddInfrastructure();
-builder.AddPersistence();
+builder.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 var app = builder.Build();
 
