@@ -90,10 +90,11 @@ jobs:
           
       - name: Test with coverage
         working-directory: ./src
-        run: dotcover cover-dotnet `
-          --reportType=HTML `
-          --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute `
-          --Output=dotCover.Output.html `
+        run: |
+          dotCover cover-dotnet \
+            --reportType=HTML \
+            --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
+            --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal
 
       - name: SonarQube End
