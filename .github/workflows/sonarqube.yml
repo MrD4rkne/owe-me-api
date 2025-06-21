@@ -45,9 +45,9 @@ jobs:
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         working-directory: ${{ env.CACHE_DIR }}
-        shell: powershell
         run: |
-          New-Item -Path $env:CACHE_DIR/scanner -ItemType Directory -Force
+          # Create the cache directory if it doesn't exist
+          mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path $env:CACHE_DIR/scanner
 
       - name: Setup .NET
