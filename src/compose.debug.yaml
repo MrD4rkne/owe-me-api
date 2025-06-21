@@ -11,12 +11,15 @@
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1qaz@WSX
+      - ConnectionStrings__DefaultConnection=Server=oweme_api_database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
+      # Serilog configuration
       - Serilog__WriteTo__0__Name=Console
       - Serilog__WriteTo__1__Name=OpenTelemetry
       - Serilog__WriteTo__1__Args__Endpoint=http://seq:5341/ingest/otlp/v1/logs
       - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
       - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
       - Serilog__Enrich__0=WithSpan
+      # IdentityServer configuration
       - IdentityServer__Authority=http://identity:8180
       - IdentityServer__ValidIssuer=https://localhost:8181
       - IdentityServer__ValidateAudience=false
@@ -31,3 +34,11 @@
       - ACCEPT_EULA=Y
     volumes:
       - ./seq:/data
+  oweme_api_database:
+    image: "postgres:15"
+    ports:
+      - "5442:5432"
+    environment:
+      - POSTGRES_DB=OweMe.Api
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=Password123
