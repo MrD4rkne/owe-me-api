@@ -21,7 +21,7 @@ public class UserContextTests
     public void UserContext_WhenUserIsAuthenticated_ShouldShowUserData()
     {
         // Arrange
-        var id = new UserId();
+        var id = UserId.New();
         const string email = "user@oweme.pl";
 
         var claims = new List<Claim>
