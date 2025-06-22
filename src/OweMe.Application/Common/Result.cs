@@ -48,7 +48,7 @@ public record Result<T> : Result
         return new Result<T>(true, Error.None, value);
     }
 
-    public static Result<T> Failure(Error error)
+    public new static Result<T> Failure(Error error)
     {
         return new Result<T>(false, error, default!);
     }
