@@ -31,7 +31,7 @@ public class LoggingPipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => 
                     v.ToString().Contains("Handling TestRequest")
-                    && v.ToString().Contains("with request: { Value = test }")),
+                    && v.ToString().Contains($"with request: {request}")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
@@ -78,5 +78,7 @@ public class LoggingPipelineBehaviourTests
     private class TestRequest : IRequest<string>
     {
         public string Value { get; set; }
+        
+        public override string ToString() => $"Value: {Value}";
     }
 }
