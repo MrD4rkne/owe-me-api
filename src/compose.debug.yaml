@@ -12,6 +12,7 @@
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1qaz@WSX
       - ConnectionStrings__DefaultConnection=Server=oweme_api_database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
+      - Database__RunMigrations=true
       # Serilog configuration
       - Serilog__WriteTo__0__Name=Console
       - Serilog__WriteTo__1__Name=OpenTelemetry
@@ -20,8 +21,7 @@
       - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
       - Serilog__Enrich__0=WithSpan
       # IdentityServer configuration
-      - IdentityServer__Authority=http://identity:8180
-      - IdentityServer__ValidIssuer=https://localhost:8181
+      - IdentityServer__Authority=https://oweme-identity-bzfrgucwfreveyhd.polandcentral-01.azurewebsites.net
       - IdentityServer__ValidateAudience=false
     volumes:
       - ~/.aspnet/https:/https:ro
