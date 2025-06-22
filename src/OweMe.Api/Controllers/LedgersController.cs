@@ -17,25 +17,25 @@ public static class LedgersController
             .Produces(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
-        
+
         app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
-            .Produces<LedgerDto>(StatusCodes.Status200OK)
+            .Produces<LedgerDto>()
             .Produces(StatusCodes.Status404NotFound)
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
     }
-    
+
     public static async Task<IResult> CreateLedger(
-        [FromBody] CreateLedgerCommand createLedgerCommand, 
+        [FromBody] CreateLedgerCommand createLedgerCommand,
         IMediator mediator)
     {
         var ledgerId = await mediator.Send(createLedgerCommand);
         return Results.Created($"/api/ledgers/{ledgerId}", null);
     }
-    
+
     public static async Task<IResult> GetLedger(
-        [FromRoute] Guid ledgerId, 
+        [FromRoute] Guid ledgerId,
         IMediator mediator)
     {
         var query = new GetLedgerQuery(ledgerId);

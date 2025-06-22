@@ -15,31 +15,31 @@ public class LedgerTests
         var ledger = new Ledger
         {
             CreatedBy = userId,
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act
-        var canAccess = ledger.CanUserAccess(userId);
+        bool canAccess = ledger.CanUserAccess(userId);
 
         // Assert
         canAccess.ShouldBeTrue();
     }
-    
+
     [Test]
     public void CanUserAccess_OtherUser_ShouldReturnFalse()
     {
         // Arrange
         var creatorId = new UserId(Guid.NewGuid());
         var otherUserId = new UserId(GuidHelper.CreateDifferentGuid(creatorId));
-        
+
         var ledger = new Ledger
         {
             CreatedBy = creatorId,
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act
-        var canAccess = ledger.CanUserAccess(otherUserId);
+        bool canAccess = ledger.CanUserAccess(otherUserId);
 
         // Assert
         canAccess.ShouldBeFalse();

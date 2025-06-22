@@ -6,11 +6,12 @@ using OweMe.Domain.Ledgers.Queries.Get;
 
 namespace OweMe.Application.Ledgers.Commands.Create;
 
-public class GetLedgerQueryHandler(ILedgerContext context, IUserContext userContext) : IRequestHandler<GetLedgerQuery, Result<LedgerDto>>
+public class GetLedgerQueryHandler(ILedgerContext context, IUserContext userContext)
+    : IRequestHandler<GetLedgerQuery, Result<LedgerDto>>
 {
     public async Task<Result<LedgerDto>> Handle(GetLedgerQuery request, CancellationToken cancellationToken)
     {
-        var ledger = await context.Ledgers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+        var ledger = await context.Ledgers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (ledger is null || !ledger.CanUserAccess(userContext.Id))
         {
             return Result<LedgerDto>.Failure(LedgerErrors.LedgerNotFound);

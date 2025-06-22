@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OweMe.Application;
 using OweMe.Domain.Common;
-using OweMe.Domain.Users;
 
 namespace OweMe.Persistence.Common;
 
@@ -9,8 +8,9 @@ public class AuditableDbContext : DbContext
 {
     private readonly TimeProvider _timeProvider;
     private readonly IUserContext _userContext;
-    
-    public AuditableDbContext(DbContextOptions options, TimeProvider timeProvider, IUserContext userContext) : base(options)
+
+    public AuditableDbContext(DbContextOptions options, TimeProvider timeProvider, IUserContext userContext) :
+        base(options)
     {
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));

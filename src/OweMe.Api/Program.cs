@@ -1,7 +1,4 @@
-using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using OweMe.Api;
 using OweMe.Api.Controllers;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
@@ -10,14 +7,10 @@ using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
 using Serilog;
-using ILogger = Serilog.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
-});
+builder.Services.AddOpenApi(options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -53,7 +46,7 @@ builder.AddApplication();
 builder.AddInfrastructure();
 
 builder.AddPersistence(
-    builder.Configuration.GetConnectionString("DefaultConnection"), 
+    builder.Configuration.GetConnectionString("DefaultConnection"),
     builder.Configuration.GetValue<bool>("Database:RunMigrations"));
 
 var app = builder.Build();

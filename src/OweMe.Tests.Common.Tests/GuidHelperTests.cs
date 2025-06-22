@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Shouldly;
+﻿using Shouldly;
 
 namespace OweMe.Tests.Common;
 

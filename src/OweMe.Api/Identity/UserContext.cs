@@ -10,7 +10,7 @@ public class UserContext : IUserContext
     {
         string? id = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         Id = new UserId(string.IsNullOrWhiteSpace(id) ? Guid.Empty : Guid.Parse(id));
-        
+
         Email = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
 
         if (IsAuthenticated)
@@ -22,10 +22,10 @@ public class UserContext : IUserContext
             logger.LogDebug("User not authenticated");
         }
     }
-    
+
     public UserId Id { get; }
-    
+
     public string? Email { get; }
-    
+
     public bool IsAuthenticated => Id != UserId.Empty && !string.IsNullOrWhiteSpace(Email);
 }

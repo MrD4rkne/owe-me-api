@@ -6,14 +6,16 @@ namespace OweMe.Application.Common.Behaviours;
 public class LoggingPipelineBehaviour<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         string requestName = typeof(TRequest).Name;
         logger.LogInformation("Handling {RequestName} with request: {@Request}", requestName, request);
         try
         {
             var response = await next(cancellationToken);
-            logger.LogInformation("Handled {RequestName} successfully with response: {@Response}", requestName, response);
+            logger.LogInformation("Handled {RequestName} successfully with response: {@Response}", requestName,
+                response);
             return response;
         }
         catch (Exception ex)

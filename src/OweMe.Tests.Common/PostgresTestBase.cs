@@ -5,7 +5,7 @@ namespace OweMe.Tests.Common;
 public abstract class PostgresTestBase : IAsyncDisposable
 {
     private readonly PostgreSqlContainer _postgresContainer;
-    
+
     protected PostgresTestBase()
     {
         _postgresContainer = new PostgreSqlBuilder()
@@ -23,7 +23,7 @@ public abstract class PostgresTestBase : IAsyncDisposable
     {
         await _postgresContainer.StopAsync();
         await _postgresContainer.DisposeAsync();
-        
+
         GC.SuppressFinalize(this);
     }
 }

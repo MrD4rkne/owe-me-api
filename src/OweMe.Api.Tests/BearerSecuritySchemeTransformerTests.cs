@@ -13,11 +13,12 @@ public class BearerSecuritySchemeTransformerTests
     {
         // Arrange
         var mockIAuthenticationHandler = new Mock<IAuthenticationHandler>();
-        
+
         var mockAuthProvider = new Mock<IAuthenticationSchemeProvider>();
         mockAuthProvider
             .Setup(p => p.GetAllSchemesAsync())
-            .ReturnsAsync(new List<AuthenticationScheme> { new("Bearer", "Bearer", mockIAuthenticationHandler.Object.GetType() ) });
+            .ReturnsAsync(new List<AuthenticationScheme>
+                { new("Bearer", "Bearer", mockIAuthenticationHandler.Object.GetType()) });
 
         var transformer = new BearerSecuritySchemeTransformer(mockAuthProvider.Object);
         var document = new OpenApiDocument { Paths = new OpenApiPaths() };

@@ -13,18 +13,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6"/>
         <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.6">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.4.16" />
-        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-        <PackageReference Include="Serilog.Enrichers.Span" Version="3.1.0" />
-        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.4.16"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Enrichers.Span" Version="3.1.0"/>
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -34,15 +34,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj" />
-      <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj" />
-      <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj" />
-      <ProjectReference Include="..\OweMe.Persistence\OweMe.Persistence.csproj" />
+        <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj"/>
+        <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
+        <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj"/>
+        <ProjectReference Include="..\OweMe.Persistence\OweMe.Persistence.csproj"/>
     </ItemGroup>
 </Project>

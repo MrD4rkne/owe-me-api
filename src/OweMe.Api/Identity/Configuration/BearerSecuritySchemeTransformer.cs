@@ -4,9 +4,11 @@ using Microsoft.OpenApi.Models;
 
 namespace OweMe.Api.Identity.Configuration;
 
-public sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
+public sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
+    : IOpenApiDocumentTransformer
 {
-    public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
     {
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
         if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
@@ -16,7 +18,7 @@ public sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvide
                 ["Bearer"] = new()
                 {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer", 
+                    Scheme = "bearer",
                     In = ParameterLocation.Header,
                     BearerFormat = "Json Web Token"
                 }
@@ -28,7 +30,8 @@ public sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvide
             {
                 operation.Value.Security.Add(new OpenApiSecurityRequirement
                 {
-                    [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "Bearer", Type = ReferenceType.SecurityScheme } }] = Array.Empty<string>()
+                    [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "Bearer", Type = ReferenceType.SecurityScheme } }] =
+                        Array.Empty<string>()
                 });
             }
         }

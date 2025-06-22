@@ -4,8 +4,8 @@ public record Result
 {
     public Result(bool isSuccess, Error error)
     {
-        if (isSuccess && error != Error.None ||
-            !isSuccess && error == Error.None)
+        if ((isSuccess && error != Error.None) ||
+            (!isSuccess && error == Error.None))
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -20,22 +20,36 @@ public record Result
 
     public Error Error { get; }
 
-    public static Result Success() => new(true, Error.None);
+    public static Result Success()
+    {
+        return new Result(true, Error.None);
+    }
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error error)
+    {
+        return new Result(false, error);
+    }
 }
 
 public record Result<T> : Result
 {
+    private readonly T _value;
+
     private Result(bool isSuccess, Error error, T value) : base(isSuccess, error)
     {
         _value = value;
     }
 
-    private readonly T _value;
-    public T Value => IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value on a failed result.");
+    public T Value =>
+        IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value on a failed result.");
 
-    public static Result<T> Success(T value) => new(true, Error.None, value);
+    public static Result<T> Success(T value)
+    {
+        return new Result<T>(true, Error.None, value);
+    }
 
-    public static Result<T> Failure(Error error) => new(false, error, default!);
+    public static Result<T> Failure(Error error)
+    {
+        return new Result<T>(false, error, default!);
+    }
 }

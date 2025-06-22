@@ -1,13 +1,10 @@
-﻿using OweMe.Application.Common.Behaviours;
-
-namespace OweMe.Application.UnitTests.Common.Behaviours;
-
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
+using OweMe.Application.Common.Behaviours;
 using Shouldly;
+
+namespace OweMe.Application.UnitTests.Common.Behaviours;
 
 public class LoggingPipelineBehaviourTests
 {
@@ -29,7 +26,7 @@ public class LoggingPipelineBehaviourTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => 
+                It.Is<It.IsAnyType>((v, t) =>
                     v.ToString().Contains("Handling TestRequest")
                     && v.ToString().Contains($"with request: {request}")),
                 null,
@@ -45,8 +42,11 @@ public class LoggingPipelineBehaviourTests
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
         return;
-        
-        Task<string> NextWithSimpleResponse(CancellationToken cancellationToken) => Task.FromResult(response);
+
+        Task<string> NextWithSimpleResponse(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(response);
+        }
     }
 
     [Test]
@@ -57,9 +57,10 @@ public class LoggingPipelineBehaviourTests
         var behaviour = new LoggingPipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         var exception = new Exception("fail");
-    
+
         // Act & Assert
-        var ex = await Should.ThrowAsync<Exception>(() => behaviour.Handle(request, NextThrowingException, CancellationToken.None));
+        var ex = await Should.ThrowAsync<Exception>(() =>
+            behaviour.Handle(request, NextThrowingException, CancellationToken.None));
         ex.ShouldBe(exception);
 
         loggerMock.Verify(
@@ -71,14 +72,20 @@ public class LoggingPipelineBehaviourTests
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
         return;
-        
-        Task<string> NextThrowingException(CancellationToken cancellationToken) => throw exception;
+
+        Task<string> NextThrowingException(CancellationToken cancellationToken)
+        {
+            throw exception;
+        }
     }
 
     private class TestRequest : IRequest<string>
     {
         public string Value { get; set; }
-        
-        public override string ToString() => $"Value: {Value}";
+
+        public override string ToString()
+        {
+            return $"Value: {Value}";
+        }
     }
 }

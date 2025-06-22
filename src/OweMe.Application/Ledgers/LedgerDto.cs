@@ -5,11 +5,11 @@ namespace OweMe.Domain.Ledgers;
 public record LedgerDto : AuditableEntityDto
 {
     public Guid Id { get; init; }
-    
+
     public string Name { get; init; }
-    
+
     public string Description { get; init; }
-    
+
     public Ledger FromDTO()
     {
         return new Ledger
@@ -23,7 +23,7 @@ public record LedgerDto : AuditableEntityDto
             UpdatedBy = UpdatedBy
         };
     }
-    
+
     public static LedgerDto FromDomain(Ledger ledger)
     {
         return new LedgerDto

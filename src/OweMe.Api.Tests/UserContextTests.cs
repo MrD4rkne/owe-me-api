@@ -48,7 +48,7 @@ public class UserContextTests
         userContext.Email.ShouldBe(email);
         userContext.IsAuthenticated.ShouldBeTrue();
     }
-    
+
     [Fact]
     public void UserContext_WhenUserIsNotAuthenticated_ShouldNotShowUserData()
     {

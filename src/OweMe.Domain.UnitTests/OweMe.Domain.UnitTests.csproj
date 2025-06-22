@@ -14,7 +14,7 @@
         <PackageReference Include="NUnit" Version="4.2.2"/>
         <PackageReference Include="NUnit.Analyzers" Version="4.4.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.6.0"/>
-        <PackageReference Include="Shouldly" Version="4.3.0" />
+        <PackageReference Include="Shouldly" Version="4.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj" />
-      <ProjectReference Include="..\OweMe.Tests.Common\OweMe.Tests.Common.csproj" />
+        <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
+        <ProjectReference Include="..\OweMe.Tests.Common\OweMe.Tests.Common.csproj"/>
     </ItemGroup>
 
 </Project>

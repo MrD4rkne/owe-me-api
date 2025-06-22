@@ -8,11 +8,12 @@ public class PerformancePipelineBehaviour<TRequest, TResponse>(ILogger logger) :
     where TRequest : IRequest<TResponse>
 {
     private const int MaximumElapsedMilliseconds = 500; // Threshold for performance logging
-    
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         string requestName = typeof(TRequest).Name;
-        
+
         var stopwatch = Stopwatch.StartNew();
         try
         {
@@ -22,11 +23,13 @@ public class PerformancePipelineBehaviour<TRequest, TResponse>(ILogger logger) :
         finally
         {
             stopwatch.Stop();
-            logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms", requestName, stopwatch.ElapsedMilliseconds);
-            
+            logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms", requestName,
+                stopwatch.ElapsedMilliseconds);
+
             if (stopwatch.ElapsedMilliseconds > MaximumElapsedMilliseconds)
             {
-                logger.LogWarning("Performance warning: {RequestName} took {ElapsedMilliseconds} ms, exceeding the threshold of {Threshold} ms",
+                logger.LogWarning(
+                    "Performance warning: {RequestName} took {ElapsedMilliseconds} ms, exceeding the threshold of {Threshold} ms",
                     requestName, stopwatch.ElapsedMilliseconds, MaximumElapsedMilliseconds);
             }
         }

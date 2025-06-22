@@ -10,10 +10,11 @@ namespace OweMe.Persistence;
 [ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
-    public static Task AddPersistence(this IHostApplicationBuilder builder, string connectionString, bool shouldRunMigrations = false)
+    public static Task AddPersistence(this IHostApplicationBuilder builder, string connectionString,
+        bool shouldRunMigrations = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        
+
         builder.Services.AddDbContext<LedgerDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
@@ -24,7 +25,7 @@ public static class DependencyInjection
 
         return builder.TryRunMigrations(shouldRunMigrations);
     }
-    
+
     private static async Task TryRunMigrations(this IHostApplicationBuilder builder, bool shouldRunMigrations)
     {
         if (!shouldRunMigrations)

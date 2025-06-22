@@ -7,14 +7,19 @@ namespace OweMe.Persistence.Ledgers;
 
 public class LedgerDbContext : AuditableDbContext, ILedgerContext
 {
-    public DbSet<Ledger> Ledgers { get; set; }
-    
-    public DbSet<Participant> Participants { get; set; }
-    
-    public LedgerDbContext(DbContextOptions<LedgerDbContext> options, TimeProvider timeProvider, IUserContext userContext) : base(options, timeProvider, userContext)
+    public LedgerDbContext(DbContextOptions<LedgerDbContext> options, TimeProvider timeProvider,
+        IUserContext userContext) : base(options, timeProvider, userContext)
     {
     }
-    
+
+    public DbSet<Participant> Participants { get; set; }
+    public DbSet<Ledger> Ledgers { get; set; }
+
+    public Task<int> SaveChangesAsync()
+    {
+        return base.SaveChangesAsync();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Ledger>()
@@ -36,12 +41,7 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
             .Property(p => p.Nickname)
             .IsRequired()
             .HasMaxLength(LedgerConstants.Participant.MaxNicknameLength);
-        
+
         base.OnModelCreating(modelBuilder);
-    }
-    
-    public Task<int> SaveChangesAsync()
-    {
-        return base.SaveChangesAsync();
     }
 }
