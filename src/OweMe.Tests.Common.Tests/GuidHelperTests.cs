@@ -13,9 +13,9 @@ public class GuidHelperTests
     }
 
     [Test]
-    public void CreateDifferentGuid_ShouldThrowExceptionAfterMaxAttempts()
+    public void CreateDifferentGuid_ShouldThrowException_WithInvalidMaxAttempts()
     {
         var existingGuid = Guid.NewGuid();
-        Assert.Throws<InvalidOperationException>(() => GuidHelper.CreateDifferentGuid(existingGuid, 0));
+        Assert.Throws<ArgumentException>(() => GuidHelper.CreateDifferentGuid(existingGuid, 0));
     }
 }
