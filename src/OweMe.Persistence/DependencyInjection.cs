@@ -13,8 +13,7 @@ public static class DependencyInjection
     public static Task AddPersistence(this IHostApplicationBuilder builder, string connectionString, bool shouldRunMigrations = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNullOrEmpty(connectionString);
-
+        
         builder.Services.AddDbContext<LedgerDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
