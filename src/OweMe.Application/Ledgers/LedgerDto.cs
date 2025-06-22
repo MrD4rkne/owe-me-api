@@ -2,7 +2,7 @@
 
 namespace OweMe.Domain.Ledgers;
 
-public record LedgerDTO : AuditableEntityDTO
+public record LedgerDto : AuditableEntityDto
 {
     public Guid Id { get; init; }
     
@@ -24,9 +24,9 @@ public record LedgerDTO : AuditableEntityDTO
         };
     }
     
-    public static LedgerDTO FromDomain(Ledger ledger)
+    public static LedgerDto FromDomain(Ledger ledger)
     {
-        return new LedgerDTO
+        return new LedgerDto
         {
             Id = ledger.Id,
             Name = ledger.Name,

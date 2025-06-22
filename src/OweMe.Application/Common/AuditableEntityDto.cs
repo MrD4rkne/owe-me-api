@@ -2,7 +2,7 @@
 
 namespace OweMe.Application.Common;
 
-public record AuditableEntityDTO
+public record AuditableEntityDto
 {
     public DateTimeOffset CreatedAt { get; init; }
     

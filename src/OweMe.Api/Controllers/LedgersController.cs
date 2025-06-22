@@ -21,7 +21,7 @@ public static class LedgersController
         app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
-            .Produces<LedgerDTO>(StatusCodes.Status200OK)
+            .Produces<LedgerDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
     }
