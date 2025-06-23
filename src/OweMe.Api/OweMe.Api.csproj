@@ -19,7 +19,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.4.16" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.5.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
         <PackageReference Include="Serilog.Enrichers.Span" Version="3.1.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
