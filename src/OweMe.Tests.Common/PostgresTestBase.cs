@@ -4,17 +4,16 @@ namespace OweMe.Tests.Common;
 
 public abstract class PostgresTestBase : IAsyncDisposable
 {
-    private readonly PostgreSqlContainer _postgresContainer;
+    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
+        .WithDatabase("oweme_test")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithPortBinding(5452)
+        .Build();
 
-    protected PostgresTestBase()
+    protected Task SetupAsync()
     {
-        _postgresContainer = new PostgreSqlBuilder()
-            .WithDatabase("oweme_test")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .WithPortBinding(5452)
-            .Build();
-        _postgresContainer.StartAsync().GetAwaiter().GetResult();
+        return _postgresContainer.StartAsync();
     }
 
     protected string ConnectionString => _postgresContainer.GetConnectionString();

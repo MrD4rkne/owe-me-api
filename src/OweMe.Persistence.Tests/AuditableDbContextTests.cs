@@ -37,18 +37,20 @@ internal sealed class TestDbContext : AuditableDbContext
 public class AuditableDbContextTests : PostgresTestBase
 {
     [SetUp]
-    public void SetUp()
+    public async Task SetUp()
     {
         _timeProviderMock = new Mock<TimeProvider>();
 
         _userContextMock = new Mock<IUserContext>();
 
+        await SetupAsync();
+
         _options = new DbContextOptionsBuilder<TestDbContext>()
             .UseNpgsql(ConnectionString)
             .Options;
 
-        using var ctx = new TestDbContext(_options, _timeProviderMock.Object, _userContextMock.Object);
-        ctx.Database.EnsureCreated();
+        await using var ctx = new TestDbContext(_options, _timeProviderMock.Object, _userContextMock.Object);
+        await ctx.Database.EnsureCreatedAsync();
     }
 
     /// <summary>
