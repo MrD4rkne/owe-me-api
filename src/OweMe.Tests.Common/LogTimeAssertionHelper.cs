@@ -6,7 +6,7 @@ public static class LogTimeAssertionHelper
 {
     public static void ContainsExpectedTime(string logMessage, long expectedTime, double percent, string unit = "ms")
     {
-        var regex = new Regex($@"\b(\d+)\s*{unit}\b");
+        var regex = new Regex($@"\b(\d+)\s*{unit}\b", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         var match = regex.Match(logMessage);
         if (!match.Success)
         {
