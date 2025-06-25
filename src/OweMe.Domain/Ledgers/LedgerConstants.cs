@@ -1,6 +1,6 @@
 ﻿namespace OweMe.Domain.Ledgers;
 
-public class LedgerConstants
+public static class LedgerConstants
 {
     public const int MaxNameLength = 100;
     public const int MaxDescriptionLength = 500;
