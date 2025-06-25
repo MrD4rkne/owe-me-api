@@ -1,11 +1,11 @@
 ﻿namespace OweMe.Application.Common;
 
-public record Result
+public readonly struct Result
 {
-    public Result(bool isSuccess, Error error)
+    private Result(bool isSuccess, Error error)
     {
-        if ((isSuccess && error != Error.None) ||
-            (!isSuccess && error == Error.None))
+        if ((isSuccess && !error.Equals(Error.None)) ||
+            (!isSuccess && error.Equals(Error.None)))
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -18,38 +18,40 @@ public record Result
 
     public bool IsFailure => !IsSuccess;
 
-    public Error Error { get; }
+    public Error Error { get; private init; }
 
-    public static Result Success()
-    {
-        return new Result(true, Error.None);
-    }
+    public static Result Success() => new(true, Error.None);
 
-    public static Result Failure(Error error)
-    {
-        return new Result(false, error);
-    }
+    public static Result Failure(Error error) => new(false, error);
 }
 
-public record Result<T> : Result
+public readonly struct Result<T>
 {
     private readonly T _value;
 
-    private Result(bool isSuccess, Error error, T value) : base(isSuccess, error)
+    private Result(bool isSuccess, Error error, T value)
     {
+        if ((isSuccess && !error.Equals(Error.None)) ||
+            (!isSuccess && error.Equals(Error.None)))
+        {
+            throw new ArgumentException("Invalid error", nameof(error));
+        }
+
+        IsSuccess = isSuccess;
+        Error = error;
         _value = value;
     }
+
+    public bool IsSuccess { get; }
+
+    public bool IsFailure => !IsSuccess;
+
+    public Error Error { get; private init; }
 
     public T Value =>
         IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value on a failed result.");
 
-    public static Result<T> Success(T value)
-    {
-        return new Result<T>(true, Error.None, value);
-    }
+    public static Result<T> Success(T value) => new Result<T>(true, Error.None, value);
 
-    public new static Result<T> Failure(Error error)
-    {
-        return new Result<T>(false, error, default!);
-    }
+    public static Result<T> Failure(Error error) => new Result<T>(false, error, default!);
 }
