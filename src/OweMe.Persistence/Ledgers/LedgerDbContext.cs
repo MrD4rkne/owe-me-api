@@ -11,8 +11,7 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
         IUserContext userContext) : base(options, timeProvider, userContext)
     {
     }
-
-    public DbSet<Participant> Participants { get; set; }
+    
     public DbSet<Ledger> Ledgers { get; set; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -25,9 +24,6 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
         modelBuilder.Entity<Ledger>()
             .HasKey(l => l.Id);
 
-        modelBuilder.Entity<Participant>()
-            .HasKey(p => p.Id);
-
         modelBuilder.Entity<Ledger>()
             .Property(l => l.Name)
             .IsRequired()
@@ -36,11 +32,6 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
             .Property(l => l.Description)
             .IsRequired()
             .HasMaxLength(LedgerConstants.MaxDescriptionLength);
-
-        modelBuilder.Entity<Participant>()
-            .Property(p => p.Nickname)
-            .IsRequired()
-            .HasMaxLength(LedgerConstants.Participant.MaxNicknameLength);
 
         base.OnModelCreating(modelBuilder);
     }
