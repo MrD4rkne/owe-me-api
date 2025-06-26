@@ -7,15 +7,53 @@ public class CreateLedgerCommandValidator
     private const int MaxNameLength = 100;
     private const int MaxDescriptionLength = 500;
     
+    static readonly object[] validNames =
+    [
+        new string('A', MaxNameLength),
+        "Abcefghijklmnopqrstuvwxyz",
+        "test"
+    ];
+    
+    static readonly object[] invalidNames =
+    [
+        new string('A', MaxNameLength + 1), // Exceeding max length
+        "",
+        string.Empty,
+        null
+    ];
+    
+    static readonly object[] validDescriptions =
+    [
+        new string('A', MaxDescriptionLength),
+        "Abcefghijklmnopqrstuvwxyz",
+        "",
+        string.Empty,
+        null
+    ];
+    
+    static readonly object[] invalidDescriptions =
+    [
+        new string('A', MaxDescriptionLength + 1), // Exceeding max length
+        new string('A', MaxDescriptionLength + 2),
+        new string('A', MaxDescriptionLength + 10),
+    ];
+    
+    static object[] ValidNameDescriptionCombinations() =>
+        validNames.SelectMany(
+            name => validDescriptions,
+            (name, description) => new object[] { name, description }
+        ).ToArray<object>();
+    
     [Test]
-    public void Should_Validate_CreateLedgerCommand()
+    [TestCaseSource(nameof(ValidNameDescriptionCombinations))]
+    public void Should_Validate_CreateLedgerCommand(string name, string description)
     {
         // Arrange
         var validator = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
         var command = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommand
         {
-            Name = "Test Ledger",
-            Description = "This is a test ledger description."
+            Name = name,
+            Description = description
         };
 
         // Act
@@ -24,42 +62,23 @@ public class CreateLedgerCommandValidator
         // Assert
         result.IsValid.ShouldBeTrue("Validation should pass for valid command.");
     }
-
-    static readonly object[] validButEmptyDescriptions =
-    [
-        "",
-        string.Empty,
-        null
-    ];
+    
+    static object[] InvalidNameValidDescriptionCombinations() =>
+        invalidNames.SelectMany(
+            name => validDescriptions,
+            (name, description) => new object[] { name, description }
+        ).ToArray<object>();
     
     [Test]
-    [TestCaseSource(nameof(validButEmptyDescriptions))]
-    public void Should_Validate_CreateLedgerCommand_WhenDescriptionEmpty(string description)
+    [TestCaseSource(nameof(InvalidNameValidDescriptionCombinations))]
+    public void Should_Invalidate_CreateLedgerCommand_When_Name_Is_Invalid(string name, string description)
     {
         // Arrange
         var validator = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
         var command = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommand
         {
-            Name = "Test Ledger",
+            Name = name,
             Description = description
-        };
-
-        // Act
-        var result = validator.Validate(command);
-
-        // Assert
-        result.IsValid.ShouldBeTrue("Validation should pass even if description is empty or null.");
-    }
-    
-    [Test]
-    public void Should_Invalidate_CreateLedgerCommand_When_Name_Is_Empty()
-    {
-        // Arrange
-        var validator = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
-        var command = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommand
-        {
-            Name = string.Empty,
-            Description = "This is a test ledger description."
         };
 
         // Act
@@ -70,27 +89,15 @@ public class CreateLedgerCommandValidator
         Assert.That(result.Errors.Any(e => e.PropertyName == nameof(command.Name)), Is.True);
     }
     
-    [Test]
-    public void Should_Invalidate_CreateLedgerCommand_When_Name_Exceeds_Max_Length()
-    {
-        // Arrange
-        var validator = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
-        var command = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommand
-        {
-            Name = new string('A', MaxNameLength + 1), // Exceeding max length
-            Description = "This is a test ledger description."
-        };
-
-        // Act
-        var result = validator.Validate(command);
-
-        // Assert
-        result.IsValid.ShouldBeFalse("Validation should fail when name exceeds maximum length.");
-        Assert.That(result.Errors.Any(e => e.PropertyName == nameof(command.Name)), Is.True);
-    }
+    static object[] ValidNameInvalidDescriptionCombinations() =>
+        validNames.SelectMany(
+            name => invalidDescriptions,
+            (name, description) => new object[] { name, description }
+        ).ToArray<object>();
     
     [Test]
-    public void Should_Invalidate_CreateLedgerCommand_When_Description_Exceeds_Max_Length()
+    [TestCaseSource(nameof(ValidNameInvalidDescriptionCombinations))]
+    public void Should_Invalidate_CreateLedgerCommand_When_Description_Exceeds_Max_Length(string name, string description)
     {
         // Arrange
         var validator = new OweMe.Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
