@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
 using NUnit.Framework;
+using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
@@ -68,21 +69,24 @@ public class ValidationBehaviourTests
     public async Task Handle_Should_CallAllValidators_Concurrently()
     {
         // Arrange
+        const int numberOfValidators = 10;
+        const int validateTimeMs = 100;
+       
         var logger = Mock.Of<ILogger<ValidationBehaviour<string, string>>>();
-        var started = new List<DateTime>();
-        var tcs = new TaskCompletionSource();
-        var validators = Enumerable.Range(0, 5).Select(_ =>
+        
+        var cts = new CancellationTokenSource();
+        const int maxAllowedProcessTime = 2 * validateTimeMs;
+        maxAllowedProcessTime.ShouldBeLessThan(numberOfValidators * validateTimeMs);
+        cts.CancelAfter(TimeSpan.FromMilliseconds(3*validateTimeMs));
+        
+        var validators = Enumerable.Range(0, numberOfValidators).Select(_ =>
         {
             var mock = new Mock<IValidator<string>>();
             mock.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<string>>(), It.IsAny<CancellationToken>()))
                 .Returns(async () =>
                 {
-                    lock (started) { started.Add(DateTime.UtcNow); }
-                    // Wait until all validators have started
-                    if (started.Count < 5)
-                        await tcs.Task;
-                    else
-                        tcs.SetResult();
+                    await Task.Delay(validateTimeMs, cts.Token);
+
                     return new ValidationResult();
                 });
             return mock.Object;
@@ -92,13 +96,12 @@ public class ValidationBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("ok"));
 
         // Act
-        string result = await sut.Handle("req", next, CancellationToken.None);
+        Assert.DoesNotThrowAsync(async() =>
+        {
+            string result = await sut.Handle("req", next, CancellationToken.None);
 
-        // Assert
-        Assert.That(result, Is.EqualTo("ok"));
-        // All validators should have started within a very short time window (e.g., 100ms)
-        var min = started.Min();
-        var max = started.Max();
-        Assert.That((max - min).TotalMilliseconds, Is.LessThanOrEqualTo(100), "Validators were not called concurrently");
+            // Assert
+            Assert.That(result, Is.EqualTo("ok"));
+        });
     }
 }
