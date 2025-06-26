@@ -15,9 +15,9 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
     public DbSet<Participant> Participants { get; set; }
     public DbSet<Ledger> Ledgers { get; set; }
 
-    public Task<int> SaveChangesAsync()
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return base.SaveChangesAsync();
+        return base.SaveChangesAsync(cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

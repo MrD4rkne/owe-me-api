@@ -14,7 +14,7 @@ public class CreateHandlerCommandHandler(ILedgerContext context) : IRequestHandl
         };
 
         context.Ledgers.Add(ledger);
-        _ = await context.SaveChangesAsync();
+        _ = await context.SaveChangesAsync(cancellationToken);
 
         return ledger.Id;
     }

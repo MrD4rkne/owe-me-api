@@ -6,5 +6,5 @@ public interface ILedgerContext
 {
     DbSet<Ledger> Ledgers { get; set; }
 
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

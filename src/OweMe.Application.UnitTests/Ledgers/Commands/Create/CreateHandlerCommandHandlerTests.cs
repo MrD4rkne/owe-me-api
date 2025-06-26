@@ -32,7 +32,7 @@ public class CreateHandlerCommandHandlerTests
         var expectedLedgerId = Guid.NewGuid();
         _ledgerContextMock.Setup(x => x.Ledgers.Add(It.IsAny<Ledger>()))
             .Callback<Ledger>(l => l.Id = expectedLedgerId);
-        _ledgerContextMock.Setup(x => x.SaveChangesAsync())
+        _ledgerContextMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
         
         // Act
@@ -43,7 +43,35 @@ public class CreateHandlerCommandHandlerTests
         _ledgerContextMock.Verify(x => x.Ledgers.Add(It.Is<Ledger>(ledger =>
             ledger.Name == ledgerName && ledger.Description == ledgerDescription
         )), Times.Once);
-        _ledgerContextMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        _ledgerContextMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         _ledgerContextMock.VerifyNoOtherCalls();
+    }
+    
+    [Test]
+    public async Task Handle_WhenTaskCancelledDuringSave_ShouldThrowTaskCanceledException()
+    {
+        // Arrange
+        var command = new CreateLedgerCommand
+        {
+            Name = "Test Ledger",
+            Description = "This is a test ledger."
+        };
+        
+        var cts = new CancellationTokenSource();
+        
+        _ledgerContextMock.Setup(x => x.Ledgers.Add(It.IsAny<Ledger>()))
+            .Callback<Ledger>(l => l.Id = Guid.NewGuid());
+        _ledgerContextMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .Returns<CancellationToken>( async ct =>
+            {
+                await cts.CancelAsync();
+                ct.ThrowIfCancellationRequested();
+                return 1;
+            });
+        
+        // Act & Assert
+        await Should.ThrowAsync<TaskCanceledException>(() => _handler.Handle(command, cts.Token));
+        
+        _ledgerContextMock.Verify(x => x.SaveChangesAsync(cts.Token), Times.Once);
     }
 }
