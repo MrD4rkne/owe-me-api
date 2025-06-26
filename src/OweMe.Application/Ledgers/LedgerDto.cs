@@ -10,20 +10,6 @@ public record LedgerDto : AuditableEntityDto
 
     public required string Description { get; init; }
 
-    public Ledger FromDTO()
-    {
-        return new Ledger
-        {
-            Id = Id,
-            Name = Name,
-            Description = Description,
-            CreatedAt = CreatedAt,
-            UpdatedAt = UpdatedAt,
-            CreatedBy = CreatedBy,
-            UpdatedBy = UpdatedBy
-        };
-    }
-
     public static LedgerDto FromDomain(Ledger ledger)
     {
         return new LedgerDto
