@@ -200,14 +200,5 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
     }
-
-    private class TestRequest : IRequest<string>
-    {
-        public required string Value { get; init; }
-
-        public override string ToString()
-        {
-            return $"Value: {Value}";
-        }
-    }
+    
 }

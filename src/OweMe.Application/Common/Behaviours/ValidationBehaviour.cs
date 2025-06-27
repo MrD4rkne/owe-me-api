@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 namespace OweMe.Application.Common.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse>(
-    ILogger<ValidationBehaviour<TRequest, TResponse>> logger,
+    ILogger logger,
     IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, TResponse>
+    : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
