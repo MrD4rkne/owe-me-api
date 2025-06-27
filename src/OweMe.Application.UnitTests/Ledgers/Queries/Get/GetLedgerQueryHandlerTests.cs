@@ -23,13 +23,13 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
     private Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
 
     [OneTimeSetUp]
-    public async Task OneTimeSetup()
+    public Task OneTimeSetup()
     {
-        await _ledgerDbContextMoq.SetupAsync();
+        return _ledgerDbContextMoq.SetupAsync();
     }
 
     [SetUp]
-    public async Task Setup()
+    public void Setup()
     {
         _handler = new GetLedgerQueryHandler(_ledgerContextMock.Object, _userContextMock.Object);
 
