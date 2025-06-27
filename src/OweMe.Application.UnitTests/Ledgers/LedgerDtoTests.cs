@@ -5,7 +5,7 @@ namespace OweMe.Application.UnitTests.Ledgers;
 
 public class LedgerDtoTests
 {
-    private static IEnumerable<object[]> ModifiedByAndAtData()
+    private static IEnumerable<object?[]> ModifiedByAndAtData()
     {
         yield return [Guid.NewGuid(), DateTimeOffset.UtcNow];
         yield return [null, null];

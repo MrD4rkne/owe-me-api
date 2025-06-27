@@ -23,6 +23,8 @@ public class LedgerDbContextMoq : PostgresTestBase
 
     public static LedgerDbContextMoq Create(LedgerDbContextCreationOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        
         if (options.TimeProvider is null)
         {
             options = options.WithTimeProvider(new Mock<TimeProvider>().Object);
