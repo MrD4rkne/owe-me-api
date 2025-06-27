@@ -11,9 +11,7 @@ public readonly struct Error(string code, string description) : IEquatable<Error
 
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
-        return obj is Error other &&
-               Code == other.Code &&
-               Description == other.Description;
+        return obj is Error other && Equals(other);
     }
 
     public override int GetHashCode()
