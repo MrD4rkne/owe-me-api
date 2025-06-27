@@ -12,7 +12,7 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
     private readonly LedgerDbContextMoq _ledgerDbContextMoq;
     private readonly Mock<IUserContext> _userContextMock = new();
 
-    private GetLedgerQueryHandler _handler;
+    private GetLedgerQueryHandler _sut = null!;
 
     public GetLedgerQueryHandlerTests()
     {
@@ -26,7 +26,7 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _ledgerDbContextMoq.SetupAsync();
-        _handler = new GetLedgerQueryHandler(_ledgerDbContextMoq.LedgerContextMock.Object, _userContextMock.Object);
+        _sut = new GetLedgerQueryHandler(_ledgerDbContextMoq.LedgerContextMock.Object, _userContextMock.Object);
     }
 
     public Task DisposeAsync()
@@ -52,7 +52,7 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -72,7 +72,7 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
@@ -102,7 +102,7 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();

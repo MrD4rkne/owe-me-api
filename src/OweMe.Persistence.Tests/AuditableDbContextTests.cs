@@ -41,7 +41,7 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
     private readonly Mock<TimeProvider> _timeProviderMock;
     private readonly UserId _updatedBy = UserId.New();
     private readonly Mock<IUserContext> _userContextMock;
-    private DbContextOptions<TestDbContext> _options;
+    private DbContextOptions<TestDbContext> _options = null!;
 
     public AuditableDbContextTests()
     {
