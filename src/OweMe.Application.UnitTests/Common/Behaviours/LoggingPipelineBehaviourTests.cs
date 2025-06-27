@@ -82,7 +82,7 @@ public class LoggingPipelineBehaviourTests
 
     private class TestRequest : IRequest<string>
     {
-        public string Value { get; set; }
+        public required string Value { get; init; }
 
         public override string ToString()
         {
