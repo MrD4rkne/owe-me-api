@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
 using OweMe.Tests.Common;
@@ -27,7 +26,7 @@ public class PerformancePipelineBehaviourTests
         }
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold()
     {
         // Arrange
@@ -71,7 +70,7 @@ public class PerformancePipelineBehaviourTests
             Times.Once);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold_WithException()
     {
         // Arrange
@@ -116,7 +115,7 @@ public class PerformancePipelineBehaviourTests
             Times.Once);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold()
     {
         // Arrange
@@ -158,7 +157,7 @@ public class PerformancePipelineBehaviourTests
             Times.Never);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold_WithException()
     {
         // Arrange
@@ -200,5 +199,4 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
     }
-    
 }

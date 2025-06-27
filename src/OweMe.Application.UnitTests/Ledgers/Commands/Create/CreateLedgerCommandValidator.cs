@@ -8,48 +8,54 @@ public class CreateLedgerCommandValidator
     private const int MaxNameLength = 100;
     private const int MaxDescriptionLength = 500;
 
-    private static readonly object[] validNames =
+    private static readonly string[] validNames =
     [
-        new string('A', MaxNameLength),
+        new('A', MaxNameLength),
         "Abcefghijklmnopqrstuvwxyz",
         "test"
     ];
 
-    private static readonly object?[] invalidNames =
+    private static readonly string?[] invalidNames =
     [
-        new string('A', MaxNameLength + 1), // Exceeding max length
+        new('A', MaxNameLength + 1), // Exceeding max length
         "",
         string.Empty,
         null
     ];
 
-    private static readonly object?[] validDescriptions =
+    private static readonly string?[] validDescriptions =
     [
-        new string('A', MaxDescriptionLength),
+        new('A', MaxDescriptionLength),
         "Abcefghijklmnopqrstuvwxyz",
         "",
         string.Empty,
         null
     ];
 
-    private static readonly object[] invalidDescriptions =
+    private static readonly string[] invalidDescriptions =
     [
-        new string('A', MaxDescriptionLength + 1), // Exceeding max length
-        new string('A', MaxDescriptionLength + 2),
-        new string('A', MaxDescriptionLength + 10)
+        new('A', MaxDescriptionLength + 1), // Exceeding max length
+        new('A', MaxDescriptionLength + 2),
+        new('A', MaxDescriptionLength + 10)
     ];
 
-    private static object[] ValidNameDescriptionCombinations()
+    public static TheoryData<string, string?> ValidNameDescriptionCombinations()
     {
-        return validNames.SelectMany(
-            name => validDescriptions,
-            (name, description) => new[] { name, description }
-        ).ToArray<object>();
+        var data = new TheoryData<string, string?>();
+        foreach (string name in validNames)
+        {
+            foreach (string? description in validDescriptions)
+            {
+                data.Add(name, description);
+            }
+        }
+
+        return data;
     }
 
-    [Test]
-    [TestCaseSource(nameof(ValidNameDescriptionCombinations))]
-    public void Should_Validate_CreateLedgerCommand(string name, string description)
+    [Theory]
+    [MemberData(nameof(ValidNameDescriptionCombinations))]
+    public void Should_Validate_CreateLedgerCommand(string name, string? description)
     {
         // Arrange
         var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
@@ -66,17 +72,58 @@ public class CreateLedgerCommandValidator
         result.IsValid.ShouldBeTrue("Validation should pass for valid command.");
     }
 
-    private static object[] InvalidNameValidDescriptionCombinations()
+    public static TheoryData<string?, string?> InvalidNameValidDescriptionCombinations()
     {
-        return invalidNames.SelectMany(
-            name => validDescriptions,
-            (name, description) => new[] { name, description }
-        ).ToArray<object>();
+        var data = new TheoryData<string?, string?>();
+        foreach (string? name in invalidNames)
+        {
+            foreach (string? description in validDescriptions)
+            {
+                data.Add(name, description);
+            }
+        }
+
+        return data;
     }
 
-    [Test]
-    [TestCaseSource(nameof(InvalidNameValidDescriptionCombinations))]
-    public void Should_Invalidate_CreateLedgerCommand_When_Name_Is_Invalid(string name, string description)
+    [Theory]
+    [MemberData(nameof(InvalidNameValidDescriptionCombinations))]
+    public void Should_Invalidate_CreateLedgerCommand_When_Name_Is_Invalid(string? name, string? description)
+    {
+        // Arrange
+        var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
+        var command = new CreateLedgerCommand
+        {
+            Name = name!,
+            Description = description
+        };
+
+        // Act
+        var result = validator.Validate(command);
+
+        // Assert
+        result.IsValid.ShouldBeFalse("Validation should fail when name is empty.");
+        result.Errors.Any(e => e.PropertyName == nameof(command.Name)).ShouldBeTrue();
+    }
+
+    public static TheoryData<string, string> ValidNameInvalidDescriptionCombinations()
+    {
+        var data = new TheoryData<string, string>();
+        foreach (string name in validNames)
+        {
+            foreach (string description in invalidDescriptions)
+            {
+                data.Add(name, description);
+            }
+        }
+
+        return data;
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidNameInvalidDescriptionCombinations))]
+    public void Should_Invalidate_CreateLedgerCommand_When_Description_Exceeds_Max_Length(string name,
+        string? description)
     {
         // Arrange
         var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
@@ -90,36 +137,7 @@ public class CreateLedgerCommandValidator
         var result = validator.Validate(command);
 
         // Assert
-        result.IsValid.ShouldBeFalse("Validation should fail when name is empty.");
-        Assert.That(result.Errors.Any(e => e.PropertyName == nameof(command.Name)), Is.True);
-    }
-
-    private static object[] ValidNameInvalidDescriptionCombinations()
-    {
-        return validNames.SelectMany(
-            name => invalidDescriptions,
-            (name, description) => new[] { name, description }
-        ).ToArray<object>();
-    }
-
-    [Test]
-    [TestCaseSource(nameof(ValidNameInvalidDescriptionCombinations))]
-    public void Should_Invalidate_CreateLedgerCommand_When_Description_Exceeds_Max_Length(string name,
-        string description)
-    {
-        // Arrange
-        var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
-        var command = new CreateLedgerCommand
-        {
-            Name = "Test Ledger",
-            Description = new string('A', MaxDescriptionLength + 1) // Exceeding max length
-        };
-
-        // Act
-        var result = validator.Validate(command);
-
-        // Assert
         result.IsValid.ShouldBeFalse("Validation should fail when description exceeds maximum length.");
-        Assert.That(result.Errors.Any(e => e.PropertyName == nameof(command.Description)), Is.True);
+        result.Errors.Any(e => e.PropertyName == nameof(command.Description)).ShouldBeTrue();
     }
 }

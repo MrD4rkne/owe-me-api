@@ -5,7 +5,7 @@ namespace OweMe.Application.UnitTests.Common;
 
 public class ResultTests
 {
-    [Test]
+    [Fact]
     public void Success_ShouldCreateSuccessResult()
     {
         // Arrange & Act
@@ -17,7 +17,7 @@ public class ResultTests
         result.Error.ShouldBe(Error.None);
     }
 
-    [Test]
+    [Fact]
     public void Failure_ShouldCreateFailureResult()
     {
         // Arrange
@@ -32,7 +32,7 @@ public class ResultTests
         result.Error.ShouldBe(error);
     }
 
-    [Test]
+    [Fact]
     public void ResultT_Success_ShouldCreateSuccessResultWithValue()
     {
         // Arrange
@@ -48,7 +48,7 @@ public class ResultTests
         result.Value.ShouldBe(value);
     }
 
-    [Test]
+    [Fact]
     public void ResultT_Failure_ShouldCreateFailureResult()
     {
         // Arrange
@@ -63,7 +63,7 @@ public class ResultTests
         result.Error.ShouldBe(error);
     }
 
-    [Test]
+    [Fact]
     public void ResultT_Failure_ShouldThrowOnValueAccess()
     {
         // Arrange

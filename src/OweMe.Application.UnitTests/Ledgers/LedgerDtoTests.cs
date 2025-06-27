@@ -5,14 +5,14 @@ namespace OweMe.Application.UnitTests.Ledgers;
 
 public class LedgerDtoTests
 {
-    private static IEnumerable<object?[]> ModifiedByAndAtData()
+    public static TheoryData<Guid?, DateTimeOffset?> ModifiedByAndAtData => new()
     {
-        yield return [Guid.NewGuid(), DateTimeOffset.UtcNow];
-        yield return [null, null];
-    }
+        { Guid.NewGuid(), DateTimeOffset.UtcNow },
+        { null, null }
+    };
 
     [Theory]
-    [TestCaseSource(nameof(ModifiedByAndAtData))]
+    [MemberData(nameof(ModifiedByAndAtData))]
     public void FromDomain_MapsAllPropertiesCorrectly(Guid? modifiedBy, DateTimeOffset? modifiedAt)
     {
         // Arrange
