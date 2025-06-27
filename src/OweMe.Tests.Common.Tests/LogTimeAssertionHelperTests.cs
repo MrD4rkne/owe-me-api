@@ -5,7 +5,7 @@ namespace OweMe.Tests.Common;
 public class LogTimeAssertionHelperTests
 {
     [Test]
-    public Task ContainsExpectedTime_Should_Validate_Time_Within_Percentage()
+    public void ContainsExpectedTime_Should_Validate_Time_Within_Percentage()
     {
         // Arrange
         var logMessage = "Handled TestRequest in 600 ms";
@@ -13,8 +13,7 @@ public class LogTimeAssertionHelperTests
         double percent = 10; // 10% tolerance
 
         // Act & Assert
-        LogTimeAssertionHelper.ContainsExpectedTime(logMessage, expectedTime, percent);
-        return Task.CompletedTask;
+        Assert.DoesNotThrow(() => LogTimeAssertionHelper.ContainsExpectedTime(logMessage, expectedTime, percent));
     }
 
     [Test]
