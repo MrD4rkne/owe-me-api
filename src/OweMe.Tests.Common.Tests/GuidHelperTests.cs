@@ -4,7 +4,7 @@ namespace OweMe.Tests.Common;
 
 public class GuidHelperTests
 {
-    [Test]
+    [Fact]
     public void CreateDifferentGuid_ShouldReturnDifferentGuid()
     {
         var existingGuid = Guid.NewGuid();
@@ -12,7 +12,7 @@ public class GuidHelperTests
         newGuid.ShouldNotBe(existingGuid);
     }
 
-    [Test]
+    [Fact]
     public void CreateDifferentGuid_ShouldThrowException_WithInvalidMaxAttempts()
     {
         var existingGuid = Guid.NewGuid();

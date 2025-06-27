@@ -4,7 +4,7 @@ namespace OweMe.Tests.Common;
 
 public class LogTimeAssertionHelperTests
 {
-    [Test]
+    [Fact]
     public void ContainsExpectedTime_Should_Validate_Time_Within_Percentage()
     {
         // Arrange
@@ -13,10 +13,12 @@ public class LogTimeAssertionHelperTests
         double percent = 10; // 10% tolerance
 
         // Act & Assert
-        Assert.DoesNotThrow(() => LogTimeAssertionHelper.ContainsExpectedTime(logMessage, expectedTime, percent));
+        var exception = Record.Exception(() =>
+            LogTimeAssertionHelper.ContainsExpectedTime(logMessage, expectedTime, percent));
+        Assert.Null(exception);
     }
 
-    [Test]
+    [Fact]
     public Task ContainsExpectedTime_Should_Fail_When_Time_Outside_Percentage()
     {
         // Arrange
@@ -29,7 +31,7 @@ public class LogTimeAssertionHelperTests
         return Task.CompletedTask;
     }
 
-    [Test]
+    [Fact]
     public Task ContainsExpectedTime_Should_Fail_When_Time_Not_Parsed()
     {
         // Arrange
@@ -42,7 +44,7 @@ public class LogTimeAssertionHelperTests
         return Task.CompletedTask;
     }
 
-    [Test]
+    [Fact]
     public Task ContainsExpectedTime_Should_Fail_When_Unit_Mismatch()
     {
         // Arrange
