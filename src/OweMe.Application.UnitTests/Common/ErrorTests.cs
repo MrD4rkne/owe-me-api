@@ -1,6 +1,5 @@
-﻿using NUnit.Framework;
+﻿using OweMe.Application.Common;
 using Shouldly;
-using OweMe.Application.Common;
 
 namespace OweMe.Application.UnitTests.Common;
 
@@ -12,7 +11,7 @@ public class ErrorTests
         // Arrange
         var e1 = new Error("A", "desc");
         var e2 = new Error("A", "desc");
-        
+
         // Act & Assert
         e1.ShouldBe(e2);
         (e1 == e2).ShouldBeTrue();
@@ -33,7 +32,7 @@ public class ErrorTests
         (e1 == e2).ShouldBeFalse();
         (e1 != e2).ShouldBeTrue();
     }
-    
+
     [Test]
     public void Errors_WithDifferentDescription_ShouldNotBeEqual()
     {
@@ -46,7 +45,7 @@ public class ErrorTests
         (e1 == e2).ShouldBeFalse();
         (e1 != e2).ShouldBeTrue();
     }
-    
+
     [Test]
     public void Errors_WithDifferentCodeAndDescription_ShouldNotBeEqual()
     {

@@ -20,9 +20,15 @@ public readonly struct Result
 
     public Error Error { get; private init; }
 
-    public static Result Success() => new(true, Error.None);
+    public static Result Success()
+    {
+        return new Result(true, Error.None);
+    }
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error error)
+    {
+        return new Result(false, error);
+    }
 }
 
 public readonly struct Result<T>
@@ -51,7 +57,13 @@ public readonly struct Result<T>
     public T Value =>
         IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value on a failed result.");
 
-    public static Result<T> Success(T value) => new Result<T>(true, Error.None, value);
+    public static Result<T> Success(T value)
+    {
+        return new Result<T>(true, Error.None, value);
+    }
 
-    public static Result<T> Failure(Error error) => new Result<T>(false, error, default!);
+    public static Result<T> Failure(Error error)
+    {
+        return new Result<T>(false, error, default!);
+    }
 }

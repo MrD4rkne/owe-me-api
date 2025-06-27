@@ -11,7 +11,7 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
         IUserContext userContext) : base(options, timeProvider, userContext)
     {
     }
-    
+
     public DbSet<Ledger> Ledgers { get; set; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

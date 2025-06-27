@@ -15,7 +15,7 @@ public readonly struct Error(string code, string description) : IEquatable<Error
                Code == other.Code &&
                Description == other.Description;
     }
-    
+
     public override int GetHashCode()
     {
         return HashCode.Combine(Code, Description);

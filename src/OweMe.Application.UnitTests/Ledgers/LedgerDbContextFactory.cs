@@ -8,10 +8,18 @@ namespace OweMe.Application.UnitTests.Ledgers;
 
 public class LedgerDbContextMoq : PostgresTestBase
 {
-    private Mock<LedgerDbContext> _ledgerContextMock;
-    
     private readonly TimeProvider _timeProvider;
     private readonly IUserContext _userContext;
+    private Mock<LedgerDbContext> _ledgerContextMock;
+
+    private LedgerDbContextMoq(TimeProvider timeProvider,
+        IUserContext userContext)
+    {
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+        _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
+    }
+
+    public Mock<ILedgerContext> LedgerContextMock => _ledgerContextMock.As<ILedgerContext>();
 
     public static LedgerDbContextMoq Create(LedgerDbContextCreationOptions options)
     {
@@ -19,7 +27,7 @@ public class LedgerDbContextMoq : PostgresTestBase
         {
             options = options.WithTimeProvider(new Mock<TimeProvider>().Object);
         }
-        
+
         if (options.UserContext is null)
         {
             options = options.WithUserContext(new Mock<IUserContext>().Object);
@@ -27,22 +35,15 @@ public class LedgerDbContextMoq : PostgresTestBase
 
         return new LedgerDbContextMoq(options.TimeProvider, options.UserContext);
     }
-    
-    private LedgerDbContextMoq(TimeProvider timeProvider,
-        IUserContext userContext)
-    {
-        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
-        _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
-    }
-    
+
     public override async Task SetupAsync()
     {
-        await base.SetupAsync();  
-        
+        await base.SetupAsync();
+
         var dbOptions = new DbContextOptionsBuilder<LedgerDbContext>()
             .UseNpgsql(ConnectionString)
             .Options;
-        
+
         _ledgerContextMock = new Mock<LedgerDbContext>(
             dbOptions,
             _timeProvider,
@@ -51,17 +52,15 @@ public class LedgerDbContextMoq : PostgresTestBase
         {
             CallBase = true
         };
-        
+
         await _ledgerContextMock.Object.Database.EnsureCreatedAsync();
     }
-    
+
     public ILedgerContext GetLedgerContext()
     {
         return _ledgerContextMock.Object;
     }
 
-    public Mock<ILedgerContext> LedgerContextMock => _ledgerContextMock.As<ILedgerContext>();
-    
     public readonly struct LedgerDbContextCreationOptions()
     {
         public TimeProvider? TimeProvider { get; init; } = null;
@@ -71,29 +70,29 @@ public class LedgerDbContextMoq : PostgresTestBase
         {
             return new LedgerDbContextCreationOptions
             {
-                TimeProvider = this.TimeProvider,
-                UserContext = this.UserContext
+                TimeProvider = TimeProvider,
+                UserContext = UserContext
             };
         }
-    
+
         public LedgerDbContextCreationOptions WithTimeProvider(TimeProvider timeProvider)
         {
             return new LedgerDbContextCreationOptions
             {
                 TimeProvider = timeProvider,
-                UserContext = this.UserContext
+                UserContext = UserContext
             };
         }
-    
+
         public LedgerDbContextCreationOptions WithUserContext(IUserContext userContext)
         {
             return new LedgerDbContextCreationOptions
             {
-                TimeProvider = this.TimeProvider,
+                TimeProvider = TimeProvider,
                 UserContext = userContext
             };
         }
-        
+
         public LedgerDbContextMoq Build()
         {
             return Create(this);

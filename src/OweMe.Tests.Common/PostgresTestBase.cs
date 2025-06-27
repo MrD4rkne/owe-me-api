@@ -4,8 +4,8 @@ namespace OweMe.Tests.Common;
 
 public abstract class PostgresTestBase(
     string databaseName = "oweme_test",
-    string username="postgres",
-    string password="postgres",
+    string username = "postgres",
+    string password = "postgres",
     int port = 5452) : IAsyncDisposable
 {
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
@@ -15,11 +15,6 @@ public abstract class PostgresTestBase(
         .WithPortBinding(port)
         .Build();
 
-    public virtual Task SetupAsync()
-    {
-        return _postgresContainer.StartAsync();
-    }
-
     protected string ConnectionString => _postgresContainer.GetConnectionString();
 
     public virtual async ValueTask DisposeAsync()
@@ -28,5 +23,10 @@ public abstract class PostgresTestBase(
         await _postgresContainer.DisposeAsync();
 
         GC.SuppressFinalize(this);
+    }
+
+    public virtual Task SetupAsync()
+    {
+        return _postgresContainer.StartAsync();
     }
 }

@@ -22,7 +22,7 @@ public class ResultTests
     {
         // Arrange
         var error = new Error("Some error", "An error occurred");
-        
+
         // Act
         var result = Result.Failure(error);
 
@@ -37,7 +37,7 @@ public class ResultTests
     {
         // Arrange
         const int value = 42;
-        
+
         // Act
         var result = Result<int>.Success(value);
 
@@ -53,7 +53,7 @@ public class ResultTests
     {
         // Arrange
         var error = new Error("Failed", "An error occurred");
-        
+
         // Act
         var result = Result<string>.Failure(error);
 
@@ -62,14 +62,14 @@ public class ResultTests
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(error);
     }
-    
+
     [Test]
     public void ResultT_Failure_ShouldThrowOnValueAccess()
     {
         // Arrange
         var error = new Error("Failed", "An error occurred");
         var result = Result<string>.Failure(error);
-        
+
         // Act & Assert
         Should.Throw<InvalidOperationException>(() => _ = result.Value)
             .Message.ShouldBe("Cannot access Value on a failed result.");

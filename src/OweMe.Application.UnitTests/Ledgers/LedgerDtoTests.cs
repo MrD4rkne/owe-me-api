@@ -10,7 +10,7 @@ public class LedgerDtoTests
         yield return [Guid.NewGuid(), DateTimeOffset.UtcNow];
         yield return [null, null];
     }
-    
+
     [Theory]
     [TestCaseSource(nameof(ModifiedByAndAtData))]
     public void FromDomain_MapsAllPropertiesCorrectly(Guid? modifiedBy, DateTimeOffset? modifiedAt)
