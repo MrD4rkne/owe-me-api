@@ -6,13 +6,13 @@ public abstract class PostgresTestBase(
     string databaseName = "oweme_test",
     string username = "postgres",
     string password = "postgres",
-    int port = 5452) : IAsyncDisposable
+    int? port = null) : IAsyncDisposable
 {
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
         .WithDatabase(databaseName)
         .WithUsername(username)
         .WithPassword(password)
-        .WithPortBinding(port)
+        .WithPortBinding(port ?? 5432, true)
         .Build();
 
     protected string ConnectionString => _postgresContainer.GetConnectionString();
