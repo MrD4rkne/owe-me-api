@@ -9,7 +9,7 @@ public class Ledger : AuditableEntity
 
     public string Name { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public bool CanUserAccess(UserId userId)
     {

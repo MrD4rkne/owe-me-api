@@ -30,7 +30,6 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
             .HasMaxLength(LedgerConstants.MaxNameLength);
         modelBuilder.Entity<Ledger>()
             .Property(l => l.Description)
-            .IsRequired()
             .HasMaxLength(LedgerConstants.MaxDescriptionLength);
 
         base.OnModelCreating(modelBuilder);
