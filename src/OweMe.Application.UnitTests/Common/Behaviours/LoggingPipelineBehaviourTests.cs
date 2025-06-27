@@ -27,10 +27,11 @@ public class LoggingPipelineBehaviourTests
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
-                    v.ToString().Contains("Handling TestRequest")
-                    && v.ToString().Contains($"with request: {request}")),
+                    v != null &&
+                    v.ToString().Contains("Handling TestRequest") &&
+                    v.ToString().Contains($"with request: {request}")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         loggerMock.Verify(
@@ -39,7 +40,7 @@ public class LoggingPipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Handled TestRequest successfully")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
         return;
 
@@ -69,7 +70,7 @@ public class LoggingPipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error handling TestRequest")),
                 exception,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
         return;
 

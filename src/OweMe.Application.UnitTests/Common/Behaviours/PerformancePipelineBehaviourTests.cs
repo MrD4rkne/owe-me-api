@@ -52,10 +52,11 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains("Handled TestRequest in") && AssertTime(v.ToString(), totalDelay,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         loggerMock.Verify(
@@ -63,9 +64,10 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains($", exceeding the threshold of {delayThreshold} ms")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
 
@@ -95,10 +97,11 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains("Handled TestRequest in") && AssertTime(v.ToString(), totalDelay,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         loggerMock.Verify(
@@ -106,9 +109,10 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains($", exceeding the threshold of {delayThreshold} ms")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
 
@@ -137,10 +141,11 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains("Handled TestRequest in") && AssertTime(v.ToString(), 100,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         loggerMock.Verify(
@@ -149,7 +154,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
     }
 
@@ -179,10 +184,11 @@ public class PerformancePipelineBehaviourTests
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
+                    v != null &&
                     v.ToString().Contains("Handled TestRequest in") && AssertTime(v.ToString(), 100,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         loggerMock.Verify(
@@ -191,7 +197,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
     }
 
