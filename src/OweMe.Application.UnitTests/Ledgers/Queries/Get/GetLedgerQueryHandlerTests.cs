@@ -85,7 +85,7 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBe(LedgerErrors.LedgerNotFound);
+        result.Error.ShouldBe(LedgerErrors.Errors.LedgerNotFound);
     }
 
     [Test]
@@ -115,7 +115,7 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBe(LedgerErrors.LedgerNotFound);
+        result.Error.ShouldBe(LedgerErrors.Errors.LedgerNotFound);
 
         _userContextMock.Verify(x => x.Id, Times.Once);
     }
