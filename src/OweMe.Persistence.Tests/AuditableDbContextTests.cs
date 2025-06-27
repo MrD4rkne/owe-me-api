@@ -16,13 +16,12 @@ internal sealed class TestEntity : AuditableEntity
     public string Name { get; set; } = string.Empty;
 }
 
-internal sealed class TestDbContext : AuditableDbContext
+internal sealed class TestDbContext(
+    DbContextOptions<TestDbContext> options,
+    TimeProvider timeProvider,
+    IUserContext userContext)
+    : AuditableDbContext(options, timeProvider, userContext)
 {
-    public TestDbContext(DbContextOptions<TestDbContext> options, TimeProvider timeProvider, IUserContext userContext)
-        : base(options, timeProvider, userContext)
-    {
-    }
-
     public DbSet<TestEntity> _entities => Set<TestEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,16 +32,25 @@ internal sealed class TestDbContext : AuditableDbContext
     }
 }
 
-[TestFixture]
-public class AuditableDbContextTests : PostgresTestBase
+public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
 {
-    [SetUp]
-    public async Task SetUp()
+    private readonly UserId _createdBy = UserId.New();
+
+    private readonly DateTime _now = new(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    private readonly DateTime _then = new(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    private readonly Mock<TimeProvider> _timeProviderMock;
+    private readonly UserId _updatedBy = UserId.New();
+    private readonly Mock<IUserContext> _userContextMock;
+    private DbContextOptions<TestDbContext> _options;
+
+    public AuditableDbContextTests()
     {
         _timeProviderMock = new Mock<TimeProvider>();
-
         _userContextMock = new Mock<IUserContext>();
+    }
 
+    public async Task InitializeAsync()
+    {
         await SetupAsync();
 
         _options = new DbContextOptionsBuilder<TestDbContext>()
@@ -53,27 +61,12 @@ public class AuditableDbContextTests : PostgresTestBase
         await ctx.Database.EnsureCreatedAsync();
     }
 
-    /// <summary>
-    ///     Cleans up the mocks after each test to ensure no state is carried over.
-    /// </summary>
-    [TearDown]
-    public void TearDown()
+    Task IAsyncLifetime.DisposeAsync()
     {
-        _timeProviderMock.Invocations.Clear();
-        _userContextMock.Invocations.Clear();
+        return base.DisposeAsync().AsTask();
     }
 
-    private Mock<TimeProvider> _timeProviderMock = null!;
-    private Mock<IUserContext> _userContextMock = null!;
-    private DbContextOptions<TestDbContext> _options = null!;
-
-    private readonly DateTime _now = new(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-    private readonly DateTime _then = new(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-
-    private readonly UserId _createdBy = UserId.New();
-    private readonly UserId _updatedBy = UserId.New();
-
-    [Test]
+    [Fact]
     public async Task SaveChangesAsync_SetsCreatedFields_OnAdd()
     {
         // Arrange
@@ -98,7 +91,7 @@ public class AuditableDbContextTests : PostgresTestBase
         _userContextMock.Verify(uc => uc.Id, Times.Once, "UserContext Id should be accessed once");
     }
 
-    [Test]
+    [Fact]
     public async Task SaveChangesAsync_SetsUpdatedFields_OnModify()
     {
         // Arrange
@@ -135,14 +128,14 @@ public class AuditableDbContextTests : PostgresTestBase
         _userContextMock.Verify(uc => uc.Id, Times.Exactly(1), "UserContext Id should be accessed once for update");
     }
 
-    [Test]
+    [Fact]
     public void Constructor_Throws_OnNullTimeProvider()
     {
         Assert.Throws<ArgumentNullException>(() =>
             new TestDbContext(_options, null!, _userContextMock.Object));
     }
 
-    [Test]
+    [Fact]
     public void Constructor_Throws_OnNullUserContext()
     {
         Assert.Throws<ArgumentNullException>(() =>

@@ -2,25 +2,26 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Moq" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit.Analyzers" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="Shouldly" />
-        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Moq"/>
+        <PackageReference Include="Testcontainers.PostgreSql"/>
+        <PackageReference Include="Shouldly"/>
+
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="NUnit.Framework"/>
+        <Using Include="Xunit"/>
     </ItemGroup>
 
     <ItemGroup>
