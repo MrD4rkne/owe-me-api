@@ -22,12 +22,6 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
 
     private Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
 
-    public async ValueTask DisposeAsync()
-    {
-        await _ledgerDbContextMoq?.DisposeAsync().AsTask();
-        GC.SuppressFinalize(this);
-    }
-
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
@@ -41,6 +35,12 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
 
         _ledgerContextMock.Invocations.Clear();
         _userContextMock.Invocations.Clear();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        await _ledgerDbContextMoq.DisposeAsync().AsTask();
+        GC.SuppressFinalize(this);
     }
 
     [Test]
