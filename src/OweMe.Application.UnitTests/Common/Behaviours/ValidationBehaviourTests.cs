@@ -108,4 +108,38 @@ public class ValidationBehaviourTests
             result.ShouldBe("ok");
         });
     }
+    
+    [Fact]
+    public async Task Handle_Should_Throw_When_ValidationFails()
+    {
+        // Arrange
+        var logger = Mock.Of<ILogger>();
+        var mockValidator = new Mock<IValidator<TestRequest>>();
+        mockValidator.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult([new ValidationFailure("Value", "Invalid value")]));
+
+        var validators = new List<IValidator<TestRequest>> { mockValidator.Object };
+        var sut = new LocalValidationBehaviour(logger, validators);
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));
+
+        // Act & Assert
+        await Should.ThrowAsync<ValidationException>(async () =>
+            await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
+    }
+    
+    [Fact]
+    public async Task Handle_Should_Proceed_WhenNoValidators()
+    {
+        // Arrange
+        var logger = Mock.Of<ILogger>();
+        var validators = new List<IValidator<TestRequest>>();
+        var sut = new LocalValidationBehaviour(logger, validators);
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));
+
+        // Act
+        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+
+        // Assert
+        result.ShouldBe("response");
+    }
 }
