@@ -7,17 +7,16 @@ namespace OweMe.Application.UnitTests.Ledgers.Commands.Create;
 
 public class CreateHandlerCommandHandlerTests
 {
-    private CreateHandlerCommandHandler _handler;
-    private Mock<ILedgerContext> _ledgerContextMock;
+    private readonly CreateHandlerCommandHandler _handler;
+    private readonly Mock<ILedgerContext> _ledgerContextMock;
 
-    [SetUp]
-    public void Setup()
+    public CreateHandlerCommandHandlerTests()
     {
         _ledgerContextMock = new Mock<ILedgerContext>();
         _handler = new CreateHandlerCommandHandler(_ledgerContextMock.Object);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldCreateLedger_WhenValidCommand()
     {
         // Arrange
@@ -47,7 +46,7 @@ public class CreateHandlerCommandHandlerTests
         _ledgerContextMock.VerifyNoOtherCalls();
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_WhenTaskCancelledDuringSave_ShouldThrowTaskCanceledException()
     {
         // Arrange

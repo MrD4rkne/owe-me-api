@@ -5,7 +5,7 @@ namespace OweMe.Application.UnitTests.Common;
 
 public class ErrorTests
 {
-    [Test]
+    [Fact]
     public void Errors_WithSameCodeAndDescription_ShouldBeEqual()
     {
         // Arrange
@@ -20,7 +20,7 @@ public class ErrorTests
         e1.Equals((object)e2).ShouldBeTrue();
     }
 
-    [Test]
+    [Fact]
     public void Errors_WithDifferentCode_ShouldNotBeEqual()
     {
         // Arrange
@@ -33,7 +33,7 @@ public class ErrorTests
         (e1 != e2).ShouldBeTrue();
     }
 
-    [Test]
+    [Fact]
     public void Errors_WithDifferentDescription_ShouldNotBeEqual()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class ErrorTests
         (e1 != e2).ShouldBeTrue();
     }
 
-    [Test]
+    [Fact]
     public void Errors_WithDifferentCodeAndDescription_ShouldNotBeEqual()
     {
         // Arrange
@@ -59,7 +59,7 @@ public class ErrorTests
         (e1 != e2).ShouldBeTrue();
     }
 
-    [Test]
+    [Fact]
     public void None_ShouldBeDefaultError()
     {
         // Arrange & Act
@@ -69,7 +69,7 @@ public class ErrorTests
         none.ShouldBe(new Error(string.Empty, string.Empty));
     }
 
-    [Test]
+    [Fact]
     public void GetHashCode_ShouldBeEqualForEqualErrors()
     {
         var e1 = new Error("A", "desc");

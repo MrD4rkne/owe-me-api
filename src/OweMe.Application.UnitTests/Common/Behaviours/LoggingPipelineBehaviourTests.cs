@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
 using Shouldly;
@@ -8,7 +7,7 @@ namespace OweMe.Application.UnitTests.Common.Behaviours;
 
 public class LoggingPipelineBehaviourTests
 {
-    [Test]
+    [Fact]
     public async Task Handle_Should_Log_Information_On_Success()
     {
         // Arrange
@@ -50,7 +49,7 @@ public class LoggingPipelineBehaviourTests
         }
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_Should_Log_Error_On_Exception()
     {
         // Arrange
@@ -65,9 +64,9 @@ public class LoggingPipelineBehaviourTests
         ex.ShouldBe(exception);
 
         loggerMock.Verify(x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains("Error handling TestRequest")),
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains("Error handling TestRequest")),
                 exception,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);

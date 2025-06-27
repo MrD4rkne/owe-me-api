@@ -10,11 +10,9 @@ namespace OweMe.Application.UnitTests.Common.Behaviours;
 
 using LocalValidationBehaviour = ValidationBehaviour<TestRequest, string>;
 
-[TestFixture]
 public class ValidationBehaviourTests
 {
-    
-    [Test]
+    [Fact]
     public void Constructor_Should_Throw_When_LoggerIsNull()
     {
         // Arrange
@@ -24,10 +22,10 @@ public class ValidationBehaviourTests
         // Act & Assert
         var ex = Assert.Throws<ArgumentNullException>(() =>
             new LocalValidationBehaviour(logger!, validators));
-        Assert.That(ex.ParamName, Is.EqualTo("logger"));
+        ex.ParamName.ShouldBe("logger");
     }
 
-    [Test]
+    [Fact]
     public void Constructor_Should_Throw_When_ValidatorsIsNull()
     {
         // Arrange
@@ -37,10 +35,10 @@ public class ValidationBehaviourTests
         // Act & Assert
         var ex = Assert.Throws<ArgumentNullException>(() =>
             new LocalValidationBehaviour(logger, validators!));
-        Assert.That(ex.ParamName, Is.EqualTo("validators"));
+        ex.ParamName.ShouldBe("validators");
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_Should_CallAllValidators_When_ValidatorsArePresent()
     {
         // Arrange
@@ -63,7 +61,7 @@ public class ValidationBehaviourTests
         string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
-        Assert.That(result, Is.EqualTo("response"));
+        result.ShouldBe("response");
         foreach (var mock in validatorMocks)
         {
             mock.Verify(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()),
@@ -71,8 +69,8 @@ public class ValidationBehaviourTests
         }
     }
 
-    [Test]
-    public void Handle_Should_CallAllValidators_Concurrently()
+    [Fact]
+    public async Task Handle_Should_CallAllValidators_Concurrently()
     {
         // Arrange
         const int numberOfValidators = 10;
@@ -102,12 +100,12 @@ public class ValidationBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("ok"));
 
         // Act
-        Assert.DoesNotThrowAsync(async () =>
+        await Record.ExceptionAsync(async () =>
         {
             string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
             // Assert
-            Assert.That(result, Is.EqualTo("ok"));
+            result.ShouldBe("ok");
         });
     }
 }

@@ -7,7 +7,7 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers.Queries.Get;
 
-public class GetLedgerQueryHandlerTests : IAsyncDisposable
+public class GetLedgerQueryHandlerTests : IAsyncLifetime
 {
     private readonly LedgerDbContextMoq _ledgerDbContextMoq;
     private readonly Mock<IUserContext> _userContextMock = new();
@@ -16,34 +16,25 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
 
     public GetLedgerQueryHandlerTests()
     {
-        _ledgerDbContextMoq = LedgerDbContextMoq.Create(new LedgerDbContextMoq.LedgerDbContextCreationOptions()
-            .WithUserContext(_userContextMock.Object));
+        _ledgerDbContextMoq = LedgerDbContextMoq.Create(
+            new LedgerDbContextMoq.LedgerDbContextCreationOptions()
+                .WithUserContext(_userContextMock.Object));
     }
 
     private Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
 
-    [OneTimeSetUp]
-    public Task OneTimeSetup()
+    public async Task InitializeAsync()
     {
-        return _ledgerDbContextMoq.SetupAsync();
+        await _ledgerDbContextMoq.SetupAsync();
+        _handler = new GetLedgerQueryHandler(_ledgerDbContextMoq.LedgerContextMock.Object, _userContextMock.Object);
     }
 
-    [SetUp]
-    public void Setup()
+    public Task DisposeAsync()
     {
-        _handler = new GetLedgerQueryHandler(_ledgerContextMock.Object, _userContextMock.Object);
-
-        _ledgerContextMock.Invocations.Clear();
-        _userContextMock.Invocations.Clear();
-    }
-    
-    public async ValueTask DisposeAsync()
-    {
-        await _ledgerDbContextMoq.DisposeAsync().AsTask();
-        GC.SuppressFinalize(this);
+        return _ledgerDbContextMoq.DisposeAsync().AsTask();
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldReturnLedger_WhenLedgerExistsAndUserHasAccess()
     {
         // Arrange
@@ -72,7 +63,7 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
         result.Value.CreatedBy.ShouldBe<Guid>(ledger.CreatedBy);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldReturnFailure_WhenLedgerDoesNotExist()
     {
         // Arrange
@@ -88,7 +79,7 @@ public class GetLedgerQueryHandlerTests : IAsyncDisposable
         result.Error.ShouldBe(LedgerErrors.Errors.LedgerNotFound);
     }
 
-    [Test]
+    [Fact]
     public async Task Handle_ShouldReturnFailure_WhenUserDoesNotHaveAccessToLedger()
     {
         // Arrange
