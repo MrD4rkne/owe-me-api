@@ -10,12 +10,12 @@ public static class LogTimeAssertionHelper
         var match = regex.Match(logMessage);
         if (!match.Success)
         {
-            throw new Exception($"Expected time to match {unit} on {logMessage}");
+            throw new FormatException($"Expected time to match {unit} on {logMessage}");
         }
 
         if (!long.TryParse(match.Groups[1].Value, out long actualTime))
         {
-            throw new Exception($"Failed to parse actual time from log message: {logMessage}");
+            throw new FormatException($"Failed to parse actual time from log message: {logMessage}");
         }
 
         double lowerBound = expectedTime * (1 - percent / 100.0);
@@ -23,7 +23,7 @@ public static class LogTimeAssertionHelper
 
         if (actualTime < lowerBound || actualTime > upperBound)
         {
-            throw new Exception(
+            throw new ArgumentOutOfRangeException(
                 $"Actual time {actualTime} {unit} is not within the expected range of {lowerBound} to {upperBound} {unit} for log message: {logMessage}");
         }
     }
