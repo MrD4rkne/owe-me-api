@@ -45,7 +45,7 @@ builder.Services.AddAuthorizationBuilder()
 builder.AddApplication();
 builder.AddInfrastructure();
 
-builder.AddPersistence(
+await builder.AddPersistence(
     builder.Configuration.GetConnectionString("DefaultConnection"),
     builder.Configuration.GetValue<bool>("Database:RunMigrations"));
 
