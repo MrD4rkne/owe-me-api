@@ -20,25 +20,26 @@ public class AuditableDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-                     .Where(t => typeof(AuditableEntity).IsAssignableFrom(t.ClrType) &&
-                                 t.ClrType != typeof(AuditableEntity)))
+        foreach (var clrType in modelBuilder.Model.GetEntityTypes()
+                     .Select(entityType => entityType.ClrType)
+                     .Where(clrType => typeof(AuditableEntity).IsAssignableFrom(clrType) &&
+                                       clrType != typeof(AuditableEntity)))
         {
-            modelBuilder.Entity(entityType.ClrType)
+            modelBuilder.Entity(clrType)
                 .Property(nameof(AuditableEntity.CreatedBy))
                 .HasConversion(new UserIdConverter())
                 .IsRequired();
 
-            modelBuilder.Entity(entityType.ClrType)
+            modelBuilder.Entity(clrType)
                 .Property(nameof(AuditableEntity.CreatedAt))
                 .IsRequired();
 
-            modelBuilder.Entity(entityType.ClrType)
+            modelBuilder.Entity(clrType)
                 .Property(nameof(AuditableEntity.UpdatedBy))
                 .HasConversion(new UserIdConverter())
                 .IsRequired(false);
 
-            modelBuilder.Entity(entityType.ClrType)
+            modelBuilder.Entity(clrType)
                 .Property(nameof(AuditableEntity.UpdatedAt))
                 .IsRequired(false);
         }
