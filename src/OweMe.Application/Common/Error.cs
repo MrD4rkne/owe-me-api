@@ -9,14 +9,14 @@ public readonly struct Error(string code, string description) : IEquatable<Error
 
     public static readonly Error None = new(string.Empty, string.Empty);
 
-    public override bool Equals([NotNullWhen(true)] object? obj)
-    {
-        return obj is Error other && Equals(other);
-    }
-
     public override int GetHashCode()
     {
         return HashCode.Combine(Code, Description);
+    }
+    
+    public override bool Equals(object? obj)
+    {
+        return obj is Error other && Equals(other);
     }
 
     public bool Equals(Error other)

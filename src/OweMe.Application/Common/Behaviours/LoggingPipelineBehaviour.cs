@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace OweMe.Application.Common.Behaviours;
 
+#pragma warning disable S2139 // Exceptions should be either logged or rethrown but not both
+
 public class LoggingPipelineBehaviour<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
@@ -25,3 +27,5 @@ public class LoggingPipelineBehaviour<TRequest, TResponse>(ILogger logger) : IPi
         }
     }
 }
+
+#pragma warning restore S2139 // Exceptions should be either logged or rethrown but not both

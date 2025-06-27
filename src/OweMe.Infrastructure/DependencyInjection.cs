@@ -8,5 +8,6 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IHostApplicationBuilder builder)
     {
+        // Add your infrastructure services here
     }
 }
