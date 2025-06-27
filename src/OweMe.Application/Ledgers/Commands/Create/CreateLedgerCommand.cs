@@ -4,7 +4,7 @@ namespace OweMe.Application.Ledgers.Commands.Create;
 
 public record CreateLedgerCommand : IRequest<Guid>
 {
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
-    public string Description { get; set; }
+    public string? Description { get; init; }
 }
