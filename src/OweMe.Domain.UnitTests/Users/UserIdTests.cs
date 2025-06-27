@@ -5,7 +5,7 @@ namespace OweMe.Domain.UnitTests.Users;
 
 public class UserIdTests
 {
-    [Test]
+    [Fact]
     public void New_ShouldReturnUniqueUserIds()
     {
         // Arrange & Act
@@ -18,7 +18,7 @@ public class UserIdTests
         id2.Id.ShouldNotBe(Guid.Empty);
     }
 
-    [Test]
+    [Fact]
     public void Empty_ShouldReturnUserIdWithEmptyGuid()
     {
         // Act
@@ -28,7 +28,7 @@ public class UserIdTests
         empty.Id.ShouldBe(Guid.Empty);
     }
 
-    [Test]
+    [Fact]
     public void ToString_ShouldReturnGuidString()
     {
         // Arrange
@@ -42,7 +42,7 @@ public class UserIdTests
         result.ShouldBe(guid.ToString());
     }
 
-    [Test]
+    [Fact]
     public void ImplicitConversion_ToGuid_ShouldReturnGuid()
     {
         // Arrange
@@ -56,7 +56,7 @@ public class UserIdTests
         result.ShouldBe(guid);
     }
 
-    [Test]
+    [Fact]
     public void ImplicitConversion_FromGuid_ShouldReturnUserId()
     {
         // Arrange

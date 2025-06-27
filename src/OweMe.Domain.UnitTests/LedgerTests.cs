@@ -7,7 +7,7 @@ namespace OweMe.Domain.UnitTests;
 
 public class LedgerTests
 {
-    [Test]
+    [Fact]
     public void CanUserAccess_Creator_ShouldReturnTrue()
     {
         // Arrange
@@ -25,7 +25,7 @@ public class LedgerTests
         canAccess.ShouldBeTrue();
     }
 
-    [Test]
+    [Fact]
     public void CanUserAccess_OtherUser_ShouldReturnFalse()
     {
         // Arrange
