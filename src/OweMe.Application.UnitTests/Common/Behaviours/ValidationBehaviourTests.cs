@@ -80,7 +80,7 @@ public class ValidationBehaviourTests
 
         var logger = Mock.Of<ILogger>();
 
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         const int maxAllowedProcessTime = 2 * validateTimeMs;
         maxAllowedProcessTime.ShouldBeLessThan(numberOfValidators * validateTimeMs);
         cts.CancelAfter(TimeSpan.FromMilliseconds(3 * validateTimeMs));

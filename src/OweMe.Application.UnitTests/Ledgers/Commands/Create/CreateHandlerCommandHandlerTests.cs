@@ -57,7 +57,7 @@ public class CreateHandlerCommandHandlerTests
             Description = "This is a test ledger."
         };
 
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
 
         _ledgerContextMock.Setup(x => x.Ledgers.Add(It.IsAny<Ledger>()))
             .Callback<Ledger>(l => l.Id = Guid.NewGuid());
