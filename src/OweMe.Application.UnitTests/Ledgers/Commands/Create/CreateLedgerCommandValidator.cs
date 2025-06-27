@@ -15,7 +15,7 @@ public class CreateLedgerCommandValidator
         "test"
     ];
 
-    private static readonly object[] invalidNames =
+    private static readonly object?[] invalidNames =
     [
         new string('A', MaxNameLength + 1), // Exceeding max length
         "",
@@ -23,7 +23,7 @@ public class CreateLedgerCommandValidator
         null
     ];
 
-    private static readonly object[] validDescriptions =
+    private static readonly object?[] validDescriptions =
     [
         new string('A', MaxDescriptionLength),
         "Abcefghijklmnopqrstuvwxyz",

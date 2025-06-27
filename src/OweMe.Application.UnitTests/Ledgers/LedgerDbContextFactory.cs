@@ -10,7 +10,7 @@ public class LedgerDbContextMoq : PostgresTestBase
 {
     private readonly TimeProvider _timeProvider;
     private readonly IUserContext _userContext;
-    private Mock<LedgerDbContext> _ledgerContextMock;
+    private Mock<LedgerDbContext>? _ledgerContextMock;
 
     private LedgerDbContextMoq(TimeProvider timeProvider,
         IUserContext userContext)
@@ -19,12 +19,21 @@ public class LedgerDbContextMoq : PostgresTestBase
         _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
     }
 
-    public Mock<ILedgerContext> LedgerContextMock => _ledgerContextMock.As<ILedgerContext>();
+    public Mock<ILedgerContext> LedgerContextMock
+    {
+        get
+        {
+            if (_ledgerContextMock is null)
+            {
+                throw new InvalidOperationException($"LedgerContextMock is not initialized. Call {nameof(SetupAsync)} first.");
+            }
+            
+            return _ledgerContextMock.As<ILedgerContext>();
+        }
+    }
 
     public static LedgerDbContextMoq Create(LedgerDbContextCreationOptions options)
     {
-        ArgumentNullException.ThrowIfNull(options);
-        
         if (options.TimeProvider is null)
         {
             options = options.WithTimeProvider(new Mock<TimeProvider>().Object);
@@ -35,7 +44,7 @@ public class LedgerDbContextMoq : PostgresTestBase
             options = options.WithUserContext(new Mock<IUserContext>().Object);
         }
 
-        return new LedgerDbContextMoq(options.TimeProvider, options.UserContext);
+        return new LedgerDbContextMoq(options.TimeProvider!, options.UserContext!);
     }
 
     public override async Task SetupAsync()
@@ -60,7 +69,7 @@ public class LedgerDbContextMoq : PostgresTestBase
 
     public ILedgerContext GetLedgerContext()
     {
-        return _ledgerContextMock.Object;
+        return LedgerContextMock.Object;
     }
 
     public readonly struct LedgerDbContextCreationOptions()

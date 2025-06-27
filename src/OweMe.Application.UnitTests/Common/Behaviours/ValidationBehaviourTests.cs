@@ -18,12 +18,12 @@ public class ValidationBehaviourTests
     public void Constructor_Should_Throw_When_LoggerIsNull()
     {
         // Arrange
-        ILogger<LocalValidationBehaviour> logger = null;
+        ILogger<LocalValidationBehaviour>? logger = null!;
         var validators = new List<IValidator<TestRequest>>();
 
         // Act & Assert
         var ex = Assert.Throws<ArgumentNullException>(() =>
-            new LocalValidationBehaviour(logger, validators));
+            new LocalValidationBehaviour(logger!, validators));
         Assert.That(ex.ParamName, Is.EqualTo("logger"));
     }
 
@@ -32,11 +32,11 @@ public class ValidationBehaviourTests
     {
         // Arrange
         var logger = Mock.Of<ILogger>();
-        IEnumerable<IValidator<TestRequest>> validators = null;
+        IEnumerable<IValidator<TestRequest>>? validators = null;
 
         // Act & Assert
         var ex = Assert.Throws<ArgumentNullException>(() =>
-            new LocalValidationBehaviour(logger, validators));
+            new LocalValidationBehaviour(logger, validators!));
         Assert.That(ex.ParamName, Is.EqualTo("validators"));
     }
 
@@ -72,7 +72,7 @@ public class ValidationBehaviourTests
     }
 
     [Test]
-    public async Task Handle_Should_CallAllValidators_Concurrently()
+    public void Handle_Should_CallAllValidators_Concurrently()
     {
         // Arrange
         const int numberOfValidators = 10;
