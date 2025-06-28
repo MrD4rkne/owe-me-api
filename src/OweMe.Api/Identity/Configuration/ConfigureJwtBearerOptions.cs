@@ -4,7 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace OweMe.Api.Identity.Configuration;
 
-public class ConfigureJwtBearerOptions(IOptions<IdentityServerOptions> identityServerOptions,
+public class ConfigureJwtBearerOptions(
+    IOptions<IdentityServerOptions> identityServerOptions,
     IHostEnvironment environment) : IConfigureNamedOptions<JwtBearerOptions>
 {
     public void Configure(JwtBearerOptions options)
@@ -14,18 +15,18 @@ public class ConfigureJwtBearerOptions(IOptions<IdentityServerOptions> identityS
         {
             ValidateAudience = identityServerOptions.Value.ValidateAudience
         };
-        
-        if(!string.IsNullOrWhiteSpace(identityServerOptions.Value.Audience))
+
+        if (!string.IsNullOrWhiteSpace(identityServerOptions.Value.Audience))
         {
             options.Audience = identityServerOptions.Value.Audience;
         }
-        
-        if(!string.IsNullOrWhiteSpace(identityServerOptions.Value.ValidIssuer))
+
+        if (!string.IsNullOrWhiteSpace(identityServerOptions.Value.ValidIssuer))
         {
             options.TokenValidationParameters.ValidIssuer = identityServerOptions.Value.ValidIssuer;
         }
 
-        if(environment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             options.RequireHttpsMetadata = false;
         }

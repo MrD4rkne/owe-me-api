@@ -10,7 +10,7 @@ public class ProjectsReferencesTests
     private const string InfrastructureNamespace = "OweMe.Infrastructure";
     private const string PersistenceNamespace = "OweMe.Persistence";
     private const string PresentationNamespace = "OweMe.Api";
-    
+
     [Fact]
     public void Domain_ShouldNot_HaveDependencyOnApplicationProject()
     {
@@ -28,7 +28,7 @@ public class ProjectsReferencesTests
         // Assert
         Assert.True(result.IsSuccessful, "Domain project has dependencies on Application project.");
     }
-    
+
     [Theory]
     [InlineData(ApplicationNamespace)]
     [InlineData(DomainNamespace)]

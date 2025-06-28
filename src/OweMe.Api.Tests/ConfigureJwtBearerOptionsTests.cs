@@ -20,8 +20,9 @@ public class ConfigureJwtBearerOptionsTests
             ValidIssuer = "issuer"
         };
         var environment = new Mock<IHostEnvironment>();
-        var configureJwtBearerOptions = new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
-        
+        var configureJwtBearerOptions =
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+
         var options = new JwtBearerOptions();
 
         // Act
@@ -29,11 +30,13 @@ public class ConfigureJwtBearerOptionsTests
 
         // Assert
         options.Authority.ShouldBe(identityServerOptions.Authority, "Authority should be set");
-        options.TokenValidationParameters.ValidateAudience.ShouldBe(identityServerOptions.ValidateAudience, "ValidateAudience should be set");
+        options.TokenValidationParameters.ValidateAudience.ShouldBe(identityServerOptions.ValidateAudience,
+            "ValidateAudience should be set");
         options.Audience.ShouldBe(identityServerOptions.Audience, "Audience should be set");
-        options.TokenValidationParameters.ValidIssuer.ShouldBe(identityServerOptions.ValidIssuer, "ValidIssuer should be set");
+        options.TokenValidationParameters.ValidIssuer.ShouldBe(identityServerOptions.ValidIssuer,
+            "ValidIssuer should be set");
     }
-    
+
     [Fact]
     public void Configure_Should_Not_Set_Audience_When_Not_Provided()
     {
@@ -45,8 +48,9 @@ public class ConfigureJwtBearerOptionsTests
             ValidIssuer = "issuer"
         };
         var environment = new Mock<IHostEnvironment>();
-        var configureJwtBearerOptions = new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
-        
+        var configureJwtBearerOptions =
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+
         var options = new JwtBearerOptions();
 
         // Act
@@ -67,8 +71,9 @@ public class ConfigureJwtBearerOptionsTests
             ValidIssuer = null
         };
         var environment = new Mock<IHostEnvironment>();
-        var configureJwtBearerOptions = new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
-        
+        var configureJwtBearerOptions =
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+
         var options = new JwtBearerOptions();
 
         // Act
@@ -90,8 +95,9 @@ public class ConfigureJwtBearerOptionsTests
         };
         var environment = new Mock<IHostEnvironment>();
         environment.Setup(e => e.EnvironmentName).Returns(Environments.Development);
-        var configureJwtBearerOptions = new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
-        
+        var configureJwtBearerOptions =
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+
         var options = new JwtBearerOptions();
 
         // Act

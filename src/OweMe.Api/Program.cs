@@ -1,7 +1,5 @@
-using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using OweMe.Api;
+using OweMe.Api.Controllers;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
@@ -9,14 +7,10 @@ using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
 using Serilog;
-using ILogger = Serilog.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
-});
+builder.Services.AddOpenApi(options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -50,7 +44,10 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.AddApplication();
 builder.AddInfrastructure();
-builder.AddPersistence();
+
+await builder.AddPersistence(
+    builder.Configuration.GetConnectionString("DefaultConnection"),
+    builder.Configuration.GetValue<bool>("Database:RunMigrations"));
 
 var app = builder.Build();
 
@@ -69,42 +66,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", ([FromServices] IUserContext user, [FromServices] ILogger logger) =>
-    {
-        logger.Information("User {email} with id {userId} requested weather forecast", user.Email, user.Id);
-        
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .RequireAuthorization(Constants.POLICY_API_SCOPE);
-
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapControllers()
-    .RequireAuthorization(Constants.POLICY_API_SCOPE);
+app.MapLedgersEndpoints();
 
 await app.RunAsync();
-
-namespace OweMe.Api
-{
-    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-}
