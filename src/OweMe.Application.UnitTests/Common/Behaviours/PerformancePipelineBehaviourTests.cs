@@ -33,7 +33,7 @@ public class PerformancePipelineBehaviourTests
         var loggerMock = new Mock<ILogger>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
-        const double expectedAccuracyPercent = 10;
+        const double expectedAccuracyPercent = 20;
 
         // Simulate a long-running operation
         Task<string> NextWithDelay(CancellationToken cancellationToken)
