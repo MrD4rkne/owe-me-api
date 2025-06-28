@@ -7,25 +7,26 @@ namespace OweMe.Application.UnitTests;
 public abstract class BaseCommandTest : IAsyncLifetime
 {
     private readonly LedgerDbContextMoq _ledgerDbContextMoq;
-    
-    protected readonly Mock<IUserContext> _userContextMock = new();
     protected readonly Mock<TimeProvider> _timeProvider = new();
-    protected Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
+
+    protected readonly Mock<IUserContext> _userContextMock = new();
 
     protected BaseCommandTest()
     {
         _ledgerDbContextMoq = LedgerDbContextMoq.LedgerDbContextCreationOptions.New()
-                .WithUserContext(_userContextMock.Object)
-                .WithTimeProvider(_timeProvider.Object)
-                .Build();
+            .WithUserContext(_userContextMock.Object)
+            .WithTimeProvider(_timeProvider.Object)
+            .Build();
     }
-    
-    public Task InitializeAsync()
+
+    protected Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
+
+    public virtual Task InitializeAsync()
     {
         return _ledgerDbContextMoq.SetupAsync();
     }
 
-    public Task DisposeAsync()
+    public virtual Task DisposeAsync()
     {
         return _ledgerDbContextMoq.DisposeAsync().AsTask();
     }
