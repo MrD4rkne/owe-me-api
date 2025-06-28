@@ -9,6 +9,14 @@ namespace OweMe.Application.UnitTests.Ledgers.Queries.Get;
 
 public class GetLedgerQueryHandlerTests : BaseCommandTest
 {
+    private GetLedgerQueryHandler _sut = null!;
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        _sut = new GetLedgerQueryHandler(_ledgerContextMock.Object, _userContextMock.Object);
+    }
+
     [Fact]
     public async Task Handle_ShouldReturnLedger_WhenLedgerExistsAndUserHasAccess()
     {
@@ -25,12 +33,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         _userContextMock.Invocations.Clear();
 
         var query = new GetLedgerQuery(ledgerId);
-        var sut = new GetLedgerQueryHandler(
-            _ledgerContextMock.Object,
-            _userContextMock.Object);
 
         // Act
-        var result = await sut.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -48,12 +53,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var ledgerId = Guid.NewGuid();
 
         var query = new GetLedgerQuery(ledgerId);
-        var sut = new GetLedgerQueryHandler(
-            _ledgerContextMock.Object,
-            _userContextMock.Object);
 
         // Act
-        var result = await sut.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
@@ -81,12 +83,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         _ledgerContextMock.Invocations.Clear();
 
         var query = new GetLedgerQuery(ledgerId);
-        var sut = new GetLedgerQueryHandler(
-            _ledgerContextMock.Object,
-            _userContextMock.Object);
 
         // Act
-        var result = await sut.Handle(query, CancellationToken.None);
+        var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
