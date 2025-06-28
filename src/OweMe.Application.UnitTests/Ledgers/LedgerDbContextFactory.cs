@@ -103,6 +103,11 @@ public class LedgerDbContextMoq : PostgresTestBase
                 UserContext = userContext
             };
         }
+        
+        public static LedgerDbContextCreationOptions New()
+        {
+            return new LedgerDbContextCreationOptions();
+        }
 
         public LedgerDbContextMoq Build()
         {

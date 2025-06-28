@@ -5,17 +5,8 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers.Commands.Create;
 
-public class CreateHandlerCommandHandlerTests
+public class CreateHandlerCommandHandlerTests : BaseCommandTest
 {
-    private readonly CreateHandlerCommandHandler _handler;
-    private readonly Mock<ILedgerContext> _ledgerContextMock;
-
-    public CreateHandlerCommandHandlerTests()
-    {
-        _ledgerContextMock = new Mock<ILedgerContext>();
-        _handler = new CreateHandlerCommandHandler(_ledgerContextMock.Object);
-    }
-
     [Fact]
     public async Task Handle_ShouldCreateLedger_WhenValidCommand()
     {
@@ -34,8 +25,10 @@ public class CreateHandlerCommandHandlerTests
         _ledgerContextMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
+        var sut = new CreateHandlerCommandHandler(_ledgerContextMock.Object);
+
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await sut.Handle(command, CancellationToken.None);
 
         // Assert
         result.ShouldBe(expectedLedgerId);
@@ -68,8 +61,10 @@ public class CreateHandlerCommandHandlerTests
                 return 1;
             });
 
+        var sut = new CreateHandlerCommandHandler(_ledgerContextMock.Object);
+
         // Act & Assert
-        await Should.ThrowAsync<TaskCanceledException>(() => _handler.Handle(command, cts.Token));
+        await Should.ThrowAsync<TaskCanceledException>(() => sut.Handle(command, cts.Token));
 
         _ledgerContextMock.Verify(x => x.SaveChangesAsync(cts.Token), Times.Once);
     }

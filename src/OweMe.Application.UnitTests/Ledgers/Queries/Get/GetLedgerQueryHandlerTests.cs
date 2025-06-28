@@ -7,33 +7,8 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers.Queries.Get;
 
-public class GetLedgerQueryHandlerTests : IAsyncLifetime
+public class GetLedgerQueryHandlerTests : BaseCommandTest
 {
-    private readonly LedgerDbContextMoq _ledgerDbContextMoq;
-    private readonly Mock<IUserContext> _userContextMock = new();
-
-    private GetLedgerQueryHandler _sut = null!;
-
-    public GetLedgerQueryHandlerTests()
-    {
-        _ledgerDbContextMoq = LedgerDbContextMoq.Create(
-            new LedgerDbContextMoq.LedgerDbContextCreationOptions()
-                .WithUserContext(_userContextMock.Object));
-    }
-
-    private Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
-
-    public async Task InitializeAsync()
-    {
-        await _ledgerDbContextMoq.SetupAsync();
-        _sut = new GetLedgerQueryHandler(_ledgerDbContextMoq.LedgerContextMock.Object, _userContextMock.Object);
-    }
-
-    public Task DisposeAsync()
-    {
-        return _ledgerDbContextMoq.DisposeAsync().AsTask();
-    }
-
     [Fact]
     public async Task Handle_ShouldReturnLedger_WhenLedgerExistsAndUserHasAccess()
     {
@@ -41,18 +16,21 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         var userId = UserId.New();
         _userContextMock.Setup(x => x.Id).Returns(userId);
 
-        var ledger = new Ledger { Name = "Test Ledger", CreatedAt = DateTimeOffset.UtcNow, CreatedBy = userId };
-        await _ledgerDbContextMoq.GetLedgerContext().Ledgers.AddAsync(ledger);
-        await _ledgerDbContextMoq.GetLedgerContext().SaveChangesAsync();
+        var ledger = new Ledger { Name = "Test Ledger", CreatedBy = userId };
+        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger);
+        await _ledgerContextMock.Object.SaveChangesAsync();
         var ledgerId = ledger.Id;
 
         _ledgerContextMock.Invocations.Clear();
         _userContextMock.Invocations.Clear();
 
         var query = new GetLedgerQuery(ledgerId);
+        var sut = new GetLedgerQueryHandler(
+            _ledgerContextMock.Object,
+            _userContextMock.Object);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -70,9 +48,12 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         var ledgerId = Guid.NewGuid();
 
         var query = new GetLedgerQuery(ledgerId);
+        var sut = new GetLedgerQueryHandler(
+            _ledgerContextMock.Object,
+            _userContextMock.Object);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
@@ -88,8 +69,8 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
 
         // Let's create a ledger with a different user
         var ledger = new Ledger { Name = "Test Ledger", CreatedAt = DateTimeOffset.UtcNow, CreatedBy = otherUserId };
-        await _ledgerDbContextMoq.GetLedgerContext().Ledgers.AddAsync(ledger);
-        await _ledgerDbContextMoq.GetLedgerContext().SaveChangesAsync();
+        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger);
+        await _ledgerContextMock.Object.SaveChangesAsync();
         var ledgerId = ledger.Id;
 
         var userId = UserId.New();
@@ -100,9 +81,12 @@ public class GetLedgerQueryHandlerTests : IAsyncLifetime
         _ledgerContextMock.Invocations.Clear();
 
         var query = new GetLedgerQuery(ledgerId);
+        var sut = new GetLedgerQueryHandler(
+            _ledgerContextMock.Object,
+            _userContextMock.Object);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
