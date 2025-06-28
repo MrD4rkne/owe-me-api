@@ -8,7 +8,7 @@ public class CreateHandlerCommandHandlerTests : BaseCommandTest
 {
     private readonly DateTimeOffset _currentTime = DateTimeOffset.UtcNow;
     private readonly Guid _currentUserId = Guid.NewGuid();
-    private CreateHandlerCommandHandler _sut;
+    private CreateHandlerCommandHandler _sut = null!;
 
     public CreateHandlerCommandHandlerTests()
     {
