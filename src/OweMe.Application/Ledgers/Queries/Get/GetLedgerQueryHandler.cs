@@ -4,7 +4,7 @@ using OweMe.Application.Common;
 using OweMe.Domain.Ledgers;
 using OweMe.Domain.Ledgers.Queries.Get;
 
-namespace OweMe.Application.Ledgers.Commands.Create;
+namespace OweMe.Application.Ledgers.Queries.Get;
 
 public class GetLedgerQueryHandler(ILedgerContext context, IUserContext userContext)
     : IRequestHandler<GetLedgerQuery, Result<LedgerDto>>
