@@ -13,7 +13,7 @@ public static class LedgersController
     {
         app.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
-            .WithDescription("Create a new. Ledger groups expenses and payments between users.")
+            .WithDescription("Create a new ledger that groups expenses and payments between users.")
             .Produces(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
