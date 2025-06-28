@@ -23,17 +23,17 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ILedgerContext, LedgerDbContext>();
 
-        return builder.TryRunMigrations(shouldRunMigrations);
+        return builder.TryRunMigrations(builder.Services.BuildServiceProvider(), shouldRunMigrations);
     }
 
-    private static async Task TryRunMigrations(this IHostApplicationBuilder builder, bool shouldRunMigrations)
+    private static async Task TryRunMigrations(this IHostApplicationBuilder builder, IServiceProvider serviceProvider, bool shouldRunMigrations)
     {
         if (!shouldRunMigrations)
         {
             return;
         }
 
-        using var scope = builder.Services.BuildServiceProvider().CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<LedgerDbContext>();
         await context.Database.MigrateAsync();
     }
