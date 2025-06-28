@@ -4,7 +4,7 @@ namespace OweMe.Domain.Ledgers;
 
 public interface ILedgerContext
 {
-    DbSet<Ledger> Ledgers { get; set; }
+    DbSet<Ledger> Ledgers { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
