@@ -5,7 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Shouldly" />
         <PackageReference Include="Testcontainers.PostgreSql"/>
+        <PackageReference Include="xunit" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj" />
     </ItemGroup>
 
 </Project>
