@@ -18,7 +18,6 @@ public class CreateLedgerCommandValidator
     private static readonly string?[] invalidNames =
     [
         new('A', MaxNameLength + 1), // Exceeding max length
-        "",
         string.Empty,
         null
     ];
@@ -27,7 +26,6 @@ public class CreateLedgerCommandValidator
     [
         new('A', MaxDescriptionLength),
         "Abcefghijklmnopqrstuvwxyz",
-        "",
         string.Empty,
         null
     ];
