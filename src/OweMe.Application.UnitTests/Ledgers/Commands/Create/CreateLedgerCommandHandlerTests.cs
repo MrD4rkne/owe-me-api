@@ -4,13 +4,13 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers.Commands.Create;
 
-public class CreateHandlerCommandHandlerTests : BaseCommandTest
+public class CreateLedgerCommandHandlerTests : BaseCommandTest
 {
     private readonly DateTimeOffset _currentTime = DateTimeOffset.UtcNow;
     private readonly Guid _currentUserId = Guid.NewGuid();
-    private CreateHandlerCommandHandler _sut = null!;
+    private CreateLedgerCommandHandler _sut = null!;
 
-    public CreateHandlerCommandHandlerTests()
+    public CreateLedgerCommandHandlerTests()
     {
         _userContextMock.Setup(x => x.Id).Returns(_currentUserId);
         _timeProvider.Setup(x => x.GetUtcNow()).Returns(_currentTime);
@@ -19,7 +19,7 @@ public class CreateHandlerCommandHandlerTests : BaseCommandTest
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
-        _sut = new CreateHandlerCommandHandler(_ledgerContextMock.Object);
+        _sut = new CreateLedgerCommandHandler(_ledgerContextMock.Object);
     }
 
     [Fact]
