@@ -1,5 +1,5 @@
 ﻿using Moq;
-using OweMe.Application.Ledgers.Commands.Create;
+using OweMe.Application.Ledgers.Queries.Get;
 using OweMe.Domain.Ledgers;
 using OweMe.Domain.Ledgers.Queries.Get;
 using OweMe.Domain.Users;

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace OweMe.Application.Common;
+﻿namespace OweMe.Application.Common;
 
 public readonly struct Error(string code, string description) : IEquatable<Error>
 {
