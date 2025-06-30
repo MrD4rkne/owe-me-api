@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using OweMe.Api;
 using OweMe.Api.Controllers;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
@@ -45,9 +46,8 @@ builder.Services.AddAuthorizationBuilder()
 builder.AddApplication();
 builder.AddInfrastructure();
 
-await builder.AddPersistence(
-    builder.Configuration.GetConnectionString("DefaultConnection"),
-    builder.Configuration.GetValue<bool>("Database:RunMigrations"));
+bool doNotRunMigrations = OpenApiHelper.IsGeneratingApiSpec();
+await builder.AddPersistence(doNotRunMigrations);
 
 var app = builder.Build();
 
