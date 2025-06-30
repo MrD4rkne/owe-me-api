@@ -29,7 +29,7 @@ public class ValidationBehaviourTests
     public void Constructor_Should_Throw_When_ValidatorsIsNull()
     {
         // Arrange
-        var logger = Mock.Of<ILogger>();
+        var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         IEnumerable<IValidator<TestRequest>>? validators = null;
 
         // Act & Assert
@@ -42,7 +42,7 @@ public class ValidationBehaviourTests
     public async Task Handle_Should_CallAllValidators_When_ValidatorsArePresent()
     {
         // Arrange
-        var logger = Mock.Of<ILogger>();
+        var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         const int n = 5;
         var validatorMocks = Enumerable.Range(0, n)
             .Select(_ => new Mock<IValidator<TestRequest>>())
@@ -76,7 +76,7 @@ public class ValidationBehaviourTests
         const int numberOfValidators = 10;
         const int validateTimeMs = 100;
 
-        var logger = Mock.Of<ILogger>();
+        var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
 
         using var cts = new CancellationTokenSource();
         const int maxAllowedProcessTime = 2 * validateTimeMs;
@@ -108,14 +108,15 @@ public class ValidationBehaviourTests
             result.ShouldBe("ok");
         });
     }
-    
+
     [Fact]
     public async Task Handle_Should_Throw_When_ValidationFails()
     {
         // Arrange
-        var logger = Mock.Of<ILogger>();
+        var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         var mockValidator = new Mock<IValidator<TestRequest>>();
-        mockValidator.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
+        mockValidator.Setup(v =>
+                v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult([new ValidationFailure("Value", "Invalid value")]));
 
         var validators = new List<IValidator<TestRequest>> { mockValidator.Object };
@@ -126,12 +127,12 @@ public class ValidationBehaviourTests
         await Should.ThrowAsync<ValidationException>(async () =>
             await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
     }
-    
+
     [Fact]
     public async Task Handle_Should_Proceed_WhenNoValidators()
     {
         // Arrange
-        var logger = Mock.Of<ILogger>();
+        var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         var validators = new List<IValidator<TestRequest>>();
         var sut = new LocalValidationBehaviour(logger, validators);
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));

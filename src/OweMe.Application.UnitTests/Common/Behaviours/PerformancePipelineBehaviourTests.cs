@@ -30,7 +30,7 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const double expectedAccuracyPercent = 20;
@@ -74,7 +74,7 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const double expectedAccuracyPercent = 25; // Exceptions are slower, so we allow more variance
@@ -119,7 +119,7 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const double expectedAccuracyPercent = 15;
@@ -161,7 +161,7 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const double expectedAccuracyPercent = 25;

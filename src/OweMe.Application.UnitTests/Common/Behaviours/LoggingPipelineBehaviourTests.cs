@@ -11,7 +11,7 @@ public class LoggingPipelineBehaviourTests
     public async Task Handle_Should_Log_Information_On_Success()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehaviour<TestRequest, string>>>();
         var behaviour = new LoggingPipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const string response = "response";
@@ -53,7 +53,7 @@ public class LoggingPipelineBehaviourTests
     public async Task Handle_Should_Log_Error_On_Exception()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger>();
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehaviour<TestRequest, string>>>();
         var behaviour = new LoggingPipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         var exception = new Exception("fail");
