@@ -18,7 +18,12 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
     {
         await SetupAsync();
     }
-    
+
+    Task IAsyncLifetime.DisposeAsync()
+    {
+        return base.DisposeAsync().AsTask();
+    }
+
     [Fact]
     public async Task Migrations_ShouldApplySuccessfully()
     {
@@ -75,10 +80,5 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
             _timeProvider.Object.GetUtcNow()
         );
         
-    }
-
-    public Task DisposeAsync()
-    {
-        return base.DisposeAsync().AsTask();
     }
 }
