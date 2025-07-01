@@ -8,8 +8,10 @@ namespace OweMe.Application.UnitTests.Common.Behaviours;
 
 public class PerformancePipelineBehaviourTests
 {
-    private const int delayThreshold = 500; // milliseconds
-    private const int totalDelay = delayThreshold + 1;
+    private const int timeoutThreshold = 2000;
+    private const int almostToLongWork = (int) (timeoutThreshold * 0.9);
+    private const int littleToLongWork = (int) (timeoutThreshold * 1.05);
+    private const double expectedAccuracyPercent = 5;
     private const string expectedTimeUnit = "ms";
 
     private static bool AssertTime(string logMessage, long expectedTime, double percent = 0.01, string unit = "ms")
@@ -31,14 +33,13 @@ public class PerformancePipelineBehaviourTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
-        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
+        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object, timeoutThreshold);
         var request = new TestRequest { Value = "test" };
-        const double expectedAccuracyPercent = 20;
 
         // Simulate a long-running operation
         Task<string> NextWithDelay(CancellationToken cancellationToken)
         {
-            return Task.Delay(totalDelay, cancellationToken).ContinueWith(_ => "response", cancellationToken);
+            return Task.Delay(littleToLongWork, cancellationToken).ContinueWith(_ => "response", cancellationToken);
         }
 
         // Act
@@ -52,7 +53,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, totalDelay,
+                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, littleToLongWork,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
@@ -75,16 +76,16 @@ public class PerformancePipelineBehaviourTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
-        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
+        
+        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object, timeoutThreshold);
         var request = new TestRequest { Value = "test" };
-        const double expectedAccuracyPercent = 25; // Exceptions are slower, so we allow more variance
 
         var exception = new Exception("fail");
 
         // Simulate a long-running operation
         Task<string> NextWithDelayAndException(CancellationToken cancellationToken)
         {
-            return Task.Delay(600, cancellationToken).ContinueWith<string>(_ => throw exception, cancellationToken);
+            return Task.Delay(littleToLongWork, cancellationToken).ContinueWith<string>(_ => throw exception, cancellationToken);
         }
 
         // Act and Assert
@@ -97,7 +98,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, totalDelay,
+                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, littleToLongWork,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
@@ -120,14 +121,14 @@ public class PerformancePipelineBehaviourTests
     {
         // Arrange
         var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
-        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
+        
+        var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object, timeoutThreshold);
         var request = new TestRequest { Value = "test" };
-        const double expectedAccuracyPercent = 25;
 
         // Simulate a short operation
         Task<string> NextWithShortDelay(CancellationToken cancellationToken)
         {
-            return Task.Delay(100, cancellationToken).ContinueWith(_ => "response", cancellationToken);
+            return Task.Delay(almostToLongWork, cancellationToken).ContinueWith(_ => "response", cancellationToken);
         }
 
         // Act
@@ -141,7 +142,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, 100,
+                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, almostToLongWork,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
@@ -164,14 +165,13 @@ public class PerformancePipelineBehaviourTests
         var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, string>>>();
         var behaviour = new PerformancePipelineBehaviour<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
-        const double expectedAccuracyPercent = 25;
 
         // Simulate a short operation
         var exception = new Exception("fail");
 
         Task<string> NextWithShortDelay(CancellationToken cancellationToken)
         {
-            return Task.Delay(100, cancellationToken).ContinueWith<string>(_ => throw exception, cancellationToken);
+            return Task.Delay(almostToLongWork, cancellationToken).ContinueWith<string>(_ => throw exception, cancellationToken);
         }
 
         // Act
@@ -184,7 +184,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, 100,
+                    v.ToString()!.Contains("Handled TestRequest in") && AssertTime(v.ToString()!, almostToLongWork,
                         expectedAccuracyPercent, expectedTimeUnit)),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),

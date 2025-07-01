@@ -5,11 +5,10 @@ using Microsoft.Extensions.Logging;
 namespace OweMe.Application.Common.Behaviours;
 
 public class PerformancePipelineBehaviour<TRequest, TResponse>(
-    ILogger<PerformancePipelineBehaviour<TRequest, TResponse>> logger) : IPipelineBehavior<TRequest, TResponse>
+    ILogger<PerformancePipelineBehaviour<TRequest, TResponse>> logger,
+    int MaximumElapsedMilliseconds = 500) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private const int MaximumElapsedMilliseconds = 500; // Threshold for performance logging
-
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
