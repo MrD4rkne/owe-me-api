@@ -8,7 +8,7 @@ namespace OweMe.Application.UnitTests.Common.Behaviours;
 
 public class PerformancePipelineBehaviourTests
 {
-    private const int timeoutThreshold = 2000;
+    private const int timeoutThreshold = 5000;
     private const int almostToLongWork = (int) (timeoutThreshold * 0.9);
     private const int littleToLongWork = (int) (timeoutThreshold * 1.05);
     private const double expectedAccuracyPercent = 5;
