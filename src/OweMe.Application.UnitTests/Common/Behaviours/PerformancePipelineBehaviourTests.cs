@@ -65,7 +65,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains($", exceeding the threshold of {delayThreshold} ms")),
+                    v.ToString()!.Contains($", exceeding the threshold of {timeoutThreshold} ms")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
@@ -110,7 +110,7 @@ public class PerformancePipelineBehaviourTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
                     v != null &&
-                    v.ToString()!.Contains($", exceeding the threshold of {delayThreshold} ms")),
+                    v.ToString()!.Contains($", exceeding the threshold of {timeoutThreshold} ms")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
