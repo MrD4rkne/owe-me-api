@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OweMe.Persistence.Ledgers.Migrations
 {
     /// <inheritdoc />
-    [ExcludeFromCodeCoverage]
     public partial class Initial : Migration
     {
         /// <inheritdoc />

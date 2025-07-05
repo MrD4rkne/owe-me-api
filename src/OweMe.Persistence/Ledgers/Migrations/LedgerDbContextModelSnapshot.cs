@@ -11,7 +11,6 @@ using OweMe.Persistence.Ledgers;
 
 namespace OweMe.Persistence.Ledgers.Migrations
 {
-    [ExcludeFromCodeCoverage]
     [DbContext(typeof(LedgerDbContext))]
     partial class LedgerDbContextModelSnapshot : ModelSnapshot
     {

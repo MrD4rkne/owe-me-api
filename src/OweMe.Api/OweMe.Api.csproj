@@ -39,6 +39,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <SonarQubeSetting Include="sonar.coverage.exclusions">
+            <Value>**/Program.cs, **/Migrations/**.cs</Value>
+        </SonarQubeSetting>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj"/>
         <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
         <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj"/>
