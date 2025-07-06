@@ -47,7 +47,7 @@ builder.AddApplication();
 builder.AddInfrastructure();
 
 bool doNotRunMigrations = OpenApiHelper.IsGeneratingApiSpec();
-await builder.AddPersistence(doNotRunMigrations);
+builder.AddPersistence(doNotRunMigrations);
 
 var app = builder.Build();
 

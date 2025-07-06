@@ -11,7 +11,7 @@ namespace OweMe.Persistence;
 
 public static class DependencyInjection
 {
-    public static Task AddPersistence(this IHostApplicationBuilder builder, bool shouldNotRunMigrations = false)
+    public static IHostApplicationBuilder AddPersistence(this IHostApplicationBuilder builder, bool shouldNotRunMigrations = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -28,23 +28,8 @@ public static class DependencyInjection
         });
 
         builder.Services.AddScoped<ILedgerContext, LedgerDbContext>();
+        builder.Services.AddHostedService<MigrationHostedService>();
 
-        return shouldNotRunMigrations
-            ? Task.CompletedTask
-            : builder.TryRunMigrations(builder.Services.BuildServiceProvider());
-    }
-
-    private static async Task TryRunMigrations(this IHostApplicationBuilder builder, IServiceProvider serviceProvider)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-
-        if (!dbOptions.RunMigrations)
-        {
-            return;
-        }
-
-        var context = scope.ServiceProvider.GetRequiredService<LedgerDbContext>();
-        await context.Database.MigrateAsync();
+        return builder;
     }
 }
