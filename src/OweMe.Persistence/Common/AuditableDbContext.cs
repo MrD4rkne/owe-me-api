@@ -47,6 +47,12 @@ public class AuditableDbContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        ApplyAuditableValues();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void ApplyAuditableValues()
+    {
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
             switch (entry.State)
@@ -61,7 +67,5 @@ public class AuditableDbContext : DbContext
                     break;
             }
         }
-
-        return base.SaveChangesAsync(cancellationToken);
     }
 }

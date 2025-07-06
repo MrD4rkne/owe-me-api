@@ -15,11 +15,6 @@ public class LedgerDbContext : AuditableDbContext, ILedgerContext
 
     public DbSet<Ledger> Ledgers { get; set; }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Ledger>()
