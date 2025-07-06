@@ -46,8 +46,7 @@ builder.Services.AddAuthorizationBuilder()
 builder.AddApplication();
 builder.AddInfrastructure();
 
-bool doNotRunMigrations = OpenApiHelper.IsGeneratingApiSpec();
-builder.AddPersistence(doNotRunMigrations);
+builder.AddPersistence();
 
 var app = builder.Build();
 

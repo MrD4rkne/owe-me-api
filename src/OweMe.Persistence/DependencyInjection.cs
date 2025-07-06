@@ -11,7 +11,7 @@ namespace OweMe.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistence(this IHostApplicationBuilder builder, bool shouldNotRunMigrations = false)
+    public static IHostApplicationBuilder AddPersistence(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
