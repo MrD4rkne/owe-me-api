@@ -1,6 +1,6 @@
 ﻿using OweMe.Application.Common;
 
-namespace OweMe.Domain.Ledgers;
+namespace OweMe.Application.Ledgers;
 
 public static class LedgerErrors
 {

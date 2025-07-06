@@ -1,6 +1,7 @@
 ﻿using OweMe.Application.Common;
+using OweMe.Domain.Ledgers;
 
-namespace OweMe.Domain.Ledgers;
+namespace OweMe.Application.Ledgers;
 
 public record LedgerDto : AuditableEntityDto
 {

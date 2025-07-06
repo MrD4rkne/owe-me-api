@@ -2,7 +2,7 @@
 using MediatR;
 using OweMe.Application.Common;
 
-namespace OweMe.Domain.Ledgers.Queries.Get;
+namespace OweMe.Application.Ledgers.Queries.Get;
 
 [method: SetsRequiredMembers]
 public record GetLedgerQuery(Guid id) : IRequest<Result<LedgerDto>>

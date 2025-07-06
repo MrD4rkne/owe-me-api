@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 
-namespace OweMe.Tests.Common;
+namespace OweMe.Tests.Common.Tests;
 
 public class GuidHelperTests
 {

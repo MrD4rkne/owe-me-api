@@ -1,4 +1,5 @@
-﻿using OweMe.Domain.Ledgers;
+﻿using OweMe.Application.Ledgers;
+using OweMe.Domain.Ledgers;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers;

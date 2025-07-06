@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using OweMe.Application;
-using OweMe.Application.UnitTests.Common;
 using OweMe.Domain.Ledgers;
 using OweMe.Persistence.Ledgers;
 using OweMe.Tests.Common;

@@ -2,7 +2,7 @@
 using OweMe.Domain.Users;
 using Shouldly;
 
-namespace OweMe.Application.UnitTests.Common;
+namespace OweMe.Tests.Common;
 
 public static class ShouldAuditableExtensions
 {

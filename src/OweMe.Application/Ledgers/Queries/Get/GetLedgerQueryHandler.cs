@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OweMe.Application.Common;
 using OweMe.Domain.Ledgers;
-using OweMe.Domain.Ledgers.Queries.Get;
 
 namespace OweMe.Application.Ledgers.Queries.Get;
 
