@@ -2,7 +2,7 @@
 
 namespace OweMe.Tests.Common;
 
-public abstract class PostgresTestBase(
+public class PostgresTestBase(
     string databaseName = "oweme_test",
     string username = "postgres",
     string password = "postgres",
@@ -15,7 +15,7 @@ public abstract class PostgresTestBase(
         .WithPortBinding(port ?? 5432, true)
         .Build();
 
-    protected string ConnectionString => _postgresContainer.GetConnectionString();
+    public string ConnectionString => _postgresContainer.GetConnectionString();
 
     public virtual async ValueTask DisposeAsync()
     {
