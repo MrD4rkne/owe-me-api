@@ -10,8 +10,8 @@ namespace OweMe.Persistence.Tests;
 
 public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test"), IAsyncLifetime
 {
-    private readonly Mock<IUserContext> _userContextMock = new();
     private readonly Mock<TimeProvider> _timeProvider = new();
+    private readonly Mock<IUserContext> _userContextMock = new();
 
     public async Task InitializeAsync()
     {
@@ -42,7 +42,7 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
         pendingMigrations.ShouldBeEmpty("There should be no pending migrations after applying them.");
     }
-    
+
     [Fact]
     public async Task Migrations_ShouldBeAbleToCreateAndQuery()
     {
@@ -54,22 +54,22 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
             _timeProvider.Object,
             _userContextMock.Object
         );
-        
+
         await context.Database.MigrateAsync();
-        
+
         var ledger = new Ledger
         {
             Name = "Test Ledger",
             Description = "This is a test ledger."
         };
-        
+
         // Act
         context.Ledgers.Add(ledger);
         await context.SaveChangesAsync();
-        
+
         var createdLedger = await context.Ledgers
             .FirstOrDefaultAsync(x => x.Name == "Test Ledger" && x.Description == "This is a test ledger.");
-        
+
         // Assert
         createdLedger.ShouldNotBeNull("The ledger should have been created successfully.");
         createdLedger.Name.ShouldBe("Test Ledger");
@@ -78,6 +78,5 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
             _userContextMock.Object.Id,
             _timeProvider.Object.GetUtcNow()
         );
-        
     }
 }
