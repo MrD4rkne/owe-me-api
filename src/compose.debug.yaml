@@ -35,7 +35,7 @@
     volumes:
       - ./seq:/data
   oweme_api_database:
-    image: "postgres:15"
+    image: "postgres:15.3"
     ports:
       - "5442:5432"
     environment:
