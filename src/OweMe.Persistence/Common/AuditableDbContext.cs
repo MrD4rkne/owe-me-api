@@ -9,7 +9,7 @@ public class AuditableDbContext : DbContext
     private readonly TimeProvider _timeProvider;
     private readonly IUserContext _userContext;
 
-    public AuditableDbContext(DbContextOptions options, TimeProvider timeProvider, IUserContext userContext) :
+    protected AuditableDbContext(DbContextOptions options, TimeProvider timeProvider, IUserContext userContext) :
         base(options)
     {
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
