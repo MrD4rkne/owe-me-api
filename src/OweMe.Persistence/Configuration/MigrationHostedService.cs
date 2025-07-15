@@ -32,7 +32,7 @@ public class MigrationHostedService(
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Database migrations failed", ex);
+            throw new InvalidOperationException($"Database migrations failed: {ex.Message}", ex);
         }
 
         logger.LogInformation("Database migrations completed successfully");
