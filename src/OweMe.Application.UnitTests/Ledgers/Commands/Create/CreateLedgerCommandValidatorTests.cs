@@ -3,26 +3,26 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers.Commands.Create;
 
-public class CreateLedgerCommandValidator
+public class CreateLedgerCommandValidatorTests
 {
     private const int MaxNameLength = 100;
     private const int MaxDescriptionLength = 500;
 
-    private static readonly string[] validNames =
+    private static readonly string[] ValidNames =
     [
         new('A', MaxNameLength),
         "Abcefghijklmnopqrstuvwxyz",
         "test"
     ];
 
-    private static readonly string?[] invalidNames =
+    private static readonly string?[] InvalidNames =
     [
         new('A', MaxNameLength + 1), // Exceeding max length
         string.Empty,
         null
     ];
 
-    private static readonly string?[] validDescriptions =
+    private static readonly string?[] ValidDescriptions =
     [
         new('A', MaxDescriptionLength),
         "Abcefghijklmnopqrstuvwxyz",
@@ -30,7 +30,7 @@ public class CreateLedgerCommandValidator
         null
     ];
 
-    private static readonly string[] invalidDescriptions =
+    private static readonly string[] InvalidDescriptions =
     [
         new('A', MaxDescriptionLength + 1), // Exceeding max length
         new('A', MaxDescriptionLength + 2),
@@ -40,9 +40,9 @@ public class CreateLedgerCommandValidator
     public static TheoryData<string, string?> ValidNameDescriptionCombinations()
     {
         var data = new TheoryData<string, string?>();
-        foreach (string name in validNames)
+        foreach (string name in ValidNames)
         {
-            foreach (string? description in validDescriptions)
+            foreach (string? description in ValidDescriptions)
             {
                 data.Add(name, description);
             }
@@ -56,7 +56,7 @@ public class CreateLedgerCommandValidator
     public void Should_Validate_CreateLedgerCommand(string name, string? description)
     {
         // Arrange
-        var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
+        var validator = new CreateLedgerCommandValidator();
         var command = new CreateLedgerCommand
         {
             Name = name,
@@ -73,9 +73,9 @@ public class CreateLedgerCommandValidator
     public static TheoryData<string?, string?> InvalidNameValidDescriptionCombinations()
     {
         var data = new TheoryData<string?, string?>();
-        foreach (string? name in invalidNames)
+        foreach (string? name in InvalidNames)
         {
-            foreach (string? description in validDescriptions)
+            foreach (string? description in ValidDescriptions)
             {
                 data.Add(name, description);
             }
@@ -89,7 +89,7 @@ public class CreateLedgerCommandValidator
     public void Should_Invalidate_CreateLedgerCommand_When_Name_Is_Invalid(string? name, string? description)
     {
         // Arrange
-        var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
+        var validator = new CreateLedgerCommandValidator();
         var command = new CreateLedgerCommand
         {
             Name = name!,
@@ -107,9 +107,9 @@ public class CreateLedgerCommandValidator
     public static TheoryData<string, string> ValidNameInvalidDescriptionCombinations()
     {
         var data = new TheoryData<string, string>();
-        foreach (string name in validNames)
+        foreach (string name in ValidNames)
         {
-            foreach (string description in invalidDescriptions)
+            foreach (string description in InvalidDescriptions)
             {
                 data.Add(name, description);
             }
@@ -124,7 +124,7 @@ public class CreateLedgerCommandValidator
         string? description)
     {
         // Arrange
-        var validator = new Application.Ledgers.Commands.Create.CreateLedgerCommandValidator();
+        var validator = new CreateLedgerCommandValidator();
         var command = new CreateLedgerCommand
         {
             Name = name,
