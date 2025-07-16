@@ -23,6 +23,7 @@
       # IdentityServer configuration
       - IdentityServer__Authority=http://identity:8180
       - IdentityServer__ValidIssuer=https://localhost:8181
+      - IdentityServer__ValidateAudience=false
     volumes:
       - ~/.aspnet/https:/https:ro
   oweme.seq:

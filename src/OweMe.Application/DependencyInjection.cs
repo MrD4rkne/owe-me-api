@@ -19,5 +19,6 @@ public static class DependencyInjection
 
         builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehaviour<,>));
         builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformancePipelineBehaviour<,>));
+        builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehaviour<,>));
     }
 }

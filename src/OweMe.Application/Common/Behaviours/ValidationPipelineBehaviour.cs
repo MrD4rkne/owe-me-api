@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace OweMe.Application.Common.Behaviours;
 
-public class ValidationBehaviour<TRequest, TResponse>(
-    ILogger<ValidationBehaviour<TRequest, TResponse>> logger,
+public class ValidationPipelineBehaviour<TRequest, TResponse>(
+    ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> logger,
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<ValidationBehaviour<TRequest, TResponse>> _logger =
+    private readonly ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     private readonly IEnumerable<IValidator<TRequest>> _validators =

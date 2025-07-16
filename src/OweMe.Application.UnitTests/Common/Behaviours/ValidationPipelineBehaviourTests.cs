@@ -8,9 +8,9 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-using LocalValidationBehaviour = ValidationBehaviour<TestRequest, string>;
+using LocalValidationBehaviour = ValidationPipelineBehaviour<TestRequest, string>;
 
-public class ValidationBehaviourTests
+public class ValidationPipelineBehaviourTests
 {
     [Fact]
     public void Constructor_Should_Throw_When_LoggerIsNull()
@@ -100,13 +100,10 @@ public class ValidationBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("ok"));
 
         // Act
-        await Record.ExceptionAsync(async () =>
-        {
-            string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
-            // Assert
-            result.ShouldBe("ok");
-        });
+        // Assert
+        result.ShouldBe("ok");
     }
 
     [Fact]
