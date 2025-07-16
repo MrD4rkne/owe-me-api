@@ -48,7 +48,10 @@ public class ValidationPipelineBehaviour<TRequest, TResponse>(
             .Where(f => f is not null)
             .ToList();
 
-        if (failures.Count == 0) return;
+        if (failures.Count == 0)
+        {
+            return;
+        }
 
         _logger.LogWarning("Validation errors for request {RequestName}: {Errors}", typeof(TRequest).Name, failures);
         throw new ValidationException(failures);

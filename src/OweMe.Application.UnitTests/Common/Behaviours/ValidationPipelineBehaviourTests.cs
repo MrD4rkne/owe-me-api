@@ -48,8 +48,10 @@ public class ValidationPipelineBehaviourTests
             .Select(_ => new Mock<IValidator<TestRequest>>())
             .ToList();
         foreach (var mock in validatorMocks)
+        {
             mock.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
+        }
 
         var validators = validatorMocks.Select(m => m.Object).ToList();
         var sut = new LocalValidationBehaviour(logger, validators);
@@ -61,8 +63,10 @@ public class ValidationPipelineBehaviourTests
         // Assert
         result.ShouldBe("response");
         foreach (var mock in validatorMocks)
+        {
             mock.Verify(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()),
                 Times.Once);
+        }
     }
 
     [Fact]
