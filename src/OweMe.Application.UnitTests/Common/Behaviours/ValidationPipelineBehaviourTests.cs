@@ -8,9 +8,9 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-using LocalValidationBehaviour = ValidationBehaviour<TestRequest, string>;
+using LocalValidationBehaviour = ValidationPipelineBehaviour<TestRequest, string>;
 
-public class ValidationBehaviourTests
+public class ValidationPipelineBehaviourTests
 {
     [Fact]
     public void Constructor_Should_Throw_When_LoggerIsNull()
