@@ -1,23 +1,24 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 
 namespace OweMe.Application.Common.Behaviours;
 
-public class ValidationPipelineBehaviour<TRequest, T>(
-    ILogger<ValidationPipelineBehaviour<TRequest, T>> logger,
+public class ValidationPipelineBehaviour<TRequest, TResponse>(
+    ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> logger,
     IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, Result<T>>
-    where TRequest : IRequest<Result<T>>
+    : IResultPipelineBehaviour<TRequest, TResponse>
+    where TRequest : IRequest<Result<TResponse>>
 {
-    private readonly ILogger<ValidationPipelineBehaviour<TRequest, T>> _logger =
+    private readonly ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     private readonly IEnumerable<IValidator<TRequest>> _validators =
         validators ?? throw new ArgumentNullException(nameof(validators));
 
-    public async Task<Result<T>> Handle(TRequest request, RequestHandlerDelegate<Result<T>> next,
+    public async Task<Result<TResponse>> Handle(TRequest request, RequestHandlerDelegate<Result<TResponse>> next,
         CancellationToken cancellationToken)
     {
         if (_validators.Any())
@@ -29,7 +30,7 @@ public class ValidationPipelineBehaviour<TRequest, T>(
             {
                 _logger.LogWarning("Validation failed for request {RequestName}: {Errors}",
                     typeof(TRequest).Name, validationFailures);
-                return Result<T>.Failure(ValidationError.From(validationFailures));
+                return Result<TResponse>.Failure(ValidationError.From(validationFailures));
             }
 
             _logger.LogDebug("Validation passed for request {RequestName}", typeof(TRequest).Name);
