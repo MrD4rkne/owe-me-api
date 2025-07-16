@@ -7,7 +7,8 @@ namespace OweMe.Application.Common.Behaviours;
 public class ValidationPipelineBehaviour<TRequest, TResponse>(
     ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> logger,
     IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<Result<TResponse>>
 {
     private readonly ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
@@ -47,10 +48,7 @@ public class ValidationPipelineBehaviour<TRequest, TResponse>(
             .Where(f => f is not null)
             .ToList();
 
-        if (failures.Count == 0)
-        {
-            return;
-        }
+        if (failures.Count == 0) return;
 
         _logger.LogWarning("Validation errors for request {RequestName}: {Errors}", typeof(TRequest).Name, failures);
         throw new ValidationException(failures);
