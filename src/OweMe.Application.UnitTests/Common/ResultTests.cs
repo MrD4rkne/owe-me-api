@@ -6,33 +6,6 @@ namespace OweMe.Application.UnitTests.Common;
 public class ResultTests
 {
     [Fact]
-    public void Success_ShouldCreateSuccessResult()
-    {
-        // Arrange & Act
-        var result = Result.Success();
-
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-        result.IsFailure.ShouldBeFalse();
-        result.Error.ShouldBe(Error.None);
-    }
-
-    [Fact]
-    public void Failure_ShouldCreateFailureResult()
-    {
-        // Arrange
-        var error = new Error("Some error", "An error occurred");
-
-        // Act
-        var result = Result.Failure(error);
-
-        // Assert
-        result.IsSuccess.ShouldBeFalse();
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe(error);
-    }
-
-    [Fact]
     public void ResultT_Success_ShouldCreateSuccessResultWithValue()
     {
         // Arrange

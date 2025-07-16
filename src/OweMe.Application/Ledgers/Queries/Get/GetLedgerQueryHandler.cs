@@ -6,7 +6,7 @@ using OweMe.Domain.Ledgers;
 namespace OweMe.Application.Ledgers.Queries.Get;
 
 public class GetLedgerQueryHandler(ILedgerContext context, IUserContext userContext)
-    : IRequestHandler<GetLedgerQuery, Result<LedgerDto>>
+    : IResultRequestHandler<GetLedgerQuery, LedgerDto>
 {
     public async Task<Result<LedgerDto>> Handle(GetLedgerQuery request, CancellationToken cancellationToken)
     {

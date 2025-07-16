@@ -1,36 +1,5 @@
 ﻿namespace OweMe.Application.Common;
 
-public readonly struct Result
-{
-    private Result(bool isSuccess, Error error)
-    {
-        if ((isSuccess && !error.Equals(Error.None)) ||
-            (!isSuccess && error.Equals(Error.None)))
-        {
-            throw new ArgumentException("Invalid error", nameof(error));
-        }
-
-        IsSuccess = isSuccess;
-        Error = error;
-    }
-
-    public bool IsSuccess { get; }
-
-    public bool IsFailure => !IsSuccess;
-
-    public Error Error { get; private init; }
-
-    public static Result Success()
-    {
-        return new Result(true, Error.None);
-    }
-
-    public static Result Failure(Error error)
-    {
-        return new Result(false, error);
-    }
-}
-
 public readonly struct Result<T>
 {
     private readonly T _value;
@@ -65,5 +34,15 @@ public readonly struct Result<T>
     public static Result<T> Failure(Error error)
     {
         return new Result<T>(false, error, default!);
+    }
+    
+    public static implicit operator Result<T> (T value)
+    {
+        return Success(value);
+    }
+    
+    public static implicit operator Result<T>(Error error)
+    {
+        return Failure(error);
     }
 }

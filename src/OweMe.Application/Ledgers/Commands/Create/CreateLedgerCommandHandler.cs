@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using OweMe.Application.Common;
 using OweMe.Domain.Ledgers;
 
 namespace OweMe.Application.Ledgers.Commands.Create;
 
-public class CreateLedgerCommandHandler(ILedgerContext context) : IRequestHandler<CreateLedgerCommand, Guid>
+public class CreateLedgerCommandHandler(ILedgerContext context) : IResultRequestHandler<CreateLedgerCommand, Guid>
 {
-    public async Task<Guid> Handle(CreateLedgerCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateLedgerCommand request, CancellationToken cancellationToken)
     {
         var ledger = new Ledger
         {
