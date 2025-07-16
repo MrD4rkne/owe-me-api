@@ -1,4 +1,4 @@
-﻿using OweMe.Application.Common;
+﻿using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common;

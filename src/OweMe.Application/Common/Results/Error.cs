@@ -1,4 +1,4 @@
-﻿namespace OweMe.Application.Common;
+﻿namespace OweMe.Application.Common.Results;
 
 public record Error(string Code, string Description)
 {

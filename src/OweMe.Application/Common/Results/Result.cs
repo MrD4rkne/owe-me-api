@@ -1,4 +1,4 @@
-﻿namespace OweMe.Application.Common;
+﻿namespace OweMe.Application.Common.Results;
 
 public record Result<T>
 {

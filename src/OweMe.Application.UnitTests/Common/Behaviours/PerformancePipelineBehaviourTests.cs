@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using OweMe.Application.Common;
 using OweMe.Application.Common.Behaviours;
+using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;

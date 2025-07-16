@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
-using OweMe.Application.Common;
+using OweMe.Application.Common.Results;
 
 namespace OweMe.Application.Ledgers.Queries.Get;
 

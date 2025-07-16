@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 
-namespace OweMe.Application.Common;
+namespace OweMe.Application.Common.Results;
 
 public record ValidationError(Error[] Errors) : Error("ValidationError", "One or more validation errors occurred.")
 {
