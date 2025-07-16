@@ -1,6 +1,6 @@
 ﻿namespace OweMe.Application.Common;
 
-public readonly struct Result<T>
+public record Result<T>
 {
     private readonly T _value;
 
@@ -8,9 +8,7 @@ public readonly struct Result<T>
     {
         if ((isSuccess && !error.Equals(Error.None)) ||
             (!isSuccess && error.Equals(Error.None)))
-        {
             throw new ArgumentException("Invalid error", nameof(error));
-        }
 
         IsSuccess = isSuccess;
         Error = error;
@@ -35,12 +33,12 @@ public readonly struct Result<T>
     {
         return new Result<T>(false, error, default!);
     }
-    
-    public static implicit operator Result<T> (T value)
+
+    public static implicit operator Result<T>(T value)
     {
         return Success(value);
     }
-    
+
     public static implicit operator Result<T>(Error error)
     {
         return Failure(error);

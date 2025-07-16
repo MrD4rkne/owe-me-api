@@ -1,28 +1,36 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace OweMe.Application.Common.Behaviours;
 
-public class ValidationPipelineBehaviour<TRequest, TResponse>(
-    ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> logger,
+public class ValidationPipelineBehaviour<TRequest, T>(
+    ILogger<ValidationPipelineBehaviour<TRequest, T>> logger,
     IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<Result<TResponse>>
+    : IPipelineBehavior<TRequest, Result<T>>
+    where TRequest : IRequest<Result<T>>
 {
-    private readonly ILogger<ValidationPipelineBehaviour<TRequest, TResponse>> _logger =
+    private readonly ILogger<ValidationPipelineBehaviour<TRequest, T>> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     private readonly IEnumerable<IValidator<TRequest>> _validators =
         validators ?? throw new ArgumentNullException(nameof(validators));
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+    public async Task<Result<T>> Handle(TRequest request, RequestHandlerDelegate<Result<T>> next,
         CancellationToken cancellationToken)
     {
         if (_validators.Any())
         {
             var context = new ValidationContext<TRequest>(request);
-            await ValidateAndThrowIfInvalid(context, cancellationToken);
+            var validationFailures = (await ValidateAsync(context, cancellationToken))
+                .ToArray();
+            if (validationFailures.Length != 0)
+            {
+                _logger.LogWarning("Validation failed for request {RequestName}: {Errors}",
+                    typeof(TRequest).Name, validationFailures);
+                return Result<T>.Failure(ValidationError.From(validationFailures));
+            }
 
             _logger.LogDebug("Validation passed for request {RequestName}", typeof(TRequest).Name);
         }
@@ -35,7 +43,7 @@ public class ValidationPipelineBehaviour<TRequest, TResponse>(
         return await next(cancellationToken);
     }
 
-    private async Task ValidateAndThrowIfInvalid(ValidationContext<TRequest> context,
+    private async Task<IEnumerable<ValidationFailure>> ValidateAsync(ValidationContext<TRequest> context,
         CancellationToken cancellationToken = default)
     {
         var validationTasks = _validators
@@ -43,17 +51,8 @@ public class ValidationPipelineBehaviour<TRequest, TResponse>(
 
         var validationResults = await Task.WhenAll(validationTasks);
 
-        var failures = validationResults
+        return validationResults
             .SelectMany(result => result.Errors)
-            .Where(f => f is not null)
-            .ToList();
-
-        if (failures.Count == 0)
-        {
-            return;
-        }
-
-        _logger.LogWarning("Validation errors for request {RequestName}: {Errors}", typeof(TRequest).Name, failures);
-        throw new ValidationException(failures);
+            .Where(f => f is not null);
     }
 }
