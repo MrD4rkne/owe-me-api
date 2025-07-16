@@ -100,13 +100,10 @@ public class ValidationPipelineBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("ok"));
 
         // Act
-        await Record.ExceptionAsync(async () =>
-        {
-            string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
-            // Assert
-            result.ShouldBe("ok");
-        });
+        // Assert
+        result.ShouldBe("ok");
     }
 
     [Fact]
