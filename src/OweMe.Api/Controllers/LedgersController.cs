@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Identity;
+using OweMe.Application.Common;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
@@ -31,7 +32,8 @@ public static class LedgersController
         [FromBody] CreateLedgerCommand createLedgerCommand,
         IMediator mediator)
     {
-        var ledgerId = await mediator.Send(createLedgerCommand);
+        var creationResult = await mediator.Send(createLedgerCommand);
+        var ledgerId = creationResult.Value;
         return Results.Created($"/api/ledgers/{ledgerId}", null);
     }
 

@@ -1,4 +1,4 @@
-﻿using OweMe.Application.Common;
+﻿using OweMe.Application.Common.Results;
 
 namespace OweMe.Application.Ledgers;
 

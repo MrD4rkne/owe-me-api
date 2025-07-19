@@ -1,4 +1,5 @@
-﻿services:
+﻿name: oweme-api-debug
+services:
   oweme.api:
     image: oweme.api
     build:

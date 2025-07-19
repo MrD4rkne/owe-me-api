@@ -4,11 +4,12 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
+using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-using LocalValidationBehaviour = ValidationPipelineBehaviour<TestRequest, string>;
+using LocalValidationBehaviour = ValidationPipelineBehavior<TestRequest, string>;
 
 public class ValidationPipelineBehaviourTests
 {
@@ -48,25 +49,21 @@ public class ValidationPipelineBehaviourTests
             .Select(_ => new Mock<IValidator<TestRequest>>())
             .ToList();
         foreach (var mock in validatorMocks)
-        {
             mock.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
-        }
 
         var validators = validatorMocks.Select(m => m.Object).ToList();
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
-        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");
         foreach (var mock in validatorMocks)
-        {
             mock.Verify(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()),
                 Times.Once);
-        }
     }
 
     [Fact]
@@ -97,7 +94,7 @@ public class ValidationPipelineBehaviourTests
         }).ToList();
 
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("ok"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("ok"));
 
         // Act
         var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
@@ -112,17 +109,21 @@ public class ValidationPipelineBehaviourTests
         // Arrange
         var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         var mockValidator = new Mock<IValidator<TestRequest>>();
+        var validationFailures = new List<ValidationFailure>
+        {
+            new("Value", "Invalid value")
+        };
         mockValidator.Setup(v =>
                 v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult([new ValidationFailure("Value", "Invalid value")]));
+            .ReturnsAsync(new ValidationResult(validationFailures));
 
         var validators = new List<IValidator<TestRequest>> { mockValidator.Object };
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act & Assert
-        await Should.ThrowAsync<ValidationException>(async () =>
-            await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
+        _ = await Assert.ThrowsAsync<ValidationException>(() =>
+            sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
     }
 
     [Fact]
@@ -132,10 +133,10 @@ public class ValidationPipelineBehaviourTests
         var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         var validators = new List<IValidator<TestRequest>>();
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
-        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");

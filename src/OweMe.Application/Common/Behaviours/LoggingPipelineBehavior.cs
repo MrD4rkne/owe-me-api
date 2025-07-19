@@ -5,8 +5,8 @@ namespace OweMe.Application.Common.Behaviours;
 
 #pragma warning disable S2139 // Exceptions should be either logged or rethrown but not both
 
-public class LoggingPipelineBehaviour<TRequest, TResponse>(
-    ILogger<LoggingPipelineBehaviour<TRequest, TResponse>> logger) : IPipelineBehavior<TRequest, TResponse>
+public class LoggingPipelineBehavior<TRequest, TResponse>(
+    ILogger<LoggingPipelineBehavior<TRequest, TResponse>> logger) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
