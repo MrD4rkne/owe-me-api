@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace OweMe.Application.Common.Behaviours;
 
-public class PerformancePipelineBehaviour<TRequest, TResponse>(
-    ILogger<PerformancePipelineBehaviour<TRequest, TResponse>> logger,
+public class PerformancePipelineBehavior<TRequest, TResponse>(
+    ILogger<PerformancePipelineBehavior<TRequest, TResponse>> logger,
     int maximumElapsedMilliseconds = 500) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {

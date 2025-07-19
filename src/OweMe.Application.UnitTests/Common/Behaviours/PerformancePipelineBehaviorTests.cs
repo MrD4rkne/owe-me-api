@@ -6,7 +6,7 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-public class PerformancePipelineBehaviourTests
+public class PerformancePipelineBehaviorTests
 {
     private const int TimeoutThreshold = 4000;
     private const int AlmostToLongWork = (int)(TimeoutThreshold * 0.9);
@@ -16,9 +16,9 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
         var behaviour =
-            new PerformancePipelineBehaviour<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a long-running operation
@@ -60,10 +60,10 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
 
         var behaviour =
-            new PerformancePipelineBehaviour<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         var exception = new Exception("fail");
@@ -106,10 +106,10 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
 
         var behaviour =
-            new PerformancePipelineBehaviour<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a short operation
@@ -149,9 +149,9 @@ public class PerformancePipelineBehaviourTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehaviour<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
         var behaviour =
-            new PerformancePipelineBehaviour<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a short operation
