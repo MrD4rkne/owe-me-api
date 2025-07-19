@@ -1,37 +1,43 @@
-﻿namespace OweMe.Application.Common.Results;
+﻿using System.Text;
+using System.Text.Json.Serialization;
+
+namespace OweMe.Application.Common.Results;
 
 public record Result<T>
 {
     private readonly T _value;
 
-    private Result(bool isSuccess, Error error, T value)
+    public Result(T value)
     {
-        if ((isSuccess && !error.Equals(Error.None)) ||
-            (!isSuccess && error.Equals(Error.None)))
-            throw new ArgumentException("Invalid error", nameof(error));
+        _value = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null");
+        IsSuccess = true;
+        Error = Error.None;
+    }
 
-        IsSuccess = isSuccess;
-        Error = error;
-        _value = value;
+    public Result(Error error)
+    {
+        IsSuccess = false;
+        Error = error ?? throw new ArgumentNullException(nameof(error), "Error cannot be null");
+        _value = default!;
     }
 
     public bool IsSuccess { get; }
 
     public bool IsFailure => !IsSuccess;
 
-    public Error Error { get; private init; }
+    public Error Error { get; }
 
-    public T Value =>
-        IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value on a failed result.");
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public T? Value => IsSuccess ? _value : default;
 
     public static Result<T> Success(T value)
     {
-        return new Result<T>(true, Error.None, value);
+        return new Result<T>(value);
     }
 
     public static Result<T> Failure(Error error)
     {
-        return new Result<T>(false, error, default!);
+        return new Result<T>(error);
     }
 
     public static implicit operator Result<T>(T value)
@@ -42,5 +48,20 @@ public record Result<T>
     public static implicit operator Result<T>(Error error)
     {
         return Failure(error);
+    }
+
+    protected virtual bool PrintMembers(StringBuilder stringBuilder)
+    {
+        stringBuilder.Append($"IsSuccess = {IsSuccess}, ");
+        if (IsSuccess)
+        {
+            stringBuilder.Append($"Value = {Value}, ");
+        }
+        else
+        {
+            stringBuilder.Append($"Error = {Error.Code}");
+        }
+
+        return true;
     }
 }

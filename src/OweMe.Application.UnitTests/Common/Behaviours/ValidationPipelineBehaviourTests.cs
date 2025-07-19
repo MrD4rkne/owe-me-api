@@ -9,7 +9,7 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-using LocalValidationBehaviour = ValidationPipelineBehaviour<TestRequest, string>;
+using LocalValidationBehaviour = ValidationPipelineBehavior<TestRequest, string>;
 
 public class ValidationPipelineBehaviourTests
 {
@@ -54,7 +54,7 @@ public class ValidationPipelineBehaviourTests
 
         var validators = validatorMocks.Select(m => m.Object).ToList();
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<Result<string>>(_ => Task.FromResult<Result<string>>("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
         var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
@@ -94,7 +94,7 @@ public class ValidationPipelineBehaviourTests
         }).ToList();
 
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<Result<string>>(_ => Task.FromResult<Result<string>>("ok"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("ok"));
 
         // Act
         var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
@@ -119,15 +119,11 @@ public class ValidationPipelineBehaviourTests
 
         var validators = new List<IValidator<TestRequest>> { mockValidator.Object };
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<Result<string>>(_ => Task.FromResult<Result<string>>("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
-        // Act
-        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
-
-        // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldNotBeNull();
-        result.Error.ShouldBe(ValidationError.From(validationFailures.ToArray()));
+        // Act & Assert
+        _ = await Assert.ThrowsAsync<ValidationException>(() =>
+            sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
     }
 
     [Fact]
@@ -137,7 +133,7 @@ public class ValidationPipelineBehaviourTests
         var logger = Mock.Of<ILogger<LocalValidationBehaviour>>();
         var validators = new List<IValidator<TestRequest>>();
         var sut = new LocalValidationBehaviour(logger, validators);
-        var next = new RequestHandlerDelegate<Result<string>>(_ => Task.FromResult<Result<string>>("response"));
+        var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
         var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
