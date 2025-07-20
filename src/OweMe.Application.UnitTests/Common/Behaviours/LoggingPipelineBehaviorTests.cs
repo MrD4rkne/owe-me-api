@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
-using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
@@ -12,13 +11,13 @@ public class LoggingPipelineBehaviorTests
     public async Task Handle_Should_Log_Information_On_Success()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, Result<string>>>>();
-        var behaviour = new LoggingPipelineBehavior<TestRequest, Result<string>>(loggerMock.Object);
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, string>>>();
+        var behaviour = new LoggingPipelineBehavior<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const string response = "response";
 
         // Act
-        var result = await behaviour.Handle(request, NextWithSimpleResponse, CancellationToken.None);
+        string result = await behaviour.Handle(request, NextWithSimpleResponse, CancellationToken.None);
 
         // Assert
         result.ShouldBe(response);
@@ -44,9 +43,9 @@ public class LoggingPipelineBehaviorTests
             Times.Once);
         return;
 
-        Task<Result<string>> NextWithSimpleResponse(CancellationToken cancellationToken)
+        Task<string> NextWithSimpleResponse(CancellationToken cancellationToken)
         {
-            return Task.FromResult<Result<string>>(response);
+            return Task.FromResult<string>(response);
         }
     }
 
@@ -54,8 +53,8 @@ public class LoggingPipelineBehaviorTests
     public async Task Handle_Should_Log_Error_On_Exception()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, Result<string>>>>();
-        var behaviour = new LoggingPipelineBehavior<TestRequest, Result<string>>(loggerMock.Object);
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, string>>>();
+        var behaviour = new LoggingPipelineBehavior<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         var exception = new Exception("fail");
 
@@ -73,7 +72,7 @@ public class LoggingPipelineBehaviorTests
             Times.Once);
         return;
 
-        Task<Result<string>> NextThrowingException(CancellationToken cancellationToken)
+        Task<string> NextThrowingException(CancellationToken cancellationToken)
         {
             throw exception;
         }

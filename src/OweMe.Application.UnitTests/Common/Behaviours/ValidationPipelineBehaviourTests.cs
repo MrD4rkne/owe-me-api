@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
-using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
@@ -49,21 +48,25 @@ public class ValidationPipelineBehaviourTests
             .Select(_ => new Mock<IValidator<TestRequest>>())
             .ToList();
         foreach (var mock in validatorMocks)
+        {
             mock.Setup(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
+        }
 
         var validators = validatorMocks.Select(m => m.Object).ToList();
         var sut = new LocalValidationBehaviour(logger, validators);
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
-        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");
         foreach (var mock in validatorMocks)
+        {
             mock.Verify(v => v.ValidateAsync(It.IsAny<ValidationContext<TestRequest>>(), It.IsAny<CancellationToken>()),
                 Times.Once);
+        }
     }
 
     [Fact]
@@ -97,7 +100,7 @@ public class ValidationPipelineBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("ok"));
 
         // Act
-        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
         result.ShouldBe("ok");
@@ -136,7 +139,7 @@ public class ValidationPipelineBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act
-        var result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
+        string result = await sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");

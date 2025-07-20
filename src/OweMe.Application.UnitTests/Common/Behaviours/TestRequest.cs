@@ -1,8 +1,8 @@
-﻿using OweMe.Application.Common.Results;
+﻿using MediatR;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-public sealed class TestRequest : IResultRequest<string>
+public sealed class TestRequest : IRequest<string>
 {
     public required string Value { get; init; }
 

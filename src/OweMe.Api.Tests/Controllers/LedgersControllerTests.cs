@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using OweMe.Api.Controllers;
-using OweMe.Application.Common.Results;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
+using OweMe.Domain.Common.Exceptions;
 using Shouldly;
 
 namespace OweMe.Api.Tests.Controllers;
@@ -54,9 +54,8 @@ public class LedgersControllerTests
             UpdatedAt = DateTimeOffset.UtcNow
         };
 
-        var successResult = Result<LedgerDto>.Success(expectedValue);
         mediatorMock.Setup(m => m.Send(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(successResult);
+            .ReturnsAsync(expectedValue);
 
         // Act
         var result = await LedgersController.GetLedger(expectedValue.Id, mediatorMock.Object);
@@ -75,20 +74,15 @@ public class LedgersControllerTests
     {
         // Arrange
         var mediatorMock = new Mock<IMediator>();
-        var ledgerId = Guid.NewGuid();
-        var returnedResult = Result<LedgerDto>.Failure(LedgerErrors.Errors.LedgerNotFound);
-
         mediatorMock.Setup(m => m.Send(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(returnedResult);
+            .ThrowsAsync(new NotFoundException("Ledger not found."));
 
-        // Act
-        var result = await LedgersController.GetLedger(ledgerId, mediatorMock.Object);
+        var ledgerId = Guid.NewGuid();
 
-        // Assert
-        result.ShouldBeOfType<NotFound<string>>();
-
-        var notFoundResult = result as NotFound<string>;
-        notFoundResult.ShouldNotBeNull();
-        notFoundResult.Value.ShouldBe(LedgerErrors.Errors.LedgerNotFound.Description);
+        // Act & Assert
+        await Should.ThrowAsync<NotFoundException>(async () =>
+        {
+            await LedgersController.GetLedger(ledgerId, mediatorMock.Object);
+        });
     }
 }

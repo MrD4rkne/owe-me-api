@@ -9,6 +9,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
     ILogger<ValidationPipelineBehavior<TRequest, TResponse>> logger,
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<ValidationPipelineBehavior<TRequest, TResponse>> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));

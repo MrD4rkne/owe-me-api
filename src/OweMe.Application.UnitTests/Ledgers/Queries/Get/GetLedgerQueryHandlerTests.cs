@@ -1,6 +1,6 @@
 ﻿using Moq;
-using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Queries.Get;
+using OweMe.Domain.Common.Exceptions;
 using OweMe.Domain.Ledgers;
 using OweMe.Domain.Users;
 using Shouldly;
@@ -38,16 +38,17 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var result = await _sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldNotBeNull();
-        result.Value.Id.ShouldBe(ledgerId);
-        result.Value.Name.ShouldBe(ledger.Name);
-        result.Value.CreatedAt.ShouldBe(ledger.CreatedAt);
-        result.Value.CreatedBy.ShouldBe<Guid>(ledger.CreatedBy);
+        result.ShouldNotBeNull();
+        result.Name.ShouldBe("Test Ledger");
+        result.Id.ShouldBe(ledgerId);
+        result.CreatedBy.ShouldBe<Guid>(userId);
+        result.CreatedAt.ShouldBe(ledger.CreatedAt);
+        result.UpdatedBy.ShouldBeNull();
+        result.UpdatedAt.ShouldBeNull();
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnFailure_WhenLedgerDoesNotExist()
+    public async Task Handle_ShouldThrow_NotFound_WhenLedgerDoesNotExist()
     {
         // Arrange
         var ledgerId = Guid.NewGuid();
@@ -55,15 +56,13 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        await Assert.ThrowsAsync<NotFoundException>(async () => { await _sut.Handle(query, CancellationToken.None); });
 
-        // Assert
-        result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBe(LedgerErrors.Errors.LedgerNotFound);
+        _userContextMock.Verify(x => x.Id, Times.AtMostOnce);
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnFailure_WhenUserDoesNotHaveAccessToLedger()
+    public async Task HandleShouldThrow_NotFound_WhenUserDoesNotHaveAccessToLedger()
     {
         // Arrange
         var otherUserId = UserId.New();
@@ -85,11 +84,7 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.ShouldBeFalse();
-        result.Error.ShouldBe(LedgerErrors.Errors.LedgerNotFound);
+        await Assert.ThrowsAsync<NotFoundException>(async () => { await _sut.Handle(query, CancellationToken.None); });
 
         _userContextMock.Verify(x => x.Id, Times.Once);
     }

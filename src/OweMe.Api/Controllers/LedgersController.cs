@@ -1,11 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Identity;
-using OweMe.Application.Common;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
-using OweMe.Domain.Ledgers;
 
 namespace OweMe.Api.Controllers;
 
@@ -32,8 +30,7 @@ public static class LedgersController
         [FromBody] CreateLedgerCommand createLedgerCommand,
         IMediator mediator)
     {
-        var creationResult = await mediator.Send(createLedgerCommand);
-        var ledgerId = creationResult.Value;
+        var ledgerId = await mediator.Send(createLedgerCommand);
         return Results.Created($"/api/ledgers/{ledgerId}", null);
     }
 
@@ -43,11 +40,6 @@ public static class LedgersController
     {
         var query = new GetLedgerQuery(ledgerId);
         var ledger = await mediator.Send(query);
-        return ledger switch
-        {
-            { IsSuccess: true } => Results.Ok(ledger.Value),
-            { Error: { Code: LedgerErrors.Codes.LedgerNotFound } } => Results.NotFound(ledger.Error.Description),
-            _ => throw new InvalidOperationException("Unexpected result from GetLedgerQuery")
-        };
+        return Results.Ok(ledger);
     }
 }

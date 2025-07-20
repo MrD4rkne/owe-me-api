@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using OweMe.Application.Common.Behaviours;
-using OweMe.Application.Common.Results;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
@@ -16,20 +15,20 @@ public class PerformancePipelineBehaviorTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, string>>>();
         var behaviour =
-            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, string>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a long-running operation
-        Task<Result<string>> NextWithDelay(CancellationToken cancellationToken)
+        Task<string> NextWithDelay(CancellationToken cancellationToken)
         {
             return Task.Delay(LittleToLongWork, cancellationToken)
-                .ContinueWith<Result<string>>(_ => "response", cancellationToken);
+                .ContinueWith<string>(_ => "response", cancellationToken);
         }
 
         // Act
-        var result = await behaviour.Handle(request, NextWithDelay, CancellationToken.None);
+        string result = await behaviour.Handle(request, NextWithDelay, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");
@@ -60,19 +59,19 @@ public class PerformancePipelineBehaviorTests
     public async Task Handle_Should_Log_Performance_When_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, string>>>();
 
         var behaviour =
-            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, string>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         var exception = new Exception("fail");
 
         // Simulate a long-running operation
-        Task<Result<string>> NextWithDelayAndException(CancellationToken cancellationToken)
+        Task<string> NextWithDelayAndException(CancellationToken cancellationToken)
         {
             return Task.Delay(LittleToLongWork, cancellationToken)
-                .ContinueWith<Result<string>>(_ => throw exception, cancellationToken);
+                .ContinueWith<string>(_ => throw exception, cancellationToken);
         }
 
         // Act and Assert
@@ -106,21 +105,21 @@ public class PerformancePipelineBehaviorTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, string>>>();
 
         var behaviour =
-            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, string>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a short operation
-        Task<Result<string>> NextWithShortDelay(CancellationToken cancellationToken)
+        Task<string> NextWithShortDelay(CancellationToken cancellationToken)
         {
             return Task.Delay(AlmostToLongWork, cancellationToken)
-                .ContinueWith<Result<string>>(_ => "response", cancellationToken);
+                .ContinueWith<string>(_ => "response", cancellationToken);
         }
 
         // Act
-        var result = await behaviour.Handle(request, NextWithShortDelay, CancellationToken.None);
+        string result = await behaviour.Handle(request, NextWithShortDelay, CancellationToken.None);
 
         // Assert
         result.ShouldBe("response");
@@ -149,18 +148,18 @@ public class PerformancePipelineBehaviorTests
     public async Task Handle_ShouldNot_Log_Performance_When_Not_Exceeding_Threshold_WithException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, Result<string>>>>();
+        var loggerMock = new Mock<ILogger<PerformancePipelineBehavior<TestRequest, string>>>();
         var behaviour =
-            new PerformancePipelineBehavior<TestRequest, Result<string>>(loggerMock.Object, TimeoutThreshold);
+            new PerformancePipelineBehavior<TestRequest, string>(loggerMock.Object, TimeoutThreshold);
         var request = new TestRequest { Value = "test" };
 
         // Simulate a short operation
         var exception = new Exception("fail");
 
-        Task<Result<string>> NextWithShortDelay(CancellationToken cancellationToken)
+        Task<string> NextWithShortDelay(CancellationToken cancellationToken)
         {
             return Task.Delay(AlmostToLongWork, cancellationToken)
-                .ContinueWith<Result<string>>(_ => throw exception, cancellationToken);
+                .ContinueWith<string>(_ => throw exception, cancellationToken);
         }
 
         // Act
