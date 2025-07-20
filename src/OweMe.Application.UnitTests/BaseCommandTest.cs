@@ -1,7 +1,6 @@
 ﻿using Moq;
 using OweMe.Application.Ledgers;
 using OweMe.Application.UnitTests.Ledgers;
-using OweMe.Domain.Ledgers;
 
 namespace OweMe.Application.UnitTests;
 

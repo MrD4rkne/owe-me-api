@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using ValidationException = OweMe.Domain.Common.Exceptions.ValidationException;
 
 namespace OweMe.Application.Common.Behaviours;
 
@@ -29,7 +30,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
             {
                 _logger.LogWarning("Validation failed for request {RequestName}: {Errors}",
                     typeof(TRequest).Name, validationFailures);
-                throw new ValidationException(validationFailures);
+                throw CreateValidationException(validationFailures);
             }
 
             _logger.LogDebug("Validation passed for request {RequestName}", typeof(TRequest).Name);
@@ -54,5 +55,15 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
         return validationResults
             .SelectMany(result => result.Errors)
             .Where(f => f is not null);
+    }
+
+    private ValidationException CreateValidationException(
+        IEnumerable<ValidationFailure> failures)
+    {
+        var errors = failures
+            .Select(f => new KeyValuePair<string, string>(f.PropertyName, f.ErrorMessage))
+            .ToArray();
+
+        return new ValidationException("Validation failed", errors);
     }
 }
