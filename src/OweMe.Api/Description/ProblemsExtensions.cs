@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OweMe.Api.Common;
+﻿using OweMe.Api.Common;
 
 namespace OweMe.Api.Extensions;
 
-public static class EndpointExtensions
+public static class ProblemsExtensions
 {
     private static class ContentTypeConstants
     {
@@ -18,6 +17,9 @@ public static class EndpointExtensions
         return builder.ProducesExtendedProblem(StatusCodes.Status500InternalServerError);
     }
     
+    /// <summary>
+    /// Configures the endpoint to produce extended problem details responses
+    /// </summary>
     public static TBuilder ProducesExtendedProblem<TBuilder>(this TBuilder builder, int statusCode, string? contentType = null)
         where TBuilder : IEndpointConventionBuilder
     {
