@@ -4,7 +4,7 @@ using OweMe.Domain.Common.Exceptions;
 
 namespace OweMe.Api.Description;
 
-internal sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
