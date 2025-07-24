@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace OweMe.Api.Common;
+namespace OweMe.Api.Description;
 
 public class ExtendedProblemDetails : ProblemDetails
 {

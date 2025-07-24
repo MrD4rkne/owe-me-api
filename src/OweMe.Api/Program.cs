@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
-using OweMe.Api.Common;
 using OweMe.Api.Controllers;
+using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
 using OweMe.Application;

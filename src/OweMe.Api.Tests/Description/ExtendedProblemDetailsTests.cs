@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OweMe.Api.Common;
+using OweMe.Api.Description;
 
 namespace OweMe.Api.Tests.Description;
 

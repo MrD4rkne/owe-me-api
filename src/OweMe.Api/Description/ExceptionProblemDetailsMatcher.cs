@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Domain.Common.Exceptions;
 
-namespace OweMe.Api.Common;
+namespace OweMe.Api.Description;
 
 internal sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {

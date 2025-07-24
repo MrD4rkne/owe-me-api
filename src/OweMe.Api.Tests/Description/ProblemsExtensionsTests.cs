@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OweMe.Api.Common;
-using OweMe.Api.Extensions;
+using OweMe.Api.Description;
 using Shouldly;
 
 namespace OweMe.Api.Tests.Description;

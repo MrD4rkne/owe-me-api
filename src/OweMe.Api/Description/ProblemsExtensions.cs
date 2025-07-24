@@ -1,6 +1,4 @@
-﻿using OweMe.Api.Common;
-
-namespace OweMe.Api.Extensions;
+﻿namespace OweMe.Api.Description;
 
 public static class ProblemsExtensions
 {

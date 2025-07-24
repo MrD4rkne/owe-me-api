@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OweMe.Api.Common;
-using OweMe.Api.Extensions;
+using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
