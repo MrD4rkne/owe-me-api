@@ -95,7 +95,7 @@ public class ProblemsExtensionsTests
         endpointBuilder.Metadata[0].ShouldBeOfType<ProducesResponseTypeMetadata>();
         endpointBuilder.Metadata[0].ShouldBeEquivalentTo(
             new ProducesResponseTypeMetadata(code, typeof(ExtendedProblemDetails), [ProblemDetailsContentType]),
-            $"Should register problem details content for code ${code}, model: {nameof(ExtendedProblemDetails)}");
+            $"Should register problem details content for code {code}, model: {nameof(ExtendedProblemDetails)}");
     }
     
     private class MyEndpointBuilder : EndpointBuilder
