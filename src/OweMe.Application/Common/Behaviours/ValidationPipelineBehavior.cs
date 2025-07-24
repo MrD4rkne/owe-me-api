@@ -24,9 +24,8 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
         if (_validators.Any())
         {
             var context = new ValidationContext<TRequest>(request);
-            var validationFailures = (await ValidateAsync(context, cancellationToken))
-                .ToArray();
-            if (validationFailures.Length != 0)
+            var validationFailures = await ValidateAsync(context, cancellationToken);
+            if (validationFailures.Any())
             {
                 _logger.LogWarning("Validation failed for request {RequestName}: {Errors}",
                     typeof(TRequest).Name, validationFailures);
