@@ -51,6 +51,7 @@ internal class ValidExceptionTestClass : BaseExceptionTest<ValidException>;
 
 internal class InvalidExceptionTestClass : BaseExceptionTest<InvalidException>;
 
+#pragma warning disable S3871 // Make this Exception public
 internal class ValidException : Exception
 {
     public ValidException(string message) : base(message)
@@ -73,3 +74,5 @@ internal class InvalidException : Exception
     {
     }
 }
+
+#pragma warning restore S3871 // Make this Exception public
