@@ -47,8 +47,6 @@ public class BaseExceptionTestTests
     }
 }
 
-internal class ExampleTest : BaseExceptionTest<NotImplementedException>;
-
 internal class ValidExceptionTestClass : BaseExceptionTest<ValidException>;
 
 internal class InvalidExceptionTestClass : BaseExceptionTest<InvalidException>;
