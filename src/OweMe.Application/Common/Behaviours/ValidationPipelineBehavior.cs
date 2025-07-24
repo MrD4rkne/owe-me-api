@@ -57,7 +57,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
             .Where(f => f is not null);
     }
 
-    private ValidationException CreateValidationException(
+    private static ValidationException CreateValidationException(
         IEnumerable<ValidationFailure> failures)
     {
         var errors = failures
