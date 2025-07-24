@@ -63,6 +63,8 @@ public class ExceptionProblemDetailsMatcherTests
         errorsDict["Field1"].ShouldContain("Error1");
         errorsDict.ShouldContainKey("Field2");
         errorsDict["Field2"].ShouldContain("Error2");
+        
+        _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
     }
     
     [Fact]
@@ -89,6 +91,7 @@ public class ExceptionProblemDetailsMatcherTests
         problemDetails.Status.ShouldBe(StatusCodes.Status404NotFound);
         problemDetails.Title.ShouldBe("Resource not found");
         problemDetails.Detail.ShouldBe("Resource not found");
+        _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
     }
     
     [Fact]
@@ -115,6 +118,7 @@ public class ExceptionProblemDetailsMatcherTests
         problemDetails.Status.ShouldBe(StatusCodes.Status403Forbidden);
         problemDetails.Title.ShouldBe("Access forbidden");
         problemDetails.Detail.ShouldBe("Access denied");
+        _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
     }
     
     [Fact]
@@ -166,6 +170,7 @@ public class ExceptionProblemDetailsMatcherTests
         problemDetails.ShouldNotBeNull();
         problemDetails.Title.ShouldBe("An unexpected error occurred");
         problemDetails.Detail.ShouldBe("Something went wrong");
+        problemDetails.Status.ShouldBe(StatusCodes.Status500InternalServerError);
     }
     
     [Fact]
