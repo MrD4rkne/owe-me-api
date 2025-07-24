@@ -4,10 +4,7 @@ namespace OweMe.Api.Extensions;
 
 public static class ProblemsExtensions
 {
-    private static class ContentTypeConstants
-    {
-        public const string ProblemDetailsContentType = "application/problem+json";
-    }
+    private static readonly string ProblemDetailsContentType = "application/problem+json";
     
     /// <summary>
     /// Configures the endpoint to produce standard problem details responses
