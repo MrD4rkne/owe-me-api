@@ -1,4 +1,5 @@
-﻿services:
+﻿name: oweme-api-debug
+services:
   oweme.api:
     image: oweme.api
     build:
@@ -21,8 +22,8 @@
       - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
       - Serilog__Enrich__0=WithSpan
       # IdentityServer configuration
-      - IdentityServer__Authority=http://identity:8180
-      - IdentityServer__ValidIssuer=https://localhost:8181
+      - IdentityServer__Authority=https://oweme-identity-bzfrgucwfreveyhd.polandcentral-01.azurewebsites.net
+      - IdentityServer__ValidIssuer=https://oweme-identity-bzfrgucwfreveyhd.polandcentral-01.azurewebsites.net
       - IdentityServer__ValidateAudience=false
     volumes:
       - ~/.aspnet/https:/https:ro

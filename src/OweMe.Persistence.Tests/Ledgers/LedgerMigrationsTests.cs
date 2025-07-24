@@ -6,7 +6,7 @@ using OweMe.Persistence.Ledgers;
 using OweMe.Tests.Common;
 using Shouldly;
 
-namespace OweMe.Persistence.Tests;
+namespace OweMe.Persistence.Tests.Ledgers;
 
 public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test"), IAsyncLifetime
 {

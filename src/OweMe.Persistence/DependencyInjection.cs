@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OweMe.Application.Ledgers;
-using OweMe.Domain.Ledgers;
 using OweMe.Persistence.Configuration;
 using OweMe.Persistence.Ledgers;
 

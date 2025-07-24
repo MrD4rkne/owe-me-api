@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
-using OweMe.Domain.Ledgers;
 
 namespace OweMe.Api.Controllers;
 
@@ -15,15 +15,18 @@ public static class LedgersController
         app.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
+            .Accepts<CreateLedgerCommand>("application/json")
             .Produces(StatusCodes.Status201Created)
-            .Produces(StatusCodes.Status400BadRequest)
+            .ProducesExtendedProblem(StatusCodes.Status400BadRequest)
+            .WithStandardProblems()
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
 
         app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
             .Produces<LedgerDto>()
-            .Produces(StatusCodes.Status404NotFound)
+            .ProducesExtendedProblem(StatusCodes.Status404NotFound)
+            .WithStandardProblems()
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
     }
 
@@ -41,11 +44,6 @@ public static class LedgersController
     {
         var query = new GetLedgerQuery(ledgerId);
         var ledger = await mediator.Send(query);
-        return ledger switch
-        {
-            { IsSuccess: true } => Results.Ok(ledger.Value),
-            { Error: { Code: LedgerErrors.Codes.LedgerNotFound } } => Results.NotFound(ledger.Error.Description),
-            _ => throw new InvalidOperationException("Unexpected result from GetLedgerQuery")
-        };
+        return Results.Ok(ledger);
     }
 }
