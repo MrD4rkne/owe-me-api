@@ -125,7 +125,7 @@ public class ValidationPipelineBehaviourTests
         var next = new RequestHandlerDelegate<string>(_ => Task.FromResult<string>("response"));
 
         // Act & Assert
-        await Assert.ThrowsAsync<ValidationException>(() =>
+        await Assert.ThrowsAsync<OweMe.Domain.Common.Exceptions.ValidationException>(() =>
             sut.Handle(new TestRequest { Value = "request" }, next, CancellationToken.None));
     }
 
