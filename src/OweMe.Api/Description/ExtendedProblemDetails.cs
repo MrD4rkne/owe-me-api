@@ -6,6 +6,10 @@ public class ExtendedProblemDetails : ProblemDetails
 {
     private const string TraceIdKey = "traceId";
     private const string RequestIdKey = "requestId";
+    
+    public ExtendedProblemDetails()
+    {
+    }
 
     public ExtendedProblemDetails(ProblemDetails problemDetails)
     {
@@ -14,6 +18,7 @@ public class ExtendedProblemDetails : ProblemDetails
         Status = problemDetails.Status;
         Type = problemDetails.Type;
         Instance = problemDetails.Instance;
+        Extensions = problemDetails.Extensions;
 
         if (problemDetails.Extensions.TryGetValue(TraceIdKey, out object? traceId))
         {

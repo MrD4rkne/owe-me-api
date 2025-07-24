@@ -19,7 +19,8 @@ public class ExtendedProblemDetailsTests
             Extensions =
             {
                 { "traceId", "12345" },
-                { "requestId", "67890" }
+                { "requestId", "67890" },
+                { "a", "b" }
             }
         };
 
@@ -34,5 +35,8 @@ public class ExtendedProblemDetailsTests
         Assert.Equal(problemDetails.Instance, extendedProblemDetails.Instance);
         Assert.Equal("12345", extendedProblemDetails.TraceId);
         Assert.Equal("67890", extendedProblemDetails.RequestId);
+        Assert.Contains(extendedProblemDetails.Extensions, kvp => kvp.Key == "traceId" && kvp.Value.ToString() == "12345");
+        Assert.Contains(extendedProblemDetails.Extensions, kvp => kvp.Key == "requestId" && kvp.Value.ToString() == "67890");
+        Assert.Contains(extendedProblemDetails.Extensions, kvp => kvp.Key == "a" && kvp.Value.ToString() == "b");
     }
 }

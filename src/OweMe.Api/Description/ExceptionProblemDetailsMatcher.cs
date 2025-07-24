@@ -28,6 +28,8 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
                 Detail = exception.Message
             }
         };
+        
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
