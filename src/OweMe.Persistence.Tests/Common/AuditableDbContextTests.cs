@@ -7,7 +7,7 @@ using OweMe.Persistence.Common;
 using OweMe.Tests.Common;
 using Shouldly;
 
-namespace OweMe.Persistence.Tests;
+namespace OweMe.Persistence.Tests.Common;
 
 internal sealed class TestEntity : AuditableEntity
 {

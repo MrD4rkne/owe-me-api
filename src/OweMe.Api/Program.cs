@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using OweMe.Api;
+using Microsoft.AspNetCore.Http.Features;
 using OweMe.Api.Controllers;
+using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
@@ -48,6 +49,21 @@ builder.AddInfrastructure();
 
 builder.AddPersistence();
 
+builder.Services.AddExceptionHandler<ExceptionProblemDetailsMatcher>();
+
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails = new ExtendedProblemDetails(context.ProblemDetails)
+        {
+            Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}",
+            RequestId = context.HttpContext.TraceIdentifier,
+            TraceId = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity?.Id
+        };
+    };
+});
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -67,5 +83,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapLedgersEndpoints();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 await app.RunAsync();

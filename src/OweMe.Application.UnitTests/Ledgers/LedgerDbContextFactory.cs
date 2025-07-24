@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using OweMe.Application.Ledgers;
-using OweMe.Domain.Ledgers;
 using OweMe.Persistence.Ledgers;
 using OweMe.Tests.Common;
 
@@ -26,9 +25,10 @@ public class LedgerDbContextMoq : PostgresTestBase
         {
             if (_ledgerContextMock is null)
             {
-                throw new InvalidOperationException($"LedgerContextMock is not initialized. Call {nameof(SetupAsync)} first.");
+                throw new InvalidOperationException(
+                    $"LedgerContextMock is not initialized. Call {nameof(SetupAsync)} first.");
             }
-            
+
             return _ledgerContextMock.As<ILedgerContext>();
         }
     }
@@ -104,7 +104,7 @@ public class LedgerDbContextMoq : PostgresTestBase
                 UserContext = userContext
             };
         }
-        
+
         public static LedgerDbContextCreationOptions New()
         {
             return new LedgerDbContextCreationOptions();

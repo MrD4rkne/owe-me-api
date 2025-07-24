@@ -5,14 +5,14 @@ using Shouldly;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-public class LoggingPipelineBehaviourTests
+public class LoggingPipelineBehaviorTests
 {
     [Fact]
     public async Task Handle_Should_Log_Information_On_Success()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<LoggingPipelineBehaviour<TestRequest, string>>>();
-        var behaviour = new LoggingPipelineBehaviour<TestRequest, string>(loggerMock.Object);
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, string>>>();
+        var behaviour = new LoggingPipelineBehavior<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         const string response = "response";
 
@@ -45,7 +45,7 @@ public class LoggingPipelineBehaviourTests
 
         Task<string> NextWithSimpleResponse(CancellationToken cancellationToken)
         {
-            return Task.FromResult(response);
+            return Task.FromResult<string>(response);
         }
     }
 
@@ -53,8 +53,8 @@ public class LoggingPipelineBehaviourTests
     public async Task Handle_Should_Log_Error_On_Exception()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<LoggingPipelineBehaviour<TestRequest, string>>>();
-        var behaviour = new LoggingPipelineBehaviour<TestRequest, string>(loggerMock.Object);
+        var loggerMock = new Mock<ILogger<LoggingPipelineBehavior<TestRequest, string>>>();
+        var behaviour = new LoggingPipelineBehavior<TestRequest, string>(loggerMock.Object);
         var request = new TestRequest { Value = "test" };
         var exception = new Exception("fail");
 
