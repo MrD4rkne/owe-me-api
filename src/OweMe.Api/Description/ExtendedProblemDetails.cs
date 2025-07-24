@@ -7,10 +7,6 @@ public class ExtendedProblemDetails : ProblemDetails
     private const string TraceIdKey = "traceId";
     private const string RequestIdKey = "requestId";
 
-    public ExtendedProblemDetails()
-    {
-    }
-
     public ExtendedProblemDetails(ProblemDetails problemDetails)
     {
         Title = problemDetails.Title;
