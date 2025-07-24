@@ -22,7 +22,7 @@ public static class ProblemsExtensions
     {
         if (string.IsNullOrEmpty(contentType))
         {
-            contentType = ContentTypeConstants.ProblemDetailsContentType;
+            contentType = ProblemDetailsContentType;
         }
 
         return builder.WithMetadata(new ProducesResponseTypeMetadata(statusCode, typeof(ExtendedProblemDetails), [contentType]));
