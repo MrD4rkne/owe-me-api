@@ -25,9 +25,12 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
             _ => new ProblemDetails
             {
                 Title = "An unexpected error occurred",
-                Detail = exception.Message
+                Detail = exception.Message,
+                Status = StatusCodes.Status500InternalServerError
             }
         };
+
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
@@ -37,24 +40,19 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
         });
     }
 
-    private static ProblemDetails EnrichWithException(ValidationException exception)
+    private static ExtendedProblemDetails EnrichWithException(ValidationException exception)
     {
-        var problemDetails = new ProblemDetails
+        return new ExtendedProblemDetails
         {
             Status = StatusCodes.Status400BadRequest,
             Title = "Validation error",
-            Detail = exception.Message
-        };
-
-        if (exception.Errors.Any())
-        {
-            problemDetails.Extensions["errors"] = exception.Errors.GroupBy(pair => pair.Key)
+            Detail = exception.Message,
+            Errors = exception.Errors
+                .GroupBy(pair => pair.Key)
                 .ToDictionary(
                     group => group.Key,
-                    group => group.Select(pair => pair.Value).ToArray());
-        }
-
-        return problemDetails;
+                    group => group.Select(pair => pair.Value).ToArray())
+        };
     }
 
     private static ProblemDetails EnrichWithException(NotFoundException exception)

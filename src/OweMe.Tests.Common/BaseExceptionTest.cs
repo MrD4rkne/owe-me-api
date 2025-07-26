@@ -13,7 +13,7 @@ public abstract class BaseExceptionTest<T> where T : Exception
         const string message = "Test message";
 
         // Act
-        var exception = (T)Activator.CreateInstance(typeof(T), message, inner);
+        var exception = (T?)Activator.CreateInstance(typeof(T), message, inner);
 
         // Assert
         exception.ShouldNotBeNull();
@@ -27,9 +27,10 @@ public abstract class BaseExceptionTest<T> where T : Exception
         // Arrange
         const string message = "Test message";
 
-        var ex = (T)Activator.CreateInstance(typeof(T), message);
+        var ex = (T?)Activator.CreateInstance(typeof(T), message);
 
         // Assert
+        ex.ShouldNotBeNull();
         ex.Message.ShouldBe(message);
     }
 }
