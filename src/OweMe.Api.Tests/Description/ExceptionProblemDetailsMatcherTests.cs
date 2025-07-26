@@ -49,20 +49,20 @@ public class ExceptionProblemDetailsMatcherTests
         capturedContext.ShouldNotBeNull();
         capturedContext.Exception.ShouldBe(exception);
         capturedContext.HttpContext.ShouldBe(_httpContext);
-        
-        var problemDetails = capturedContext.ProblemDetails;
+
+        capturedContext.ProblemDetails.ShouldBeAssignableTo<ExtendedProblemDetails>();
+        var problemDetails = capturedContext.ProblemDetails as ExtendedProblemDetails;
         problemDetails.ShouldNotBeNull();
         problemDetails.Status.ShouldBe(StatusCodes.Status400BadRequest);
         problemDetails.Title.ShouldBe("Validation error");
         problemDetails.Detail.ShouldBe("Validation failed");
         
-        problemDetails.Extensions.ShouldContainKey("errors");
-        var errorsDict = problemDetails.Extensions["errors"] as Dictionary<string, string[]>;
-        errorsDict.ShouldNotBeNull();
-        errorsDict.ShouldContainKey("Field1");
-        errorsDict["Field1"].ShouldContain("Error1");
-        errorsDict.ShouldContainKey("Field2");
-        errorsDict["Field2"].ShouldContain("Error2");
+        problemDetails.Extensions.ShouldNotContainKey("errors");
+        problemDetails.Errors.ShouldNotBeNull();
+        problemDetails.Errors.ShouldContainKey("Field1");
+        problemDetails.Errors["Field1"].ShouldContain("Error1");
+        problemDetails.Errors.ShouldContainKey("Field2");
+        problemDetails.Errors["Field2"].ShouldContain("Error2");
         
         _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
     }
