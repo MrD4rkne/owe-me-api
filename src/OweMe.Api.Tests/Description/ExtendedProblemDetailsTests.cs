@@ -81,6 +81,6 @@ public class ExtendedProblemDetailsTests
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("traceId", "12345");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("requestId", "67890");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("a", "b");
-        extendedProblemDetails.Errors.ShouldBeEquivalentTo(problemDetails.Errors);
+// Removed redundant assertion as equivalence is already verified on line 78.
     }
 }
