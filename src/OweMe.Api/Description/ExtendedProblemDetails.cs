@@ -32,7 +32,7 @@ public class ExtendedProblemDetails : ProblemDetails
 
         if (problemDetails is ExtendedProblemDetails extendedDetails)
         {
-            Errors = extendedDetails.Errors;
+            Errors = extendedDetails.Errors ?? new Dictionary<string, string[]>();
         }
     }
 
