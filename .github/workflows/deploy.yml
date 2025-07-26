@@ -13,6 +13,7 @@ env:
 jobs:
   deploy:
     name: Deploy to Azure
+    needs: [ build-and-test ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
