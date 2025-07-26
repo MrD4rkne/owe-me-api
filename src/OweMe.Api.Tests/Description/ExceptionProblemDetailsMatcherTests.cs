@@ -145,6 +145,7 @@ public class ExceptionProblemDetailsMatcherTests
         problemDetails.Status.ShouldBe(StatusCodes.Status400BadRequest);
         problemDetails.Title.ShouldBe("Bad request");
         problemDetails.Detail.ShouldBe("Invalid request");
+        _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
     }
     
     [Fact]
@@ -171,6 +172,7 @@ public class ExceptionProblemDetailsMatcherTests
         problemDetails.Title.ShouldBe("An unexpected error occurred");
         problemDetails.Detail.ShouldBe("Something went wrong");
         problemDetails.Status.ShouldBe(StatusCodes.Status500InternalServerError);
+        _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
     }
     
     [Fact]
