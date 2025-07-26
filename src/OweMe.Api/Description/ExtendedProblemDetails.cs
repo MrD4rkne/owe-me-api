@@ -18,7 +18,7 @@ public class ExtendedProblemDetails : ProblemDetails
         Status = problemDetails.Status;
         Type = problemDetails.Type;
         Instance = problemDetails.Instance;
-        Extensions = problemDetails.Extensions;
+        Extensions = problemDetails.Extensions ?? new Dictionary<string, object?>();
 
         if (problemDetails.Extensions.TryGetValue(TraceIdKey, out object? traceId))
         {
