@@ -26,7 +26,8 @@ on:
         default: false
         type: boolean
 
-permissions: read-all
+permissions:
+    contents: read
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./src/OweMe.Api/publish"
