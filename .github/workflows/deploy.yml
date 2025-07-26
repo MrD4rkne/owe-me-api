@@ -21,9 +21,6 @@ jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
 
     steps:
       - name: Download published artifact
