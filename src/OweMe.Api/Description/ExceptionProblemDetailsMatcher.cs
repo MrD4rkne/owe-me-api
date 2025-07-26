@@ -25,7 +25,8 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
             _ => new ProblemDetails
             {
                 Title = "An unexpected error occurred",
-                Detail = exception.Message
+                Detail = exception.Message,
+                Status = StatusCodes.Status500InternalServerError,
             }
         };
         
