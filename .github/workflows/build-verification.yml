@@ -1,0 +1,15 @@
+name: build-verification
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      publish: false
+    secrets: inherit

@@ -10,11 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 		compose.debug.yaml = compose.debug.yaml
-		..\.github\workflows\sonarqube.yml = ..\.github\workflows\sonarqube.yml
-		..\.github\workflows\deploy.yml = ..\.github\workflows\deploy.yml
 		Directory.Packages.props = Directory.Packages.props
 		Directory.Build.props = Directory.Build.props
-		..\.github\workflows\codeql.yml = ..\.github\workflows\codeql.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B1927411-9F58-4045-963F-FEACC0733129}"
@@ -50,6 +47,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OweMe.Tests.Common.Tests", "OweMe.Tests.Common.Tests\OweMe.Tests.Common.Tests.csproj", "{E711EF83-2794-479D-8F0E-1A95652BD7D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OweMe.Application.UnitTests", "OweMe.Application.UnitTests\OweMe.Application.UnitTests.csproj", "{2ACDBB9B-65C9-49F7-B3AF-F087123A7FB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{E739A001-085A-4E16-8D3D-B0E5DE1B173F}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build-and-test.yml = ..\.github\workflows\build-and-test.yml
+		..\.github\workflows\codeql.yml = ..\.github\workflows\codeql.yml
+		..\.github\workflows\deploy.yml = ..\.github\workflows\deploy.yml
+		..\.github\workflows\build-verification.yml = ..\.github\workflows\build-verification.yml
+		..\.github\workflows\build-release.yml = ..\.github\workflows\build-release.yml
+		..\.github\workflows\build-regular.yml = ..\.github\workflows\build-regular.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

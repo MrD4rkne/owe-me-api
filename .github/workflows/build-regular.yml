@@ -1,0 +1,15 @@
+name: build-regular
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      publish: false
+    secrets: inherit

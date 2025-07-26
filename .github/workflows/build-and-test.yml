@@ -1,13 +1,39 @@
-name: SonarQube
+name: build-and-test
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+  workflow_call:
+    inputs:
+      publish:
+        description: 'Publish artifacts after build'
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      SONAR_TOKEN:
+          required: true
+      SONAR_HOST_URL:
+          required: true
+      SONAR_PROJECT_KEY:
+          required: true
+      SONAR_ORG:
+          required: true
+  
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish artifacts after build'
+        required: false
+        default: false
+        type: boolean
 
 permissions: read-all
+
+env:
+  AZURE_WEBAPP_PACKAGE_PATH: "./src/OweMe.Api/publish"
+  SOLUTION_PATH: "./src/OweMe.Api.sln"
+  API_PROJECT_PATH: "./src/OweMe.Api"
+  PUBLISH_DIR: "./publish"
+  PUBLISH_ARTIFACT: "oweme-api"
 
 jobs:
   build:
@@ -98,6 +124,17 @@ jobs:
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
             --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal
+
+      - name: Dotnet publish
+        if: ${{ inputs.publish == 'true' }}
+        working-directory: ${{ env.API_PROJECT_PATH }}
+        run: dotnet publish --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      - name: Publish artifacts
+        if: ${{ inputs.publish == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PUBLISH_ARTIFACT }}
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: SonarQube End
         env:
