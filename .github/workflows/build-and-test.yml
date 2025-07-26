@@ -129,7 +129,7 @@ jobs:
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
         working-directory: ${{ env.API_PROJECT_PATH }}
-        run: dotnet publish --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
       - name: Publish artifacts
         if: ${{ inputs.publish == true }}
         uses: actions/upload-artifact@v4
