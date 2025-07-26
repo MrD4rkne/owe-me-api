@@ -18,13 +18,13 @@ public class ExtendedProblemDetails : ProblemDetails
         Status = problemDetails.Status;
         Type = problemDetails.Type;
         Instance = problemDetails.Instance;
-        Extensions = problemDetails.Extensions;
+        Extensions = problemDetails.Extensions ?? new Dictionary<string, object?>();
 
         (TraceId, RequestId) = TryExtractTraceAndRequestId(problemDetails);
 
         if (problemDetails is ExtendedProblemDetails extendedDetails)
         {
-            Errors = extendedDetails.Errors;
+            Errors = extendedDetails.Errors ?? new Dictionary<string, string[]>();
         }
     }
 
