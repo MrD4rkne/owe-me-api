@@ -20,15 +20,7 @@ public class ExtendedProblemDetails : ProblemDetails
         Instance = problemDetails.Instance;
         Extensions = problemDetails.Extensions;
 
-        if (problemDetails.Extensions.TryGetValue(TraceIdKey, out object? traceId))
-        {
-            TraceId = traceId?.ToString();
-        }
-
-        if (problemDetails.Extensions.TryGetValue(RequestIdKey, out object? requestId))
-        {
-            RequestId = requestId?.ToString();
-        }
+        (TraceId, RequestId) = TryExtractTraceAndRequestId(problemDetails);
 
         if (problemDetails is ExtendedProblemDetails extendedDetails)
         {
@@ -41,4 +33,22 @@ public class ExtendedProblemDetails : ProblemDetails
     public string? TraceId { get; init; }
 
     public string? RequestId { get; init; }
+    
+    private static (string, string) TryExtractTraceAndRequestId(ProblemDetails problemDetails)
+    {
+        string? traceId = null;
+        string? requestId = null;
+        
+        if (problemDetails.Extensions.TryGetValue(TraceIdKey, out object? extractedTraceId))
+        {
+            traceId = extractedTraceId?.ToString();
+        }
+
+        if (problemDetails.Extensions.TryGetValue(RequestIdKey, out object? extractedRequestId))
+        {
+            requestId = extractedRequestId?.ToString();
+        }
+        
+        return (traceId, requestId);
+    }
 }
