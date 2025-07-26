@@ -1,0 +1,18 @@
+name: build-verification
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      publish: true
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: build
