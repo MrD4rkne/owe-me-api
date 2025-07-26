@@ -3,6 +3,7 @@ name: build-verification
 on:
   schedule:
     - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch:
 
 permissions: read-all
 
