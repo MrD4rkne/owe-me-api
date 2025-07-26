@@ -1,4 +1,4 @@
-name: build-verification
+name: build-regular
 
 on:
   schedule:
