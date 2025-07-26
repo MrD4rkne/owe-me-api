@@ -34,7 +34,7 @@ public class ExtendedProblemDetails : ProblemDetails
 
     public string? RequestId { get; init; }
     
-    private static (string, string) TryExtractTraceAndRequestId(ProblemDetails problemDetails)
+    private static (string?, string?) TryExtractTraceAndRequestId(ProblemDetails problemDetails)
     {
         string? traceId = null;
         string? requestId = null;
