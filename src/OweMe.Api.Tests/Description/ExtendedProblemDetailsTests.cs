@@ -81,9 +81,6 @@ public class ExtendedProblemDetailsTests
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("traceId", "12345");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("requestId", "67890");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("a", "b");
-        extendedProblemDetails.Errors.ShouldContainKey("Field1");
-        extendedProblemDetails.Errors["Field1"].ShouldBeEquivalentTo(new[] { "Error1" });
-        extendedProblemDetails.Errors.ShouldContainKey("Field2");
-        extendedProblemDetails.Errors["Field2"].ShouldBeEquivalentTo(new[] { "Error2" });
+        extendedProblemDetails.Errors.ShouldBeEquivalentTo(problemDetails.Errors);
     }
 }
