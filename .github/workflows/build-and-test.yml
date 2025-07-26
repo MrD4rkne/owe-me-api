@@ -125,8 +125,12 @@ jobs:
             --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal
 
+      - name: Dotnet publish
+        if: ${{ inputs.publish == 'true' }}
+        working-directory: ${{ env.API_PROJECT_PATH }}
+        run: dotnet publish --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       - name: Publish artifacts
-        if: ${{ github.event.inputs.publish == 'true' }}
+        if: ${{ inputs.publish == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}
