@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./src/OweMe.Api/publish"
