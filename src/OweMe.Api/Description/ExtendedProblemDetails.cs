@@ -6,7 +6,7 @@ public class ExtendedProblemDetails : ProblemDetails
 {
     private const string TraceIdKey = "traceId";
     private const string RequestIdKey = "requestId";
-    
+
     public ExtendedProblemDetails()
     {
     }
@@ -29,11 +29,16 @@ public class ExtendedProblemDetails : ProblemDetails
         {
             RequestId = requestId?.ToString();
         }
+
+        if (problemDetails is ExtendedProblemDetails extendedDetails)
+        {
+            Errors = extendedDetails.Errors;
+        }
     }
 
-    public IDictionary<string, string[]> Errors { get; set; } = new Dictionary<string, string[]>();
+    public Dictionary<string, string[]> Errors { get; init; } = new();
 
-    public string? TraceId { get; set; }
+    public string? TraceId { get; init; }
 
-    public string? RequestId { get; set; }
+    public string? RequestId { get; init; }
 }
