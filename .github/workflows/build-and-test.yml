@@ -12,10 +12,10 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-      description: 'Publish artifacts after build'
-      required: false
-      default: false
-      type: boolean
+        description: 'Publish artifacts after build'
+        required: false
+        default: false
+        type: boolean
 
 permissions: read-all
 
