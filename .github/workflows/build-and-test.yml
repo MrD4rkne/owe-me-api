@@ -25,15 +25,6 @@ on:
         required: false
         default: false
         type: boolean
-    secrets:
-      SONAR_TOKEN:
-        required: true
-      SONAR_HOST_URL:
-        required: true
-      SONAR_PROJECT_KEY:
-        required: true
-      SONAR_ORG:
-        required: true
 
 permissions: read-all
 
