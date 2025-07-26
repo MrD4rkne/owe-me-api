@@ -126,7 +126,7 @@ jobs:
           -- test --configuration Release --no-restore --no-build --verbosity normal
 
       - name: Publish artifacts
-        if: ${{ github.event.inputs.publish == 'true' }}
+        if: ${{ inputs.publish == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}
