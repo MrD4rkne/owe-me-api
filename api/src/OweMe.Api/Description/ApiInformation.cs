@@ -1,10 +1,12 @@
 ﻿namespace OweMe.Api.Description;
 
-public static class ApiInformation
+public sealed record ApiInformation
 {
-    public const string Title = "OweMe API";
-    
-    public const string Version = "1.0.0";
-    
-    public const string Description = "API for OweMe application";
+    public required string Title { get; init; }
+
+    public required string Version { get; init; }
+
+    public required string Description { get; init; }
+
+    public required string BuildVersion { get; init; }
 }

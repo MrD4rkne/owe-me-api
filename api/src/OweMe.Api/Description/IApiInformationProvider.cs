@@ -2,5 +2,5 @@
 
 public interface IApiInformationProvider
 {
-    ApiInfo GetApiInfo();
+    ApiInformation GetApiInfo();
 }

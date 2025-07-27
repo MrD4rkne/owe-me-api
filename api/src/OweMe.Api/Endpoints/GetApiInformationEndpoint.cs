@@ -11,10 +11,10 @@ public class GetApiInformationEndpoint : IEndpoint
         app.MapGet("/api/info", GetApiInformation)
             .WithName("GetApiInformation")
             .WithDescription("Get information about the API.")
-            .Produces<ApiInfo>()
+            .Produces<ApiInformation>()
             .WithTags(Tags.ApiInformation);
     }
-    
+
     public static Task<IResult> GetApiInformation(
         IApiInformationProvider apiInformationProvider)
     {
