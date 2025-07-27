@@ -37,8 +37,8 @@ public class ExtendedProblemDetailsTests
         extendedProblemDetails.Errors.ShouldBeEmpty();
         extendedProblemDetails.TraceId.ShouldBe("12345");
         extendedProblemDetails.RequestId.ShouldBe("67890");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("traceId", "12345");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("requestId", "67890");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("traceId");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("requestId");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("a", "b");
     }
 
