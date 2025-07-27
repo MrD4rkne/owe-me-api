@@ -9,7 +9,7 @@ public class ApiInformationProvider : IApiInformationProvider
             Title = OweMeApiInformation.Title,
             Version = OweMeApiInformation.Version,
             Description = OweMeApiInformation.Description,
-            BuildVersion = ThisAssembly.AssemblyVersion
+            BuildVersion = ThisAssembly.AssemblyInformationalVersion
         };
     }
 
