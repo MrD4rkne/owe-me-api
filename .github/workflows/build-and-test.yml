@@ -17,6 +17,10 @@ on:
           required: true
       SONAR_ORG:
           required: true
+    outputs:
+      release_tag:
+        description: 'Release tag from build job'
+        value: ${{ jobs.build.outputs.release_tag }}
   
   workflow_dispatch:
     inputs:
