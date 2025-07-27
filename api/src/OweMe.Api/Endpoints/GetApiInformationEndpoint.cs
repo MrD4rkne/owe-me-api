@@ -3,7 +3,7 @@ using OweMe.Api.Description;
 
 namespace OweMe.Api.Endpoints;
 
-public class ApiInformationEndpoint : IEndpoint
+public class GetApiInformationEndpoint : IEndpoint
 {
     [ExcludeFromCodeCoverage]
     public void MapEndpoint(IEndpointRouteBuilder app)

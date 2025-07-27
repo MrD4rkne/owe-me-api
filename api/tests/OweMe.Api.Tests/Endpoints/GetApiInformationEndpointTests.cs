@@ -1,0 +1,40 @@
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Routing;
+using Moq;
+using OweMe.Api.Description;
+using OweMe.Api.Endpoints;
+using Shouldly;
+
+namespace OweMe.Api.Tests.Endpoints;
+
+public class GetApiInformationEndpointTests
+{
+    private readonly Mock<IApiInformationProvider> _apiInformationProvider = new();
+
+    [Fact]
+    public async Task GetApiInformation_ShouldReturnApiInfo()
+    {
+        // Arrange
+        var expectedApiInfo = new ApiInfo
+        {
+            Title= "OweMe API",
+            Version = "1.0.0",
+            Description = "API for managing debts and ledgers.",
+            BuildVersion = "1.0.0+build.123"
+        };
+        
+        _apiInformationProvider
+            .Setup(provider => provider.GetApiInfo())
+            .Returns(expectedApiInfo);
+        
+        // Act
+        var result = await GetApiInformationEndpoint.GetApiInformation(_apiInformationProvider.Object);
+        
+        // Assert
+        result.ShouldBeOfType<Ok<ApiInfo>>();
+        var okResult = result as Ok<ApiInfo>;
+        okResult.ShouldNotBeNull();
+        okResult.Value.ShouldNotBeNull();
+        okResult.Value.ShouldBeEquivalentTo(expectedApiInfo);
+    }
+}
