@@ -5,7 +5,8 @@ on:
     - cron: '0 0 * * *' # Daily at midnight
   workflow_dispatch:
 
-permissions: read-all
+permissions: 
+  contents: write
 
 jobs:
   build:
