@@ -92,6 +92,7 @@ jobs:
         
       - uses: dotnet/nbgv@master
         id: nbgv
+        
       - name: Get version
         run: echo "${{ steps.nbgv.outputs.SemVer2 }}"
 
