@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
@@ -36,5 +35,7 @@ public class GetApiInformationEndpointTests
         okResult.ShouldNotBeNull();
         okResult.Value.ShouldNotBeNull();
         okResult.Value.ShouldBeEquivalentTo(expectedApiInfo);
+        
+        _apiInformationProvider.Verify(provider => provider.GetApiInfo(), Times.Once);
     }
 }
