@@ -25,8 +25,6 @@ var logger = new LoggerConfiguration()
 builder.Host.UseSerilog(logger);
 builder.Services.AddSerilog(logger);
 
-builder.Services.AddControllers();
-
 builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
 builder.Services.AddAuthentication(options =>
