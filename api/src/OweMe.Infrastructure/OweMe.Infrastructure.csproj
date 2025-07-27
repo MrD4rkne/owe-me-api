@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj"/>
+        <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NetArchTest.Rules"/>
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\OweMe.Api\OweMe.Api.csproj"/>
+        <ProjectReference Include="..\..\src\OweMe.Application\OweMe.Application.csproj"/>
+        <ProjectReference Include="..\..\src\OweMe.Domain\OweMe.Domain.csproj"/>
+        <ProjectReference Include="..\..\src\OweMe.Infrastructure\OweMe.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\src\OweMe.Persistence\OweMe.Persistence.csproj"/>
+    </ItemGroup>
+
+</Project>
