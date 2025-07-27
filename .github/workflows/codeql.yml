@@ -80,7 +80,6 @@ jobs:
     # If the build mode is set to "manual", you can use the `dotnet build` command
     - uses: dotnet/nbgv@master
       if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
-      working-directory: ./
       id: nbgv
     
     - if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
