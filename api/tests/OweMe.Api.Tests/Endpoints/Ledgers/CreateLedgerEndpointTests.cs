@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using OweMe.Api.Controllers;
+using OweMe.Api.Endpoints.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
 using Shouldly;
 
-namespace OweMe.Api.Tests.Controllers.Ledgers;
+namespace OweMe.Api.Tests.Endpoints.Ledgers;
 
 public class CreateLedgerEndpointTests
 {

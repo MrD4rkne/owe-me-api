@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using OweMe.Api.Description;
 
-namespace OweMe.Api.Controllers;
+namespace OweMe.Api.Endpoints;
 
 public class ApiInformationEndpoint : IEndpoint
 {

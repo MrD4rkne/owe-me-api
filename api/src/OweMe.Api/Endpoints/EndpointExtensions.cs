@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace OweMe.Api.Controllers;
+namespace OweMe.Api.Endpoints;
 
 public static class EndpointExtensions
 {

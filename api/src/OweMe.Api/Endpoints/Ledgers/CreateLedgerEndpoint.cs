@@ -5,7 +5,7 @@ using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers.Commands.Create;
 
-namespace OweMe.Api.Controllers;
+namespace OweMe.Api.Endpoints.Ledgers;
 
 public sealed class CreateLedgerEndpoint : IEndpoint
 {

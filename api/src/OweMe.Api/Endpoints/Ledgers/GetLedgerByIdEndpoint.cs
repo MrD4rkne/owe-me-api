@@ -6,7 +6,7 @@ using OweMe.Api.Identity;
 using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Queries.Get;
 
-namespace OweMe.Api.Controllers;
+namespace OweMe.Api.Endpoints.Ledgers;
 
 public sealed class GetLedgerByIdEndpoint : IEndpoint
 {
