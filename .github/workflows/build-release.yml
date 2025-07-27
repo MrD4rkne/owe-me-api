@@ -17,8 +17,8 @@ jobs:
       publish: true
     secrets: inherit
   deploy:
-    uses: ./.github/workflows/deploy.yml
     needs: build
+    uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
       release_tag: ${{ needs.build.outputs.release_tag }}
