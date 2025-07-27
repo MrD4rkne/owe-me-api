@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace OweMe.Api.Description;
+﻿namespace OweMe.Api.Description;
 
 public class ApiInformationProvider : IApiInformationProvider
 {
@@ -11,7 +9,7 @@ public class ApiInformationProvider : IApiInformationProvider
             Title = OweMeApiInformation.Title,
             Version = OweMeApiInformation.Version,
             Description = OweMeApiInformation.Description,
-            BuildVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown"
+            BuildVersion = ThisAssembly.AssemblyVersion
         };
     }
 
@@ -19,7 +17,7 @@ public class ApiInformationProvider : IApiInformationProvider
     {
         public const string Title = "OweMe API";
 
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         public const string Description = "API for OweMe application";
     }

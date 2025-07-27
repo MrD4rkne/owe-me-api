@@ -1,0 +1,24 @@
+﻿using System.Reflection;
+using OweMe.Api.Description;
+using Shouldly;
+
+namespace OweMe.Api.Tests.Description;
+
+public class ApiInformationProviderTests
+{
+    [Fact]
+    public void GetApiInfo_ShouldReturnApiInformation()
+    {
+        // Arrange
+        var provider = new ApiInformationProvider();
+
+        // Act
+        var apiInfo = provider.GetApiInfo();
+
+        // Assert
+        apiInfo.ShouldNotBeNull();
+        apiInfo.Version.ShouldBe(ThisAssembly.AssemblyVersion); // Assuming ThisAssembly.AssemblyVersion is set the same in all projects.
+        apiInfo.Description.ShouldBe("OweMe API");
+        apiInfo.Title.ShouldBe("OweMe API");
+    }
+}
