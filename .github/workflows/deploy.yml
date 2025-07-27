@@ -25,10 +25,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0  # Full history for Nbgv versioning
+      
+      - uses: dotnet/nbgv@master
+        id: nbgv
 
       - name: Download latest release asset
         run: |
-          gh release download --repo ${{ github.repository }} --latest \
+          LATEST_TAG=$(nbgv get-version --format json | jq -r .NuGetPackageVersion)
+          gh release download "$LATEST_TAG" --repo ${{ github.repository }} \
             --pattern "${{ env.PUBLISH_ARTIFACT }}.*" \
             --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
