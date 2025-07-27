@@ -10,9 +10,9 @@ namespace OweMe.Api.Endpoints.Ledgers.Create;
 public sealed class CreateLedgerEndpoint : IEndpoint
 {
     [ExcludeFromCodeCoverage]
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        app.MapPost("/api/ledgers", CreateLedger)
+        builder.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
             .WithTags(Tags.Ledger)

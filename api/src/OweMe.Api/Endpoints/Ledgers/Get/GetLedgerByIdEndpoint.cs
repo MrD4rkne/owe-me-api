@@ -10,9 +10,9 @@ namespace OweMe.Api.Endpoints.Ledgers.Get;
 public sealed class GetLedgerByIdEndpoint : IEndpoint
 {
     [ExcludeFromCodeCoverage]
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
+        builder.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
             .WithTags(Tags.Ledger)

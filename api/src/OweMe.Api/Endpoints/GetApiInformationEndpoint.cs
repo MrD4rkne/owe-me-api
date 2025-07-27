@@ -6,9 +6,9 @@ namespace OweMe.Api.Endpoints;
 public class GetApiInformationEndpoint : IEndpoint
 {
     [ExcludeFromCodeCoverage]
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        app.MapGet("/api/info", GetApiInformation)
+        builder.MapGet("/api/info", GetApiInformation)
             .WithName("GetApiInformation")
             .WithDescription("Get information about the API.")
             .Produces<ApiInformation>()
