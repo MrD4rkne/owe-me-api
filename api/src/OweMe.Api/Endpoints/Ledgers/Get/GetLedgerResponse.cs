@@ -9,8 +9,9 @@ public sealed record GetLedgerResponse : AuditableEntityModel
     [ReadOnly(true)]
     public Guid Id { get; init; }
 
-    [Description("Name of the ledger.")] public string Name { get; init; } = string.Empty;
+    [Description("Name of the ledger.")] 
+    public required string Name { get; init; }
 
     [Description("Description of the ledger.")]
-    public string Description { get; init; } = string.Empty;
+    public string? Description { get; init; }
 }
