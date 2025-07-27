@@ -16,6 +16,8 @@ jobs:
     with:
       publish: true
     secrets: inherit
+    outputs: 
+      release_tag: ${{ steps.set_release_tag.outputs.tag_name }}
   deploy:
     needs: build
     uses: ./.github/workflows/deploy.yml
