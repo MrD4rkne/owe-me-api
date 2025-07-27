@@ -30,11 +30,12 @@ permissions:
     contents: read
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: "./src/OweMe.Api/publish"
-  SOLUTION_PATH: "./src/OweMe.Api.sln"
-  API_PROJECT_PATH: "./src/OweMe.Api"
+  AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
+  SOLUTION_PATH: "./OweMe.Api.sln"
+  API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   PUBLISH_ARTIFACT: "oweme-api"
+  CACHE_DIR: "$HOME/.sonar"
 
 jobs:
   build:
@@ -95,7 +96,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
-        working-directory: ./src
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
 
@@ -110,15 +110,12 @@ jobs:
             /d:sonar.qualitygate.timeout=300
 
       - name: Dotnet restore
-        working-directory: ./src
         run: dotnet restore
 
       - name: Build
-        working-directory: ./src
         run: dotnet build --configuration Release --no-restore
 
       - name: Test with coverage
-        working-directory: ./src
         run: |
           dotCover cover-dotnet \
             --reportType=HTML \
@@ -142,7 +139,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
-        working-directory: ./src
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
           
