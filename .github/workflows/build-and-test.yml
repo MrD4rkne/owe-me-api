@@ -30,6 +30,7 @@ permissions:
     contents: write
 
 env:
+  AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
   SOLUTION_PATH: "./OweMe.Api.sln"
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
@@ -138,7 +139,7 @@ jobs:
           tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
           target_commitish: ${{ github.ref }}
           generate_release_notes: true
-          files: ${{ env.PUBLISH_DIR }}/**
+          files: ${{ env.env.AZURE_WEBAPP_PACKAGE_PATH }}/**
           prerelease: ${{ contains(steps.nbgv.outputs.SemVer2, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
