@@ -1,15 +1,18 @@
-﻿using OweMe.Api.Description;
+﻿using System.Diagnostics.CodeAnalysis;
+using OweMe.Api.Description;
 
 namespace OweMe.Api.Controllers;
 
 public class ApiInformationEndpoint : IEndpoint
 {
+    [ExcludeFromCodeCoverage]
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/info", GetApiInformation)
             .WithName("GetApiInformation")
+            .WithDescription("Get information about the API.")
             .Produces<ApiInfo>()
-            .WithTags(Description.Tags.ApiInformation);
+            .WithTags(Tags.ApiInformation);
     }
     
     public static Task<IResult> GetApiInformation(

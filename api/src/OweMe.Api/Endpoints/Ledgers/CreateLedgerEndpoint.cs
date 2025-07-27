@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Diagnostics.CodeAnalysis;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
 using OweMe.Api.Identity;
@@ -8,12 +9,13 @@ namespace OweMe.Api.Controllers;
 
 public sealed class CreateLedgerEndpoint : IEndpoint
 {
+    [ExcludeFromCodeCoverage]
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
-            .WithTags(Description.Tags.Ledger)
+            .WithTags(Tags.Ledger)
             .Accepts<CreateLedgerCommand>("application/json")
             .Produces(StatusCodes.Status201Created)
             .ProducesExtendedProblem(StatusCodes.Status400BadRequest)

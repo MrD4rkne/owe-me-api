@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Diagnostics.CodeAnalysis;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
 using OweMe.Api.Identity;
@@ -9,12 +10,13 @@ namespace OweMe.Api.Controllers;
 
 public sealed class GetLedgerByIdEndpoint : IEndpoint
 {
+    [ExcludeFromCodeCoverage]
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
-            .WithTags(Description.Tags.Ledger)
+            .WithTags(Tags.Ledger)
             .Produces<LedgerDto>()
             .ProducesExtendedProblem(StatusCodes.Status404NotFound)
             .WithStandardProblems()
