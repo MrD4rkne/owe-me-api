@@ -14,6 +14,7 @@ public sealed class GetLedgerByIdEndpoint : IEndpoint
         app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
+            .WithTags(Description.Tags.Ledger)
             .Produces<LedgerDto>()
             .ProducesExtendedProblem(StatusCodes.Status404NotFound)
             .WithStandardProblems()

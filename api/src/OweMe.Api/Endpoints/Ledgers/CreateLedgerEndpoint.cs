@@ -13,6 +13,7 @@ public sealed class CreateLedgerEndpoint : IEndpoint
         app.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
+            .WithTags(Description.Tags.Ledger)
             .Accepts<CreateLedgerCommand>("application/json")
             .Produces(StatusCodes.Status201Created)
             .ProducesExtendedProblem(StatusCodes.Status400BadRequest)
