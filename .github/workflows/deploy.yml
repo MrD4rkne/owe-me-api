@@ -32,11 +32,13 @@ jobs:
         id: nbgv
 
       - name: Download latest release asset
-        run: |
-          LATEST_TAG=$(nbgv get-version --format json | jq -r .NuGetPackageVersion)
+        run: |       
           gh release download "$LATEST_TAG" --repo ${{ github.repository }} \
             --pattern "${{ env.PUBLISH_ARTIFACT }}.*" \
             --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATEST_TAG: ${{ steps.nbgv.outputs.version }}
 
       - name: Deploy
         uses: azure/webapps-deploy@v3
