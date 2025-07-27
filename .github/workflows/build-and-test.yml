@@ -28,7 +28,7 @@ on:
 
 permissions:
     contents: read
-    packages: write
+    packages: ${{ inputs.publish == true && 'write' || 'none' }}
 
 env:
   SOLUTION_PATH: "./OweMe.Api.sln"
