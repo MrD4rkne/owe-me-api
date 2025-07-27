@@ -11,11 +11,11 @@ COPY ["OweMe.Api/OweMe.Api.csproj", "OweMe.Api/"]
 RUN dotnet restore "OweMe.Api/OweMe.Api.csproj"
 COPY . ./
 WORKDIR "/src/OweMe.Api"
-RUN dotnet build "OweMe.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "OweMe.Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "OweMe.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "OweMe.Api.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
