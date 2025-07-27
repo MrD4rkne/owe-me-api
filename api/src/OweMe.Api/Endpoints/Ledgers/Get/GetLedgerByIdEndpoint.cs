@@ -3,10 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
 using OweMe.Api.Identity;
-using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Queries.Get;
 
-namespace OweMe.Api.Endpoints.Ledgers;
+namespace OweMe.Api.Endpoints.Ledgers.Get;
 
 public sealed class GetLedgerByIdEndpoint : IEndpoint
 {
@@ -17,7 +16,7 @@ public sealed class GetLedgerByIdEndpoint : IEndpoint
             .WithName("GetLedger")
             .WithDescription("Get a ledger by ID.")
             .WithTags(Tags.Ledger)
-            .Produces<LedgerDto>()
+            .Produces<GetLedgerResponse>()
             .ProducesExtendedProblem(StatusCodes.Status404NotFound)
             .WithStandardProblems()
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
@@ -29,6 +28,17 @@ public sealed class GetLedgerByIdEndpoint : IEndpoint
     {
         var query = new GetLedgerQuery(ledgerId);
         var ledger = await mediator.Send(query);
-        return Results.Ok(ledger);
+
+        var response = new GetLedgerResponse
+        {
+            Id = ledger.Id,
+            Name = ledger.Name,
+            Description = ledger.Description,
+            CreatedAt = ledger.CreatedAt,
+            UpdatedAt = ledger.UpdatedAt,
+            CreatedBy = ledger.CreatedBy,
+            UpdatedBy = ledger.UpdatedBy
+        };
+        return Results.Ok(response);
     }
 }

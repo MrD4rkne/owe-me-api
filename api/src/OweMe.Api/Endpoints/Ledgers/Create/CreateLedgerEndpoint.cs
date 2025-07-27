@@ -5,7 +5,7 @@ using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers.Commands.Create;
 
-namespace OweMe.Api.Endpoints.Ledgers;
+namespace OweMe.Api.Endpoints.Ledgers.Create;
 
 public sealed class CreateLedgerEndpoint : IEndpoint
 {
@@ -16,7 +16,7 @@ public sealed class CreateLedgerEndpoint : IEndpoint
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
             .WithTags(Tags.Ledger)
-            .Accepts<CreateLedgerCommand>("application/json")
+            .Accepts<CreateLedgerRequest>("application/json")
             .Produces(StatusCodes.Status201Created)
             .ProducesExtendedProblem(StatusCodes.Status400BadRequest)
             .WithStandardProblems()
@@ -24,9 +24,15 @@ public sealed class CreateLedgerEndpoint : IEndpoint
     }
 
     public static async Task<IResult> CreateLedger(
-        [FromBody] CreateLedgerCommand createLedgerCommand,
+        [FromBody] CreateLedgerRequest createLedgerRequest,
         IMediator mediator)
     {
+        var createLedgerCommand = new CreateLedgerCommand
+        {
+            Name = createLedgerRequest.Name,
+            Description = createLedgerRequest.Description
+        };
+
         var ledgerId = await mediator.Send(createLedgerCommand);
         return Results.Created($"/api/ledgers/{ledgerId}", null);
     }
