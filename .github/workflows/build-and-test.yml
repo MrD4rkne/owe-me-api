@@ -36,9 +36,6 @@ env:
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   CACHE_DIR: "$HOME/.sonar"
-  
-outputs:
-  release_tag: ${{ jobs.build.outputs.release_tag }}
 
 jobs:
   build:
