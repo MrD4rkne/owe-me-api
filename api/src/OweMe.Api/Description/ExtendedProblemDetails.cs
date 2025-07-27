@@ -26,6 +26,9 @@ public class ExtendedProblemDetails : ProblemDetails
         {
             Errors = extendedDetails.Errors;
         }
+
+        Extensions.Remove(TraceIdKey);
+        Extensions.Remove(RequestIdKey);
     }
 
     public Dictionary<string, string[]> Errors { get; init; } = new();
@@ -33,12 +36,12 @@ public class ExtendedProblemDetails : ProblemDetails
     public string? TraceId { get; init; }
 
     public string? RequestId { get; init; }
-    
+
     private static (string?, string?) TryExtractTraceAndRequestId(ProblemDetails problemDetails)
     {
         string? traceId = null;
         string? requestId = null;
-        
+
         if (problemDetails.Extensions.TryGetValue(TraceIdKey, out object? extractedTraceId))
         {
             traceId = extractedTraceId?.ToString();
@@ -48,7 +51,7 @@ public class ExtendedProblemDetails : ProblemDetails
         {
             requestId = extractedRequestId?.ToString();
         }
-        
+
         return (traceId, requestId);
     }
 }

@@ -1,43 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using OweMe.Api.Controllers;
+using OweMe.Api.Endpoints.Ledgers.Get;
 using OweMe.Application.Ledgers;
-using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
 using OweMe.Domain.Common.Exceptions;
 using Shouldly;
 
-namespace OweMe.Api.Tests.Controllers;
+namespace OweMe.Api.Tests.Endpoints.Ledgers.Get;
 
-public class LedgersControllerTests
+public class GetLedgerByIdTests
 {
-    [Fact]
-    public async Task CreateLedger_ReturnsCreatedResult()
-    {
-        // Arrange
-        var mediatorMock = new Mock<IMediator>();
-        var command = new CreateLedgerCommand
-        {
-            Name = "Test Ledger",
-            Description = "This is a test ledger."
-        };
-
-        var ledgerId = Guid.NewGuid();
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ledgerId);
-
-        // Act
-        var result = await LedgersController.CreateLedger(command, mediatorMock.Object);
-
-        // Assert
-        result.ShouldBeOfType<Created>();
-
-        var createdResult = result as Created;
-        createdResult.ShouldNotBeNull();
-        createdResult.Location.ShouldBe($"/api/ledgers/{ledgerId}");
-    }
-
     [Fact]
     public async Task GetLedger_ReturnsOk_WhenSuccess()
     {
@@ -58,15 +31,22 @@ public class LedgersControllerTests
             .ReturnsAsync(expectedValue);
 
         // Act
-        var result = await LedgersController.GetLedger(expectedValue.Id, mediatorMock.Object);
+        var result = await GetLedgerByIdEndpoint.GetLedger(expectedValue.Id, mediatorMock.Object);
 
         // Assert
-        result.ShouldBeOfType<Ok<LedgerDto>>();
+        result.ShouldBeOfType<Ok<GetLedgerResponse>>();
 
-        var okResult = result as Ok<LedgerDto>;
+        var okResult = result as Ok<GetLedgerResponse>;
         okResult.ShouldNotBeNull();
         okResult.Value.ShouldNotBeNull();
-        okResult.Value.ShouldBe(expectedValue);
+
+        okResult.Value.Id.ShouldBe(expectedValue.Id);
+        okResult.Value.Name.ShouldBe(expectedValue.Name);
+        okResult.Value.Description.ShouldBe(expectedValue.Description);
+        okResult.Value.CreatedAt.ShouldBe(expectedValue.CreatedAt);
+        okResult.Value.CreatedBy.ShouldBe(expectedValue.CreatedBy);
+        okResult.Value.UpdatedAt.ShouldBe(expectedValue.UpdatedAt);
+        okResult.Value.UpdatedBy.ShouldBe(expectedValue.UpdatedBy);
     }
 
     [Fact]
@@ -82,7 +62,7 @@ public class LedgersControllerTests
         // Act & Assert
         await Should.ThrowAsync<NotFoundException>(async () =>
         {
-            await LedgersController.GetLedger(ledgerId, mediatorMock.Object);
+            await GetLedgerByIdEndpoint.GetLedger(ledgerId, mediatorMock.Object);
         });
     }
 }

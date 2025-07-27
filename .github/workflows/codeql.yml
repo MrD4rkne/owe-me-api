@@ -51,6 +51,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for Nbgv versioning and CodeQL analysis
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -76,6 +78,12 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+
+    # If the build mode is set to "manual", you can use the `dotnet build` command
+    - uses: dotnet/nbgv@master
+      if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
+      id: nbgv
+    
     - if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
       working-directory: ./
       run: dotnet build --configuration Release

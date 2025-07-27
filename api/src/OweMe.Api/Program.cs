@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
-using OweMe.Api.Controllers;
 using OweMe.Api.Description;
+using OweMe.Api.Endpoints;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
@@ -12,7 +12,11 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
+});
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -20,8 +24,6 @@ var logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(logger);
 builder.Services.AddSerilog(logger);
-
-builder.Services.AddControllers();
 
 builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
@@ -34,6 +36,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddSingleton<IApiInformationProvider, ApiInformationProvider>();
 
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 
@@ -64,6 +67,8 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
+builder.Services.AddEndpoints(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -82,7 +87,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapLedgersEndpoints();
+app.MapEndpoints();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

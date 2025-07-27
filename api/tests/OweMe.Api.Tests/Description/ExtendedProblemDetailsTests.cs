@@ -37,8 +37,8 @@ public class ExtendedProblemDetailsTests
         extendedProblemDetails.Errors.ShouldBeEmpty();
         extendedProblemDetails.TraceId.ShouldBe("12345");
         extendedProblemDetails.RequestId.ShouldBe("67890");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("traceId", "12345");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("requestId", "67890");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("traceId", "traceId should be removed");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("requestId", "requestId should be removed");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("a", "b");
     }
 
@@ -78,8 +78,8 @@ public class ExtendedProblemDetailsTests
         extendedProblemDetails.Errors.ShouldBe(problemDetails.Errors);
         extendedProblemDetails.TraceId.ShouldBe("12345");
         extendedProblemDetails.RequestId.ShouldBe("67890");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("traceId", "12345");
-        extendedProblemDetails.Extensions.ShouldContainKeyAndValue("requestId", "67890");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("traceId", "traceId should be removed");
+        extendedProblemDetails.Extensions.ShouldNotContainKey("requestId", "requestId should be removed");
         extendedProblemDetails.Extensions.ShouldContainKeyAndValue("a", "b");
 // Removed redundant assertion as equivalence is already verified on line 78.
     }

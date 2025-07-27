@@ -32,6 +32,8 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+    
+    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115"/>
   </ItemGroup>
   <!-- Tests-->
   <ItemGroup>
