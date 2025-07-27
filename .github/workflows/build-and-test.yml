@@ -36,12 +36,16 @@ env:
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   CACHE_DIR: "$HOME/.sonar"
+  
+outputs:
+  release_tag: ${{ jobs.build.outputs.release_tag }}
 
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
-
+    outputs:
+      release_tag: ${{ steps.create_release.outputs.tag_name }}
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4

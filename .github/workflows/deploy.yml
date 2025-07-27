@@ -2,12 +2,24 @@ name: deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to deploy (empty for latest)'
+        required: false
+        default: ''
+        type: string
   workflow_call:
-      secrets:
-        AZURE_WEBAPP_NAME:
-            required: true
-        AZURE_WEBAPP_PUBLISH_PROFILE:
-            required: true
+    inputs:
+      release_tag:
+        description: 'Release tag to deploy (empty for latest)'
+        required: false
+        default: ''
+        type: string
+    secrets:
+      AZURE_WEBAPP_NAME:
+        required: true
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: true
 
 permissions:
   contents: read
@@ -21,24 +33,22 @@ jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag != '' && inputs.release_tag || 'latest' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with: 
+        with:
           fetch-depth: 0  # Full history for Nbgv versioning
-      
-      - uses: dotnet/nbgv@master
-        id: nbgv
 
-      - name: Download latest release asset
-        run: |       
-          gh release download "$LATEST_TAG" --repo ${{ github.repository }} \
+      - name: Download release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download --repo ${{ github.repository }} ${{ env.RELEASE_TAG }} \
             --pattern "${{ env.PUBLISH_ARTIFACT }}.*" \
             --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          LATEST_TAG: ${{ steps.nbgv.outputs.SemVer2 }}
 
       - name: Deploy
         uses: azure/webapps-deploy@v3
