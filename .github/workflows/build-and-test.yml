@@ -17,6 +17,8 @@ on:
           required: true
       SONAR_ORG:
           required: true
+      GITHUB_TOKEN:
+          required: ${{ inputs.publish == true }}
   
   workflow_dispatch:
     inputs:
@@ -30,11 +32,9 @@ permissions:
     contents: read
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
   SOLUTION_PATH: "./OweMe.Api.sln"
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
-  PUBLISH_ARTIFACT: "oweme-api"
   CACHE_DIR: "$HOME/.sonar"
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for SonarCloud analysis
+          fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
 
       - name: Define Cache Directory Variable
         run: echo "CACHE_DIR=$HOME/.sonar" >> $GITHUB_ENV
@@ -89,6 +89,11 @@ jobs:
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
+        
+      - uses: dotnet/nbgv@master
+        id: nbgv
+      - name: Get version
+        run: echo "${{ steps.nbgv.outputs.SemVer2 }}"
 
       - name: SonarQube Begin
         env:
@@ -126,12 +131,19 @@ jobs:
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
-      - name: Publish artifacts
-        if: ${{ inputs.publish == true }}
-        uses: actions/upload-artifact@v4
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          name: ${{ env.PUBLISH_ARTIFACT }}
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          name: ${{ steps.nbgv.outputs.SemVer2 }}
+          tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
+          target_commitish: ${{ github.ref }}
+          generate_release_notes: true
+          files: ${{ env.PUBLISH_DIR }}/**
+          prerelease: ${{ contains(steps.nbgv.outputs.SemVer2, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarQube End
         env:

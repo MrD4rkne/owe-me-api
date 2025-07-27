@@ -23,11 +23,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download published artifact
+      - name: Download latest release artifact from branch
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.run_id }}
 
       - name: Deploy
         uses: azure/webapps-deploy@v3
