@@ -12,6 +12,6 @@ public sealed record CreateLedgerRequest
     public required string Name { get; init; }
 
     [Description("A description of the ledger.")]
-    [StringLength(LedgerConstants.MaxDescriptionLength, MinimumLength = 1)]
+    [StringLength(LedgerConstants.MaxDescriptionLength)]
     public string? Description { get; init; }
 }
