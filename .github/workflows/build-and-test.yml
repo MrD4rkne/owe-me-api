@@ -136,7 +136,7 @@ jobs:
         
       - name: Set output for release tag
         if: ${{ inputs.publish == true }}
-        run: echo "tag_name=${{ steps.create_release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        run: echo "tag_name=${{ steps.nbgv.outputs.SemVer2 }}" >> $GITHUB_OUTPUT
         id: set_release_tag
       
       - name: Create Release
