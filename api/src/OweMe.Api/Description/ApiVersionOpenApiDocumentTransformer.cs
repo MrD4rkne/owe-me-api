@@ -10,12 +10,10 @@ public class ApiVersionOpenApiDocumentTransformer(IApiInformationProvider apiInf
     {
         var apiInfo = apiInformationProvider.GetApiInfo();
         
-        document.Info = new OpenApiInfo
-        {
-            Title = apiInfo.Title,
-            Version = apiInfo.Version,
-            Description = apiInfo.Description
-        };
+        document.Info ??= new OpenApiInfo();
+        document.Info.Title = apiInfo.Title;
+        document.Info.Version = apiInfo.Version;
+        document.Info.Description = apiInfo.Description;
 
         return Task.CompletedTask;
     }
