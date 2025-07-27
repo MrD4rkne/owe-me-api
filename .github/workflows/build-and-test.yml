@@ -134,6 +134,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
+        if: ${{ inputs.publish == true }}
         with:
           name: ${{ steps.nbgv.outputs.SemVer2 }}
           tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
