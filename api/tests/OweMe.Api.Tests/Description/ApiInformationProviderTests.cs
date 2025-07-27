@@ -17,7 +17,8 @@ public class ApiInformationProviderTests
 
         // Assert
         apiInfo.ShouldNotBeNull();
-        apiInfo.Version.ShouldBe(ThisAssembly.AssemblyVersion); // Assuming ThisAssembly.AssemblyVersion is set the same in all projects.
+        apiInfo.Version.ShouldBe("1.0.1");
+        apiInfo.BuildVersion.ShouldBe(ThisAssembly.AssemblyVersion); // Assuming ThisAssembly.AssemblyVersion is set the same in all projects.
         apiInfo.Description.ShouldBe("OweMe API");
         apiInfo.Title.ShouldBe("OweMe API");
     }
