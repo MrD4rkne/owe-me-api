@@ -35,6 +35,7 @@ env:
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   PUBLISH_ARTIFACT: "oweme-api"
+  CACHE_DIR: "$HOME/.sonar"
 
 jobs:
   build:
