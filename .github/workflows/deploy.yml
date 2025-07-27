@@ -47,7 +47,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download --repo ${{ github.repository }} ${{ env.RELEASE_TAG }} \
-            --pattern "${{ env.PUBLISH_ARTIFACT }}.*" \
             --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy
