@@ -31,6 +31,7 @@ permissions:
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
+  PUBLISH_ARTIFACT: "oweme-api"
   SOLUTION_PATH: "./OweMe.Api.sln"
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
@@ -136,7 +137,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: ${{ inputs.publish == true }}
         with:
-          name: ${{ steps.nbgv.outputs.SemVer2 }}
+          name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
           tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
           target_commitish: ${{ github.ref }}
           generate_release_notes: true

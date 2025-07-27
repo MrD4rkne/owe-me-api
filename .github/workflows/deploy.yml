@@ -21,15 +21,17 @@ jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == github.ref_name }}
 
     steps:
-      - name: Download latest release artifact from branch
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.PUBLISH_ARTIFACT }}
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.run_id }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download latest release asset
+        run: |
+          gh release download --repo ${{ github.repository }} --latest \
+            --pattern "${{ env.PUBLISH_ARTIFACT }}.*" \
+            --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy
         uses: azure/webapps-deploy@v3
