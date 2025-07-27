@@ -95,7 +95,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
-        working-directory: ./src
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
 
@@ -110,15 +109,12 @@ jobs:
             /d:sonar.qualitygate.timeout=300
 
       - name: Dotnet restore
-        working-directory: ./src
         run: dotnet restore
 
       - name: Build
-        working-directory: ./src
         run: dotnet build --configuration Release --no-restore
 
       - name: Test with coverage
-        working-directory: ./src
         run: |
           dotCover cover-dotnet \
             --reportType=HTML \
@@ -142,7 +138,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
-        working-directory: ./src
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
           
