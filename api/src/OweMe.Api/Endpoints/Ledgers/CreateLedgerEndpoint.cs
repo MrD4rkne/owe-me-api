@@ -2,15 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
 using OweMe.Api.Identity;
-using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Commands.Create;
-using OweMe.Application.Ledgers.Queries.Get;
 
 namespace OweMe.Api.Controllers;
 
-public static class LedgersController
+public sealed class CreateLedgerEndpoint : IEndpoint
 {
-    public static void MapLedgersEndpoints(this IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/ledgers", CreateLedger)
             .WithName("CreateLedger")
@@ -18,14 +16,6 @@ public static class LedgersController
             .Accepts<CreateLedgerCommand>("application/json")
             .Produces(StatusCodes.Status201Created)
             .ProducesExtendedProblem(StatusCodes.Status400BadRequest)
-            .WithStandardProblems()
-            .RequireAuthorization(Constants.POLICY_API_SCOPE);
-
-        app.MapGet("/api/ledgers/{ledgerId:guid}", GetLedger)
-            .WithName("GetLedger")
-            .WithDescription("Get a ledger by ID.")
-            .Produces<LedgerDto>()
-            .ProducesExtendedProblem(StatusCodes.Status404NotFound)
             .WithStandardProblems()
             .RequireAuthorization(Constants.POLICY_API_SCOPE);
     }
@@ -36,14 +26,5 @@ public static class LedgersController
     {
         var ledgerId = await mediator.Send(createLedgerCommand);
         return Results.Created($"/api/ledgers/{ledgerId}", null);
-    }
-
-    public static async Task<IResult> GetLedger(
-        [FromRoute] Guid ledgerId,
-        IMediator mediator)
-    {
-        var query = new GetLedgerQuery(ledgerId);
-        var ledger = await mediator.Send(query);
-        return Results.Ok(ledger);
     }
 }

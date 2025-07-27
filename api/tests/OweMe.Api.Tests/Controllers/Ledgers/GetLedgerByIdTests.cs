@@ -3,41 +3,14 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using OweMe.Api.Controllers;
 using OweMe.Application.Ledgers;
-using OweMe.Application.Ledgers.Commands.Create;
 using OweMe.Application.Ledgers.Queries.Get;
 using OweMe.Domain.Common.Exceptions;
 using Shouldly;
 
-namespace OweMe.Api.Tests.Controllers;
+namespace OweMe.Api.Tests.Controllers.Ledgers;
 
-public class LedgersControllerTests
+public class GetLedgerByIdTests
 {
-    [Fact]
-    public async Task CreateLedger_ReturnsCreatedResult()
-    {
-        // Arrange
-        var mediatorMock = new Mock<IMediator>();
-        var command = new CreateLedgerCommand
-        {
-            Name = "Test Ledger",
-            Description = "This is a test ledger."
-        };
-
-        var ledgerId = Guid.NewGuid();
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ledgerId);
-
-        // Act
-        var result = await LedgersController.CreateLedger(command, mediatorMock.Object);
-
-        // Assert
-        result.ShouldBeOfType<Created>();
-
-        var createdResult = result as Created;
-        createdResult.ShouldNotBeNull();
-        createdResult.Location.ShouldBe($"/api/ledgers/{ledgerId}");
-    }
-
     [Fact]
     public async Task GetLedger_ReturnsOk_WhenSuccess()
     {
@@ -58,7 +31,7 @@ public class LedgersControllerTests
             .ReturnsAsync(expectedValue);
 
         // Act
-        var result = await LedgersController.GetLedger(expectedValue.Id, mediatorMock.Object);
+        var result = await GetLedgerByIdEndpoint.GetLedger(expectedValue.Id, mediatorMock.Object);
 
         // Assert
         result.ShouldBeOfType<Ok<LedgerDto>>();
@@ -82,7 +55,7 @@ public class LedgersControllerTests
         // Act & Assert
         await Should.ThrowAsync<NotFoundException>(async () =>
         {
-            await LedgersController.GetLedger(ledgerId, mediatorMock.Object);
+            await GetLedgerByIdEndpoint.GetLedger(ledgerId, mediatorMock.Object);
         });
     }
 }

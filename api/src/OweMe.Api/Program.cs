@@ -69,6 +69,8 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
+builder.Services.AddEndpoints(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -87,7 +89,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapLedgersEndpoints();
+app.MapEndpoints();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
