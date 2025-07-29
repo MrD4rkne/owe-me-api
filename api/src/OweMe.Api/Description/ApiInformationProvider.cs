@@ -1,4 +1,6 @@
-﻿namespace OweMe.Api.Description;
+﻿using System.Reflection;
+
+namespace OweMe.Api.Description;
 
 public class ApiInformationProvider : IApiInformationProvider
 {
@@ -9,7 +11,7 @@ public class ApiInformationProvider : IApiInformationProvider
             Title = OweMeApiInformation.Title,
             Version = OweMeApiInformation.Version,
             Description = OweMeApiInformation.Description,
-            BuildVersion = ThisAssembly.AssemblyInformationalVersion
+            BuildVersion = typeof(ApiInformationProvider).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown",
         };
     }
 
