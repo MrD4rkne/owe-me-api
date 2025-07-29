@@ -18,7 +18,7 @@ public class ApiInformationProviderTests
         // Assert
         apiInfo.ShouldNotBeNull();
         apiInfo.Version.ShouldBe("1.0.1");
-        apiInfo.BuildVersion.ShouldBe(Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion); // Assuming version is set the same in all projects.
+        apiInfo.BuildVersion.ShouldBe(Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown"); // Assuming version is set the same in all projects.
         apiInfo.Description.ShouldBe("API for OweMe application");
         apiInfo.Title.ShouldBe("OweMe API");
     }
