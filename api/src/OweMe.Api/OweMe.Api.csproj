@@ -6,12 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
-
-    <!--    Generate OpenAPI documents-->
-    <PropertyGroup>
-        <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
-    </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
@@ -33,6 +28,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj"/>
+        <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
+        <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj"/>
+        <ProjectReference Include="..\OweMe.Persistence\OweMe.Persistence.csproj"/>
+    </ItemGroup>
+
+    <!-- Generate OpenAPI documents -->
+    <PropertyGroup>
+        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+        <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+    </PropertyGroup>
+
+    <ItemGroup>
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
@@ -42,12 +50,5 @@
         <SonarQubeSetting Include="sonar.coverage.exclusions">
             <Value>**/Program.cs, **/Migrations/**.cs</Value>
         </SonarQubeSetting>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\OweMe.Application\OweMe.Application.csproj"/>
-        <ProjectReference Include="..\OweMe.Domain\OweMe.Domain.csproj"/>
-        <ProjectReference Include="..\OweMe.Infrastructure\OweMe.Infrastructure.csproj"/>
-        <ProjectReference Include="..\OweMe.Persistence\OweMe.Persistence.csproj"/>
     </ItemGroup>
 </Project>
