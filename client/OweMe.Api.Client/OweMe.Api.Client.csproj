@@ -14,6 +14,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\api\src\OweMe.Api\OweMe.Api.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+      <Targets>Build</Targets>
+    </ProjectReference>
+  </ItemGroup>
+
   <Target Name="GenerateOpenApiClient" BeforeTargets="CoreBuild">
     <Exec Command="$(NSwagExe) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
