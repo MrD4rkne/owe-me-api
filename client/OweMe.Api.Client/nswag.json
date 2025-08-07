@@ -1,5 +1,5 @@
 ﻿{
-  "runtime": "WinX64",
+  "runtime": "Net90",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
