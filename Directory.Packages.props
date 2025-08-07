@@ -10,10 +10,12 @@
     <PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <!-- API Description -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.5.3" />
+    <!-- Database and ORM -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
@@ -22,12 +24,20 @@
     </PackageVersion>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <!-- Logging and Monitoring -->
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Enrichers.Span" Version="3.1.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+    <!-- Versioning -->
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115" />
+    <!-- Clients -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
   </ItemGroup>
   <!-- Tests-->
   <ItemGroup>
