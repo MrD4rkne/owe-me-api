@@ -12,7 +12,8 @@ public class GetApiInformationEndpoint : IEndpoint
             .WithName("GetApiInformation")
             .WithDescription("Get information about the API.")
             .Produces<ApiInformation>()
-            .WithTags(Tags.ApiInformation);
+            .WithTags(Tags.ApiInformation)
+            .AllowAnonymous();
     }
 
     public static Task<IResult> GetApiInformation(

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    
+    <!-- As is it automatically generated, we exclude it from coverage. -->
+    <AnalysisLevel>none</AnalysisLevel>
+    <SonarQubeExclude>true</SonarQubeExclude>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSwag.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\api\src\OweMe.Api\OweMe.Api.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+      <Targets>Build</Targets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target Name="GenerateOpenApiClient" BeforeTargets="CoreBuild">
+    <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
+  </Target>
+
+</Project>
