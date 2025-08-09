@@ -26,4 +26,11 @@
     <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
 
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.coverage.exclusions">
+      <!-- As is it automatically generated, we exclude it from coverage. -->
+      <Value>**/OweMeApiClient.cs</Value>
+    </SonarQubeSetting>
+  </ItemGroup>
+
 </Project>
