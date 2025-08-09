@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,9 @@
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <!-- As is it automatically generated, we exclude it from coverage. -->
+      <Value>**/OweMeApiClient.cs</Value>
+    </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.issue.ignore.allfile">
       <Value>**/OweMeApiClient.cs</Value>
     </SonarQubeSetting>
   </ItemGroup>
