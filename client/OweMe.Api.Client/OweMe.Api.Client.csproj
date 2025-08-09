@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- As is it automatically generated, we exclude it from coverage. -->
     <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
 
@@ -27,9 +28,9 @@
     <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
 
+  <!-- As is it automatically generated, we exclude it from coverage. -->
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
-      <!-- As is it automatically generated, we exclude it from coverage. -->
       <Value>**/OweMeApiClient.cs</Value>
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.issue.ignore.allfile">
