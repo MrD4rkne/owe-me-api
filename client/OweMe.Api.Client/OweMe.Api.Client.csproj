@@ -4,8 +4,10 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
     <!-- As is it automatically generated, we exclude it from coverage. -->
     <AnalysisLevel>none</AnalysisLevel>
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,15 +29,5 @@
   <Target Name="GenerateOpenApiClient" BeforeTargets="CoreBuild">
     <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
-
-  <!-- As is it automatically generated, we exclude it from coverage. -->
-  <ItemGroup>
-    <SonarQubeSetting Include="sonar.coverage.exclusions">
-      <Value>**/OweMeApiClient.cs</Value>
-    </SonarQubeSetting>
-    <SonarQubeSetting Include="sonar.issue.ignore.allfile">
-      <Value>**/OweMeApiClient.cs</Value>
-    </SonarQubeSetting>
-  </ItemGroup>
 
 </Project>
