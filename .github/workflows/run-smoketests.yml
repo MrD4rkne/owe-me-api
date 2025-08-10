@@ -13,12 +13,13 @@ permissions:
 env:
   SMOKETESTS_FOLDER_PATH: "./api/tests/OweMe.Api.SmokeTests"
   CSPROJ_NAME: "OweMe.Api.SmokeTests.csproj"
-  CSPROJ_PATH: "${{ env.SMOKETESTS_FOLDER_PATH }}/${{ env.CSPROJ_NAME }}"
 
 jobs:
   test:
     name: Run smoke tests
     runs-on: ubuntu-latest
+    env:
+      CSPROJ_PATH: "${{ env.SMOKETESTS_FOLDER_PATH }}/${{ env.CSPROJ_NAME }}"
 
     steps:
       - name: Checkout repository
