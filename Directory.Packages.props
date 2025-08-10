@@ -57,5 +57,6 @@
     <PackageVersion Include="xunit.v3" Version="3.0.0"/>
     <PackageVersion Include="xunit.v3.extensibility.core" Version="3.0.0"/>
     <PackageVersion Include="MartinCostello.Logging.XUnit.v3" Version="0.6.0"/>
+    <PackageVersion Include="Duende.IdentityModel" Version="7.1.0"/>
   </ItemGroup>
 </Project>

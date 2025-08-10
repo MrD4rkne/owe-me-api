@@ -1,8 +1,8 @@
 ﻿namespace OweMe.Api.SmokeTests;
 
-public sealed record TestSettings
+internal sealed record ApiSettings
 {
-    public const string SectionName = "TestSettings";
+    public const string SectionName = "ApiSettings";
 
     public required string BaseUrl { get; init; }
 }
