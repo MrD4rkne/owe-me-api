@@ -13,14 +13,9 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
     private readonly Mock<TimeProvider> _timeProvider = new();
     private readonly Mock<IUserContext> _userContextMock = new();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await SetupAsync();
-    }
-
-    Task IAsyncLifetime.DisposeAsync()
-    {
-        return base.DisposeAsync().AsTask();
     }
 
     [Fact]
@@ -39,7 +34,7 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
         await context.Database.MigrateAsync();
 
         // Assert
-        var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+        var pendingMigrations = await context.Database.GetPendingMigrationsAsync(TestContext.Current.CancellationToken);
         pendingMigrations.ShouldBeEmpty("There should be no pending migrations after applying them.");
     }
 
@@ -55,7 +50,7 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
             _userContextMock.Object
         );
 
-        await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync(TestContext.Current.CancellationToken);
 
         var ledger = new Ledger
         {
@@ -65,7 +60,7 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
 
         // Act
         context.Ledgers.Add(ledger);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var createdLedger = await context.Ledgers
             .FirstOrDefaultAsync(x => x.Name == "Test Ledger" && x.Description == "This is a test ledger.");
