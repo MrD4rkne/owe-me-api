@@ -29,7 +29,7 @@ jobs:
 
       - name: Update settings.json
         run: |
-          echo "${{ SMOKETESTS_APPSETTINGS }} > "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json"
+          echo "${{ secrets.SMOKETESTS_APPSETTINGS }} > "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json"
 
       - name: Restore dependencies
         run: dotnet restore "${{ env.SMOKETESTS_FOLDER_PATH}}/OweMe.SmokeTests.csproj"
