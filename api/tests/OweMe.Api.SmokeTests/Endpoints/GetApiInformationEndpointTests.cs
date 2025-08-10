@@ -2,11 +2,11 @@
 
 namespace OweMe.Api.SmokeTests.Endpoints;
 
-public sealed class GetApiInformationEndpoint(OweMeClientFixture fixture) : IClassFixture<OweMeClientFixture>
+public sealed class GetApiInformationEndpointTests(OweMeClientFixture fixture) : IClassFixture<OweMeClientFixture>
 {
     [Theory]
-    [InlineData(OweMeClientFixture.AuthenticatedClientKey)]
-    [InlineData(OweMeClientFixture.UnauthenticatedClientKey)]
+    [InlineData(OweMeClientFixture.AuthenticatedClientKey, Label = "Authenticated Client")]
+    [InlineData(OweMeClientFixture.UnauthenticatedClientKey, Label = "Unauthenticated Client")]
     public async Task ShouldReturnProperSettings(string oweMeClientKey)
     {
         // Arrange
