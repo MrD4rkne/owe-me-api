@@ -1,26 +1,23 @@
-﻿using OweMe.Api.SmokeTests.Helpers;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OweMe.Api.Client;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace OweMe.Api.SmokeTests;
 
 public sealed class GetApiInformationEndpoint
 {
-    private readonly ClientFactory _clientFactory;
+    private readonly IServiceProvider _serviceProvider;
 
-    public GetApiInformationEndpoint()
+    public GetApiInformationEndpoint(IServiceProvider serviceProvider)
     {
-        _clientFactory = new ClientFactory(new Settings
-        {
-            ApiBaseUrl = "https://localhost:8081" // Adjust the base URL as needed
-        });
+        _serviceProvider = serviceProvider;
     }
     
     [Fact]
     public async Task ForUnauthorizedUser()
     {
         // Arrange
-        var client = _clientFactory.CreateClient();
+        var client = _serviceProvider.GetRequiredService<OweMeApiClient>();
 
         // Act
         var response = await client.GetApiInformationAsync();

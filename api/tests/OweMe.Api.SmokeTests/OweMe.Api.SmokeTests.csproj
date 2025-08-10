@@ -9,10 +9,12 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Microsoft.Extensions.Http"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="xunit" />
+        <PackageReference Include="Xunit.DependencyInjection"/>
         <PackageReference Include="xunit.runner.visualstudio" />
         <PackageReference Include="Shouldly"/>
+        <PackageReference Include="xunit.v3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -20,11 +22,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="runsettings\" />
+        <ProjectReference Include="..\..\..\client\OweMe.Api.Client\OweMe.Api.Client.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\client\OweMe.Api.Client\OweMe.Api.Client.csproj" />
+        <None Remove="appsettings.json"/>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="appsettings.Development.json"/>
+        <Content Include="appsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
