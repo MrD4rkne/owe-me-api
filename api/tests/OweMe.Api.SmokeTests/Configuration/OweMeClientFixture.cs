@@ -33,6 +33,7 @@ public class OweMeClientFixture
         services.AddSingleton(testSettings);
         services.Configure<UserSettings>(configuration.GetSection(UserSettings.SectionName));
         services.Configure<IdentityProviderSettings>(configuration.GetSection(IdentityProviderSettings.SectionName));
+
         services.AddTransient<TokenClientOptions>(options =>
         {
             var apiSettings = options.GetRequiredService<IOptions<IdentityProviderSettings>>().Value;
@@ -43,10 +44,6 @@ public class OweMeClientFixture
                 ClientSecret = apiSettings.ClientSecret
             };
         });
-
-        services.AddTransient<LoggingDelegatingHandler>();
-        services.AddTransient<AuthorizationDelegatingHandler>();
-
         services.AddHttpClient<TokenClient>()
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
@@ -58,6 +55,9 @@ public class OweMeClientFixture
         services.AddHttpClient(UnauthenticatedClientKey, client => client.BaseAddress = new Uri(testSettings.BaseUrl))
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
         services.AddKeyedTransient(UnauthenticatedClientKey, CreateOweMeClientFromKey);
+
+        services.AddTransient<LoggingDelegatingHandler>();
+        services.AddTransient<AuthorizationDelegatingHandler>();
 
         _serviceProvider = services.BuildServiceProvider();
     }
