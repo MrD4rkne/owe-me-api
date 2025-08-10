@@ -11,7 +11,9 @@ permissions:
   contents: read
 
 env:
-  SMOKETESTS_FOLDER_PATH: "./api/tests/OweMe.SmokeTests"
+  SMOKETESTS_FOLDER_PATH: "./api/tests/OweMe.Api.SmokeTests"
+  CSPROJ_NAME: "OweMe.Api.SmokeTests.csproj"
+  CSPROJ_PATH: "${{ env.SMOKETESTS_FOLDER_PATH }}/${{ env.CSPROJ_NAME }}"
 
 jobs:
   test:
@@ -34,10 +36,10 @@ jobs:
           echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" | tee "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json" > /dev/null && chmod 600 "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json"
 
       - name: Restore dependencies
-        run: dotnet restore "${{ env.SMOKETESTS_FOLDER_PATH}}/OweMe.SmokeTests.csproj"
+        run: dotnet restore "${{ env.CSPROJ_PATH }}"
 
       - name: Build smoke tests
-        run: dotnet build "${{ env.SMOKETESTS_FOLDER_PATH}}/OweMe.SmokeTests.csproj" --no-restore --configuration Release
+        run: dotnet build "${{ env.CSPROJ_PATH }}" --no-restore --configuration Release
 
       - name: Run smoke tests
-        run: dotnet test "${{ env.SMOKETESTS_FOLDER_PATH}}/OweMe.SmokeTests.csproj" --no-build --verbosity normal
+        run: dotnet test "${{ env.CSPROJ_PATH }}" --no-build --verbosity normal
