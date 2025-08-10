@@ -36,8 +36,8 @@ jobs:
         run: |
           echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" > "appsettings.json"
 
-      - name: list files
-        run: ls -la "${{ env.SMOKETESTS_FOLDER_PATH }}"
+      - name: see contents of appsettings.json
+        run: cat "appsettings.json"
 
       - name: Restore dependencies
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
