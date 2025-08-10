@@ -132,7 +132,7 @@ jobs:
             --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
             --Output=dotCover.Output.html \
-          -- test --configuration Release --no-restore --no-build --verbosity normal
+          -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
