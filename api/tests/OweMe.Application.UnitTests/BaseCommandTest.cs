@@ -28,6 +28,7 @@ public abstract class BaseCommandTest : IAsyncLifetime
 
     public virtual ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         return _ledgerDbContextMoq.DisposeAsync();
     }
 }
