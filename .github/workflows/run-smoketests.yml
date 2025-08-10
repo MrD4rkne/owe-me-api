@@ -1,4 +1,4 @@
-name: build-verification
+name: Run Smoke Tests
 
 on:
   workflow_dispatch:
