@@ -18,9 +18,6 @@ jobs:
   test:
     name: Run smoke tests
     runs-on: ubuntu-latest
-    env:
-      CSPROJ_PATH: "${{ env.SMOKETESTS_FOLDER_PATH }}/${{ env.CSPROJ_NAME }}"
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,13 +31,16 @@ jobs:
 
       - name: Update settings.json
         run: |
-          echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" | tee "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json" > /dev/null && chmod 600 "${{ env.SMOKETESTS_FOLDER_PATH}}/appsettings.json"
+          echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" | tee "appsettings.json" > /dev/null && chmod 600 "appsettings.json"
 
       - name: Restore dependencies
-        run: dotnet restore "${{ env.CSPROJ_PATH }}"
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet restore "${{ env.CSPROJ_NAME }}"
 
       - name: Build smoke tests
-        run: dotnet build "${{ env.CSPROJ_PATH }}" --no-restore --configuration Release
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet build "${{ env.CSPROJ_NAME }}" --no-restore --configuration Release
 
       - name: Run smoke tests
-        run: dotnet test "${{ env.CSPROJ_PATH }}" --no-build --verbosity normal
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet test "${{ env.CSPROJ_NAME }}" --no-build --verbosity normal
