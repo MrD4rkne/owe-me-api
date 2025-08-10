@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OweMe.Api.Client;
 
 namespace OweMe.Api.SmokeTests;
@@ -30,8 +31,18 @@ public class OweMeClientFixture
         }
 
         services.AddSingleton(testSettings);
-        services.Configure<UserSettings>(configuration.GetSection("UserSettings"));
-        services.Configure<TokenClientOptions>(configuration.GetSection("IdentityProviderSettings"));
+        services.Configure<UserSettings>(configuration.GetSection(UserSettings.SectionName));
+        services.Configure<IdentityProviderSettings>(configuration.GetSection(IdentityProviderSettings.SectionName));
+        services.AddTransient<TokenClientOptions>(options =>
+        {
+            var apiSettings = options.GetRequiredService<IOptions<IdentityProviderSettings>>().Value;
+            return new TokenClientOptions
+            {
+                Address = $"{apiSettings.Address.TrimEnd('/')}/connect/token",
+                ClientId = apiSettings.ClientId,
+                ClientSecret = apiSettings.ClientSecret
+            };
+        });
 
         services.AddTransient<LoggingDelegatingHandler>();
         services.AddTransient<AuthorizationDelegatingHandler>();
@@ -50,7 +61,8 @@ public class OweMeClientFixture
             return new OweMeApiClient(httpClient);
         });
 
-        services.AddHttpClient<OweMeApiClient>(client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
+        services.AddHttpClient<OweMeApiClient>(UnauthenticatedClientKey,
+                client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
         services.AddKeyedTransient<OweMeApiClient>(UnauthenticatedClientKey, (sp, key) =>
         {
