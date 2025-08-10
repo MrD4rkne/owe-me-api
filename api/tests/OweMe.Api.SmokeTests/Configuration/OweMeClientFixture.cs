@@ -46,7 +46,7 @@ public class OweMeClientFixture
         services.AddKeyedTransient<OweMeApiClient>(AuthenticatedClientKey, (sp, key) =>
         {
             var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient(key.ToString());
+            var httpClient = clientFactory.CreateClient(key?.ToString());
             return new OweMeApiClient(httpClient);
         });
 
@@ -55,7 +55,7 @@ public class OweMeClientFixture
         services.AddKeyedTransient<OweMeApiClient>(UnauthenticatedClientKey, (sp, key) =>
         {
             var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient(key.ToString());
+            var httpClient = clientFactory.CreateClient(key?.ToString());
             return new OweMeApiClient(httpClient);
         });
 

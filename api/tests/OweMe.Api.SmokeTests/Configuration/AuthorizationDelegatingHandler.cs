@@ -31,6 +31,6 @@ internal sealed class AuthorizationDelegatingHandler(
             throw new InvalidOperationException($"Failed to obtain token: {token.Error}");
         }
 
-        return token.AccessToken;
+        return token.AccessToken!;
     }
 }
