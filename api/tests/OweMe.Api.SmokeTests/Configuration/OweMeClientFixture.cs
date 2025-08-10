@@ -50,25 +50,23 @@ public class OweMeClientFixture
         services.AddHttpClient<TokenClient>()
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
-        services.AddHttpClient(AuthenticatedClientKey,
-                client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
+        services.AddHttpClient(AuthenticatedClientKey, client => client.BaseAddress = new Uri(testSettings.BaseUrl))
             .AddHttpMessageHandler<LoggingDelegatingHandler>()
             .AddHttpMessageHandler<AuthorizationDelegatingHandler>();
         services.AddKeyedTransient<OweMeApiClient>(AuthenticatedClientKey, (sp, key) =>
         {
+            ArgumentNullException.ThrowIfNull(key);
             var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient(key?.ToString());
-            return new OweMeApiClient(httpClient);
+            return new OweMeApiClient(clientFactory.CreateClient(key.ToString()));
         });
 
-        services.AddHttpClient<OweMeApiClient>(UnauthenticatedClientKey,
-                client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
+        services.AddHttpClient(UnauthenticatedClientKey, client => client.BaseAddress = new Uri(testSettings.BaseUrl))
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
         services.AddKeyedTransient<OweMeApiClient>(UnauthenticatedClientKey, (sp, key) =>
         {
+            ArgumentNullException.ThrowIfNull(key);
             var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient(key?.ToString());
-            return new OweMeApiClient(httpClient);
+            return new OweMeApiClient(clientFactory.CreateClient(key.ToString()));
         });
 
         _serviceProvider = services.BuildServiceProvider();
