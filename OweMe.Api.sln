@@ -60,6 +60,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		..\.github\workflows\build-verification.yml = .github\workflows\build-verification.yml
 		..\.github\workflows\build-release.yml = .github\workflows\build-release.yml
 		..\.github\workflows\build-regular.yml = .github\workflows\build-regular.yml
+		.github\workflows\run-smoketests.yml = .github\workflows\run-smoketests.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{DBE78EFA-F4F5-4520-A2DD-7B0D8E9D338C}"
