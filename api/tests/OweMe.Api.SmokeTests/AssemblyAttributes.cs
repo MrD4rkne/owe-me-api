@@ -1,1 +1,3 @@
-﻿[assembly: CaptureConsole]
+﻿using OweMe.Api.SmokeTests;
+
+[assembly: AssemblyFixture(typeof(OweMeClientFixture))]

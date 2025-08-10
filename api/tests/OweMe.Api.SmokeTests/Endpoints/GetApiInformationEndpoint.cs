@@ -1,26 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OweMe.Api.Client;
-using Shouldly;
+﻿using Shouldly;
 
-namespace OweMe.Api.SmokeTests;
+namespace OweMe.Api.SmokeTests.Endpoints;
 
-public sealed class GetApiInformationEndpoint
+[Collection(nameof(OweMeClientFixture))]
+public sealed class GetApiInformationEndpoint(OweMeClientFixture fixture)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public GetApiInformationEndpoint(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     [Fact]
     public async Task ForUnauthorizedUser()
     {
         // Arrange
-        var client = _serviceProvider.GetRequiredService<OweMeApiClient>();
+        var client = fixture.GetOweMeApiClient();
 
         // Act
-        var response = await client.GetApiInformationAsync();
+        var response = await client.GetApiInformationAsync(TestContext.Current.CancellationToken);
 
         // Assert
         response.ShouldNotBeNull();

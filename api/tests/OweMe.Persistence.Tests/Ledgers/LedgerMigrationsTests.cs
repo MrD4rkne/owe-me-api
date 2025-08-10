@@ -31,7 +31,7 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
         );
 
         // Act
-        await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync(TestContext.Current.CancellationToken);
 
         // Assert
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync(TestContext.Current.CancellationToken);
@@ -63,7 +63,8 @@ public class LedgerMigrationsTests() : PostgresTestBase("oweme_migrations_test")
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var createdLedger = await context.Ledgers
-            .FirstOrDefaultAsync(x => x.Name == "Test Ledger" && x.Description == "This is a test ledger.");
+            .FirstOrDefaultAsync(x => x.Name == "Test Ledger" && x.Description == "This is a test ledger.",
+                TestContext.Current.CancellationToken);
 
         // Assert
         createdLedger.ShouldNotBeNull("The ledger should have been created successfully.");

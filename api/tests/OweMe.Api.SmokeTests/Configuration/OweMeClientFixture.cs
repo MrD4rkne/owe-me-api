@@ -5,24 +5,21 @@ using OweMe.Api.Client;
 
 namespace OweMe.Api.SmokeTests;
 
-
-public class Startup
+public class OweMeClientFixture
 {
-    private readonly IConfiguration _configuration;
+    private readonly IServiceProvider _serviceProvider;
 
-    public Startup()
+    public OweMeClientFixture()
     {
-        _configuration = new ConfigurationBuilder()
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddXUnit());
+
+        var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddJsonFile("appsettings.Development.json", true)
             .Build();
-    }
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddLogging(builder => builder.AddXUnit());
-        
-        var testSettings = _configuration.GetSection(TestSettings.SectionName).Get<TestSettings>();
+        var testSettings = configuration.GetSection(TestSettings.SectionName).Get<TestSettings>();
         if (testSettings == null || string.IsNullOrEmpty(testSettings.BaseUrl))
         {
             throw new InvalidOperationException("TestSettings or BaseUrl is not configured properly.");
@@ -32,5 +29,12 @@ public class Startup
 
         services.AddHttpClient<OweMeApiClient>(client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
+
+        _serviceProvider = services.BuildServiceProvider();
+    }
+
+    public OweMeApiClient GetOweMeApiClient()
+    {
+        return _serviceProvider.GetRequiredService<OweMeApiClient>();
     }
 }

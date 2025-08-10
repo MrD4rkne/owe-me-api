@@ -4,5 +4,5 @@ public sealed record TestSettings
 {
     public const string SectionName = "TestSettings";
 
-    public string BaseUrl { get; init; }
+    public required string BaseUrl { get; init; }
 }
