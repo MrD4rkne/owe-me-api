@@ -29,6 +29,9 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
+      - name: Install dotcover
+        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
+
       - name: Update settings.json
         run: |
           echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" | tee "appsettings.json" > /dev/null && chmod 600 "appsettings.json"
@@ -41,6 +44,6 @@ jobs:
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         run: dotnet build "${{ env.CSPROJ_NAME }}" --no-restore --configuration Release
 
-      - name: Run smoke tests
+      - name: Run smoke tests with dotCover
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
-        run: dotnet test "${{ env.CSPROJ_NAME }}" --no-build --verbosity normal
+        run: dotCover cover-dotnet --reportType=HTML --Output=dotCover.Output.html -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
