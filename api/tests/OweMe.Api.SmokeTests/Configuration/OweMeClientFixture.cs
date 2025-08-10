@@ -8,7 +8,8 @@ namespace OweMe.Api.SmokeTests;
 
 public class OweMeClientFixture
 {
-    private const string authenticatedClientKey = "authenticatedClient";
+    public const string AuthenticatedClientKey = "authenticatedOweMeClient";
+    public const string UnauthenticatedClientKey = "unauthenticatedOweMeClient";
     
     private readonly IServiceProvider _serviceProvider;
 
@@ -35,18 +36,23 @@ public class OweMeClientFixture
         services.AddTransient<LoggingDelegatingHandler>();
         services.AddTransient<AuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<OweMeApiClient>(client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
-            .AddHttpMessageHandler<LoggingDelegatingHandler>();
-
         services.AddHttpClient<TokenClient>()
             .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
-        services.AddHttpClient(authenticatedClientKey,
+        services.AddHttpClient(AuthenticatedClientKey,
                 client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
             .AddHttpMessageHandler<LoggingDelegatingHandler>()
             .AddHttpMessageHandler<AuthorizationDelegatingHandler>();
+        services.AddKeyedTransient<OweMeApiClient>(AuthenticatedClientKey, (sp, key) =>
+        {
+            var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = clientFactory.CreateClient(key.ToString());
+            return new OweMeApiClient(httpClient);
+        });
 
-        services.AddKeyedTransient<OweMeApiClient>(authenticatedClientKey, (sp, key) =>
+        services.AddHttpClient<OweMeApiClient>(client => { client.BaseAddress = new Uri(testSettings.BaseUrl); })
+            .AddHttpMessageHandler<LoggingDelegatingHandler>();
+        services.AddKeyedTransient<OweMeApiClient>(UnauthenticatedClientKey, (sp, key) =>
         {
             var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
             var httpClient = clientFactory.CreateClient(key.ToString());
@@ -56,14 +62,9 @@ public class OweMeClientFixture
         _serviceProvider = services.BuildServiceProvider();
     }
 
-    public OweMeApiClient GetOweMeApiClient()
+    public OweMeApiClient GetClient(string clientKey)
     {
-        return _serviceProvider.GetRequiredService<OweMeApiClient>();
-    }
-
-    public OweMeApiClient GetAuthenticatedOweMeApiClientAsync(
-        CancellationToken cancellationToken = default)
-    {
-        return _serviceProvider.GetRequiredKeyedService<OweMeApiClient>(authenticatedClientKey);
+        return _serviceProvider.GetRequiredKeyedService<OweMeApiClient>(clientKey) ??
+               throw new InvalidOperationException($"Client with key '{clientKey}' not found.");
     }
 }

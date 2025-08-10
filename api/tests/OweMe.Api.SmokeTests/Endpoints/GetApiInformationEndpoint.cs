@@ -2,39 +2,18 @@
 
 namespace OweMe.Api.SmokeTests.Endpoints;
 
-public sealed class GetApiInformationEndpoint(OweMeClientFixture fixture)
+public sealed class GetApiInformationEndpoint(OweMeClientFixture fixture) : IClassFixture<OweMeClientFixture>
 {
-    [Fact]
-    public async Task For_UnauthorizedUser_ShouldReturnProperSettings()
+    [Theory]
+    [InlineData(OweMeClientFixture.AuthenticatedClientKey)]
+    [InlineData(OweMeClientFixture.UnauthenticatedClientKey)]
+    public async Task ShouldReturnProperSettings(string oweMeClientKey)
     {
         // Arrange
-        var client = fixture.GetOweMeApiClient();
+        var client = fixture.GetClient(oweMeClientKey);
         
         // Act
-        var response = await client.GetApiInformationAsync(TestContext.Current.CancellationToken);
-
-        // Assert
-        response.ShouldNotBeNull();
-        response.StatusCode.ShouldBe(200);
-        response.Result.ShouldNotBeNull();
-        response.Result.Title.ShouldBe("OweMe API");
-        response.Result.Version.ShouldNotBeNull();
-        response.Result.Version.ShouldNotBeEmpty();
-        response.Result.Description.ShouldNotBeNull();
-        response.Result.Description.ShouldNotBeEmpty();
-        response.Result.BuildVersion.ShouldNotBeNull();
-        response.Result.BuildVersion.ShouldNotBeEmpty();
-        response.Result.AdditionalProperties.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public async Task For_AuthorizedUser_ShouldReturnProperSettings()
-    {
-        // Arrange
-        var client = fixture.GetAuthenticatedOweMeApiClientAsync();
-
-        // Act
-        var response = await client.GetApiInformationAsync(TestContext.Current.CancellationToken);
+        var response = await client.GetApiInformationAsync(CancellationToken.None);
 
         // Assert
         response.ShouldNotBeNull();
