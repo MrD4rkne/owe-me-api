@@ -29,9 +29,6 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - name: Install dotcover
-        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
-
       - name: Restore dependencies
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         run: dotnet restore "${{ env.CSPROJ_NAME }}"
@@ -42,7 +39,7 @@ jobs:
 
       - name: Run smoke tests with dotCover
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
-        run: dotCover cover-dotnet --reportType=HTML --Output=dotCover.Output.html -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
+        run: dotnet test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
         env:
           APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
           IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
