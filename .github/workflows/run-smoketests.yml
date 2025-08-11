@@ -50,3 +50,13 @@ jobs:
           IDENTITYPROVIDERSETTINGS__CLIENTSECRET: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTSECRET }}
           USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
           USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
+          
+      - name: List html files
+        run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.html"
+
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: ${{ github.workspace }}/${{ env.SMOKETESTS_FOLDER_PATH }}/dotCover.Output.html
+          retention-days: 5
