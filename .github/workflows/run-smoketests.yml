@@ -62,8 +62,9 @@ jobs:
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         with:
           files: |
-            test-results/**/*.xml
-            test-results/**/*.trx
-            test-results/**/*.json
+            **.xml
+            **.trx
+            **.json
