@@ -51,7 +51,6 @@ jobs:
           USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
           USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
 
-      # https://seankilleen.com/2024/03/beautiful-net-test-reports-using-github-actions/
       - name: Upload Test Result Files
         uses: actions/upload-artifact@v4
         with:
