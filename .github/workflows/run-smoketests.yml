@@ -58,5 +58,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: ${{ github.workspace }}/${{ env.SMOKETESTS_FOLDER_PATH }}/dotCover.Output.html
+          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/dotCover.Output.html
           retention-days: 5
