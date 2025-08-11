@@ -149,13 +149,6 @@ jobs:
           name: CoverageReport
           path: coveragereport
 
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: (!cancelled())
-        with:
-          files: |
-            coverage.xml
-
       - name: Publish coverage in build summary
         run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
         shell: bash
