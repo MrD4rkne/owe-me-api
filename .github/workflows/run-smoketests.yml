@@ -32,12 +32,15 @@ jobs:
       - name: Install dotcover
         run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
 
-      - name: Update settings.json
-        run: |
-          echo "${{ secrets.SMOKETESTS_APPSETTINGS }}" > "appsettings.json"
-
-      - name: see contents of appsettings.json
-        run: cat "appsettings.json"
+      - name: Set environment variables
+        run: echo "Environment variables set for smoke tests."
+        env:
+          APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
+          IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
+          IDENTITYPROVIDERSETTINGS__CLIENTID: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTID }}
+          IDENTITYPROVIDERSETTINGS__CLIENTSECRET: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTSECRET }}
+          USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
+          USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
 
       - name: Restore dependencies
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
