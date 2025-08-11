@@ -55,6 +55,7 @@ jobs:
         run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.html"
 
       - name: Upload Coverage
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
