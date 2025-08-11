@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  checks: write
 
 env:
   SMOKETESTS_FOLDER_PATH: "./api/tests/OweMe.Api.SmokeTests"
