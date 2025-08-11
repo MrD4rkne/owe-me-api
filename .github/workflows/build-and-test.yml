@@ -115,7 +115,7 @@ jobs:
             /o:"$SONAR_ORG" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="$SONAR_HOST_URL" \
-            /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.xml \
+            /d:sonar.cs.dotcover.reportsPaths=coverage.xml \
             /d:sonar.scanner.scanAll=false \
             /d:sonar.qualitygate.wait=true \
             /d:sonar.qualitygate.timeout=300
@@ -131,22 +131,34 @@ jobs:
           dotCover cover-dotnet \
             --reportType=XML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
-            --Output=dotCover.Output.xml \
+            --Output=coverage.xml \
           -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
-      - name: Upload Test Result Files
+      - name: ReportGenerator
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.4.12
+        with:
+          reports: 'coverage.xml'
+          targetdir: 'coveragereport'
+          reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
+          toolpath: 'reportgeneratortool'
+          tag: '${{ github.run_number }}_${{ github.run_id }}'
+
+      - name: Upload coverage report artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: dotCover.Output.xml
-          retention-days: 5
+          name: CoverageReport
+          path: coveragereport
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
           files: |
-            dotCover.Output.xml
+            coverage.xml
+
+      - name: Publish coverage in build summary
+        run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+        shell: bash
 
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
