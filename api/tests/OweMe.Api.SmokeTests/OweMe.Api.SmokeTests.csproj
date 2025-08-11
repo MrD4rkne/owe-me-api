@@ -7,6 +7,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="Duende.IdentityModel"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
         <PackageReference Include="Microsoft.Extensions.Http"/>

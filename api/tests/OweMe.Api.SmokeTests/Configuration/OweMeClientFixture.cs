@@ -22,6 +22,7 @@ public class OweMeClientFixture
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddJsonFile("appsettings.Development.json", true)
+            .AddEnvironmentVariables()
             .Build();
 
         var testSettings = configuration.GetSection(ApiSettings.SectionName).Get<ApiSettings>();
