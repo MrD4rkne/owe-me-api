@@ -51,7 +51,7 @@ jobs:
           USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
           USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
           
-      - name: List html files
+      - name: List .xml files
         if: always()
         run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.xml"
 
@@ -60,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/**/.xml
+          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/**.xml
           retention-days: 5
