@@ -42,7 +42,7 @@ jobs:
 
       - name: Run smoke tests with dotCover
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
-        run: dotCover cover-dotnet --reportType=DetailedXML -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
+        run: dotCover cover-dotnet --reportType=DetailedXML --Output=dotcoverReport.xml -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
         env:
           APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
           IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
