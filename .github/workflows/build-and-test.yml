@@ -116,7 +116,7 @@ jobs:
             /o:"$SONAR_ORG" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="$SONAR_HOST_URL" \
-            /d:sonar.cs.dotcover.reportsPaths=coverage.xml \
+            /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html \
             /d:sonar.scanner.scanAll=false \
             /d:sonar.qualitygate.wait=true \
             /d:sonar.qualitygate.timeout=300
@@ -130,15 +130,15 @@ jobs:
       - name: Test with coverage
         run: |
           dotCover cover-dotnet \
-            --reportType=XML \
+            --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
-            --Output=coverage.xml \
+            --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.12
         with:
-          reports: 'coverage.xml'
+          reports: 'dotCover.Output.html'
           targetdir: 'coveragereport'
           reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
           toolpath: 'reportgeneratortool'
