@@ -31,9 +31,6 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - name: Install dotcover
-        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
-
       - name: Restore dependencies
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         run: dotnet restore "${{ env.CSPROJ_NAME }}"
@@ -42,9 +39,9 @@ jobs:
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         run: dotnet build "${{ env.CSPROJ_NAME }}" --no-restore --configuration Release
 
-      - name: Run smoke tests with dotCover
+      - name: Run smoke tests
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
-        run: dotCover cover-dotnet --reportType=DetailedXML --Output="${{ env.COVER_FILE_NAME }}" -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
+        run: dotnet test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --logger "trx;LogFileName=test_results.trx" --logger "console;verbosity=normal"
         env:
           APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
           IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
@@ -53,34 +50,8 @@ jobs:
           USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
           USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
 
-      - name: ReportGenerator
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.4.12
-        with:
-          reports: '${{ env.SMOKETESTS_FOLDER_PATH }}/${{ env.COVER_FILE_NAME }}'
-          targetdir: '${{ env.SMOKETESTS_FOLDER_PATH }}/coveragereport'
-          reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
-          assemblyfilters: '+*'
-          classfilters: '+*'
-          filefilters: '+*'
-          riskhotspotassemblyfilters: '+*'
-          riskhotspotclassfilters: '+*'
-          verbosity: 'Info'
-          tag: '${{ github.run_number }}_${{ github.run_id }}'
-          toolpath: 'reportgeneratortool'
-
-      - name: Upload coverage report artifact
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: CoverageReport
-          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/coveragereport
-
-      - name: Add comment to PR # Only applicable if 'MarkdownSummaryGithub' or one of the other Markdown report types is generated
-        if: github.event_name == 'pull_request'
-        run: gh pr comment $PR_NUMBER --edit-last --create-if-none --body-file ${{ env.SMOKETESTS_FOLDER_PATH }}/coveragereport/SummaryGithub.md
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
-
-      - name: Publish coverage in build summary # Only applicable if 'MarkdownSummaryGithub' or one of the other Markdown report types is generated
-        run: cat ${{ env.SMOKETESTS_FOLDER_PATH }}/coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
-        shell: bash
+          name: TestResults
+          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/TestResults
