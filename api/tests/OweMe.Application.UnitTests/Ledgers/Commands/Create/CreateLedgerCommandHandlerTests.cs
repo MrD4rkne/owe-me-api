@@ -16,7 +16,7 @@ public class CreateLedgerCommandHandlerTests : BaseCommandTest
         _timeProvider.Setup(x => x.GetUtcNow()).Returns(_currentTime);
     }
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
         _sut = new CreateLedgerCommandHandler(_ledgerContextMock.Object);

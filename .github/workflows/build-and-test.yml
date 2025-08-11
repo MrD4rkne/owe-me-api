@@ -32,6 +32,7 @@ on:
 
 permissions:
     contents: write
+    pull-requests: write
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
@@ -132,7 +133,33 @@ jobs:
             --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
             --Output=dotCover.Output.html \
-          -- test --configuration Release --no-restore --no-build --verbosity normal
+          -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
+
+      - name: ReportGenerator
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.4.12
+        with:
+          reports: 'dotCover.Output.html'
+          targetdir: 'coveragereport'
+          reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
+          toolpath: 'reportgeneratortool'
+          tag: '${{ github.run_number }}_${{ github.run_id }}'
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageReport
+          path: coveragereport
+
+      - name: Add comment to PR # Only applicable if 'MarkdownSummaryGithub' or one of the other Markdown report types is generated
+        if: github.event_name == 'pull_request'
+        run: gh pr comment $PR_NUMBER --edit-last --create-if-none --body-file coveragereport/SummaryGithub.md # Adjust path and filename if necessary
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
+
+      - name: Publish coverage in build summary
+        run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+        shell: bash
 
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
