@@ -52,10 +52,11 @@ jobs:
           USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
           
       - name: List html files
+        if: always()
         run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.html"
 
       - name: Upload Coverage
-        if: always()
+        if: always() # Ensure this step runs even if tests fail
         uses: actions/upload-artifact@v4
         with:
           name: coverage
