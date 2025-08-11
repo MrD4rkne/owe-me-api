@@ -29,6 +29,9 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
+      - name: Install dotcover
+        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
+
       - name: Restore dependencies
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
         run: dotnet restore "${{ env.CSPROJ_NAME }}"
@@ -39,7 +42,7 @@ jobs:
 
       - name: Run smoke tests with dotCover
         working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
-        run: dotnet test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
+        run: dotCover cover-dotnet --reportType=DetailedXML -- test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --verbosity normal
         env:
           APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
           IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
@@ -50,12 +53,12 @@ jobs:
           
       - name: List html files
         if: always()
-        run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.html"
+        run: find "${{ env.SMOKETESTS_FOLDER_PATH }}" -type f -name "*.xml"
 
       - name: Upload Coverage
         if: always() # Ensure this step runs even if tests fail
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/**/.html
+          path: ${{ env.SMOKETESTS_FOLDER_PATH }}/**/.xml
           retention-days: 5
