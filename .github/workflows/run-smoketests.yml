@@ -63,6 +63,6 @@ jobs:
         if: (!cancelled())
         with:
           files: |
-            ${{ env.SMOKETESTS_FOLDER_PATH }}/**/*.xml
-            ${{ env.SMOKETESTS_FOLDER_PATH }}/**/*.trx
-            ${{ env.SMOKETESTS_FOLDER_PATH }}/**/*.json
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.xml
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.trx
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.json
