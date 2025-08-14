@@ -101,7 +101,9 @@ This diagram illustrates how different types of tests are executed based on the 
 flowchart TD
     subgraph "Scheduled"
         direction LR
-        Schedule["Daily schedule"] --> F("[build-regular]<br/>Daily Health Checks")
+        Schedule["Daily schedule"]
+        Schedule --> F("[build-regular]<br/>Daily Health Checks")
+        Schedule --> G("[run-smoketests]<br/>Daily Smoke Tests")
     end
 
     subgraph "On Code Change"
