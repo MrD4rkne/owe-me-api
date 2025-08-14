@@ -111,12 +111,4 @@ flowchart TD
         C --> D("[build-release]<br/>All Tests")
         D --> E("[deploy]<br/>Smoke Tests")
     end
-    
-    subgraph "Deploy"
-        direction LR
-        A[Code Change] --> B([build-verification])
-        B --> C{Merge to Master}
-        C --> D("[build-release]<br/>All Tests")
-        D --> E("[deploy]<br/>Smoke Tests")
-    end
 ```
