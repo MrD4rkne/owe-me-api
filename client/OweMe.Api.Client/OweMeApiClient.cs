@@ -61,7 +61,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ApiInformation> GetApiInformationAsync()
+        public virtual System.Threading.Tasks.Task<Response<ApiInformation>> GetApiInformationAsync()
         {
             return GetApiInformationAsync(System.Threading.CancellationToken.None);
         }
@@ -72,7 +72,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiInformation> GetApiInformationAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response<ApiInformation>> GetApiInformationAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -118,7 +118,7 @@ namespace OweMe.Api.Client
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return objectResponse_.Object;
+                            return new Response<ApiInformation>(status_, headers_, objectResponse_.Object);
                         }
                         else
                         {
@@ -145,7 +145,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<GetLedgerResponse> GetLedgerAsync(System.Guid ledgerId)
+        public virtual System.Threading.Tasks.Task<Response<GetLedgerResponse>> GetLedgerAsync(System.Guid ledgerId)
         {
             return GetLedgerAsync(ledgerId, System.Threading.CancellationToken.None);
         }
@@ -156,7 +156,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetLedgerResponse> GetLedgerAsync(System.Guid ledgerId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response<GetLedgerResponse>> GetLedgerAsync(System.Guid ledgerId, System.Threading.CancellationToken cancellationToken)
         {
             if (ledgerId == null)
                 throw new System.ArgumentNullException("ledgerId");
@@ -206,7 +206,7 @@ namespace OweMe.Api.Client
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return objectResponse_.Object;
+                            return new Response<GetLedgerResponse>(status_, headers_, objectResponse_.Object);
                         }
                         else
                         if (status_ == 404)
@@ -253,7 +253,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task CreateLedgerAsync(CreateLedgerRequest body)
+        public virtual System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerRequest body)
         {
             return CreateLedgerAsync(body, System.Threading.CancellationToken.None);
         }
@@ -264,7 +264,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task CreateLedgerAsync(CreateLedgerRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -311,7 +311,7 @@ namespace OweMe.Api.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            return;
+                            return new Response(status_, headers_);
                         }
                         else
                         if (status_ == 400)
@@ -645,6 +645,32 @@ namespace OweMe.Api.Client
 
     }
 
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response
+    {
+        public int StatusCode { get; private set; }
+
+        public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
+
+        public Response(int statusCode, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers)
+        {
+            StatusCode = statusCode;
+            Headers = headers;
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Response<TResult> : Response
+    {
+        public TResult Result { get; private set; }
+
+        public Response(int statusCode, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result)
+            : base(statusCode, headers)
+        {
+            Result = result;
+        }
+    }
 
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]

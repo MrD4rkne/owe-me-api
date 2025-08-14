@@ -11,7 +11,7 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
 {
     private GetLedgerQueryHandler _sut = null!;
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
         _sut = new GetLedgerQueryHandler(_ledgerContextMock.Object, _userContextMock.Object);
@@ -25,8 +25,8 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         _userContextMock.Setup(x => x.Id).Returns(userId);
 
         var ledger = new Ledger { Name = "Test Ledger", CreatedBy = userId };
-        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger);
-        await _ledgerContextMock.Object.SaveChangesAsync();
+        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger, TestContext.Current.CancellationToken);
+        await _ledgerContextMock.Object.SaveChangesAsync(TestContext.Current.CancellationToken);
         var ledgerId = ledger.Id;
 
         _ledgerContextMock.Invocations.Clear();
@@ -70,8 +70,8 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
 
         // Let's create a ledger with a different user
         var ledger = new Ledger { Name = "Test Ledger", CreatedAt = DateTimeOffset.UtcNow, CreatedBy = otherUserId };
-        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger);
-        await _ledgerContextMock.Object.SaveChangesAsync();
+        await _ledgerContextMock.Object.Ledgers.AddAsync(ledger, TestContext.Current.CancellationToken);
+        await _ledgerContextMock.Object.SaveChangesAsync(TestContext.Current.CancellationToken);
         var ledgerId = ledger.Id;
 
         var userId = UserId.New();

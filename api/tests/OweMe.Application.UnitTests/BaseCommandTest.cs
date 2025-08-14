@@ -21,13 +21,14 @@ public abstract class BaseCommandTest : IAsyncLifetime
 
     protected Mock<ILedgerContext> _ledgerContextMock => _ledgerDbContextMoq.LedgerContextMock;
 
-    public virtual Task InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
-        return _ledgerDbContextMoq.SetupAsync();
+        await _ledgerDbContextMoq.SetupAsync();
     }
 
-    public virtual Task DisposeAsync()
+    public virtual ValueTask DisposeAsync()
     {
-        return _ledgerDbContextMoq.DisposeAsync().AsTask();
+        GC.SuppressFinalize(this);
+        return _ledgerDbContextMoq.DisposeAsync();
     }
 }

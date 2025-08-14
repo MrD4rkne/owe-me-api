@@ -49,7 +49,7 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
         _userContextMock = new Mock<IUserContext>();
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await SetupAsync();
 
@@ -59,11 +59,6 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
 
         await using var ctx = new TestDbContext(_options, _timeProviderMock.Object, _userContextMock.Object);
         await ctx.Database.EnsureCreatedAsync();
-    }
-
-    Task IAsyncLifetime.DisposeAsync()
-    {
-        return base.DisposeAsync().AsTask();
     }
 
     [Fact]
@@ -78,7 +73,7 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
         _userContextMock.Setup(uc => uc.Id).Returns(_createdBy);
 
         // Act
-        var changed = await sut.SaveChangesAsync();
+        int changed = await sut.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
         changed.ShouldBe(1);
@@ -103,7 +98,7 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
 
         var entity = new TestEntity { CreatedAt = _now, CreatedBy = _userContextMock.Object.Id };
         sut._entities.Add(entity);
-        await sut.SaveChangesAsync();
+        await sut.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         _timeProviderMock.Setup(tp => tp.GetUtcNow()).Returns(_then);
         _userContextMock.Setup(uc => uc.Id).Returns(_updatedBy);
@@ -113,7 +108,7 @@ public class AuditableDbContextTests : PostgresTestBase, IAsyncLifetime
 
         // Act
         entity.Name = "Updated Name"; // Simulate change
-        var changes = await sut.SaveChangesAsync();
+        int changes = await sut.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
         changes.ShouldBe(1);

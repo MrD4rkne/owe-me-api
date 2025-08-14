@@ -1,0 +1,80 @@
+name: Run Smoke Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Every day at midnight
+  workflow_call:
+    secrets:
+      SMOKETESTS_APISETTINGS_BASEURL:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTID:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTSECRET:
+        required: true
+      SMOKETESTS_USERSETTINGS_USERNAME:
+        required: true
+      SMOKETESTS_USERSETTINGS_PASSWORD:
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  SMOKETESTS_FOLDER_PATH: "./api/tests/OweMe.Api.SmokeTests"
+  CSPROJ_NAME: "OweMe.Api.SmokeTests.csproj"
+  COVER_FILE_NAME: "dotcoverReport.xml"
+
+jobs:
+  test:
+    name: Run smoke tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for Nbgv versioning
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet restore "${{ env.CSPROJ_NAME }}"
+
+      - name: Build smoke tests
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet build "${{ env.CSPROJ_NAME }}" --no-restore --configuration Release
+
+      - name: Run smoke tests
+        working-directory: "${{ env.SMOKETESTS_FOLDER_PATH }}"
+        run: dotnet test "${{ env.CSPROJ_NAME }}" --configuration Release --no-restore --no-build --logger "trx;LogFileName=test_results.trx" --logger "console;verbosity=normal" --collect:"XPlat Code Coverage"
+        env:
+          APISETTINGS__BASEURL: ${{ secrets.SMOKETESTS_APISETTINGS_BASEURL }}
+          IDENTITYPROVIDERSETTINGS__ADDRESS: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS }}
+          IDENTITYPROVIDERSETTINGS__CLIENTID: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTID }}
+          IDENTITYPROVIDERSETTINGS__CLIENTSECRET: ${{ secrets.SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTSECRET }}
+          USERSETTINGS__USERNAME: ${{ secrets.SMOKETESTS_USERSETTINGS_USERNAME }}
+          USERSETTINGS__PASSWORD: ${{ secrets.SMOKETESTS_USERSETTINGS_PASSWORD }}
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ${{ github.workspace }}/**/TestResults/**/*
+          retention-days: 5
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: (!cancelled())
+        with:
+          files: |
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.xml
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.trx
+            ${{ env.SMOKETESTS_FOLDER_PATH }}/**TestResults/*.json
