@@ -24,6 +24,8 @@ on:
 permissions:
   contents: read
   deployments: write
+  checks: write
+  pull-requests: write
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
@@ -55,3 +57,7 @@ jobs:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+  smoke-tests:
+    needs: deploy
+    uses: ./.github/workflows/run-smoketests.yml
+    secrets: inherit
