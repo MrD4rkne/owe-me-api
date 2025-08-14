@@ -1,91 +1,101 @@
 # CI/CD Pipeline
 
-CI/CD pipeline ensures code quality, security, and reliable deployments through automated workflows.
+Our CI/CD pipeline automates code integration and deployment, focusing on quality, security, and reliability. This
+document outlines the core workflows that make it all happen.
 
 ## Core Workflows
 
-### [build-and-test](../.github/workflows/build-and-test.yml)
-**Purpose**: Reusable workflow foundation used across all verification processes.
+### `build-and-test`
 
-**Key Features:**
+**Purpose**: This is the foundational workflow for all our verification processes. It's a reusable workflow that ensures
+consistency.
 
-- SonarCloud static code analysis
-- Complete solution build
-- Comprehensive test execution (excludes smoke tests)
-- Test results publication
+**Key Features**:
 
-### [build-verification](../.github/workflows/build-verification.yml)
-**Purpose**: Pull request validation ensuring code quality before merge.
+- **Static Code Analysis**: Runs SonarCloud to catch bugs and vulnerabilities early.
+- **Solution Build**: Compiles the entire solution to ensure all parts work together.
+- **Comprehensive Testing**: Executes a full suite of tests (excluding smoke tests).
+- **Test Publication**: Publishes test results for review.
 
-**Triggers**: Pull request creation/updates
-**Process**: Leverages [build-and-test](#build-and-test) for comprehensive verification
-**Focus**: Code quality, test coverage, and integration validation
+### `build-verification`
 
-### [build-release](../.github/workflows/build-release.yml)
-**Purpose**: Production deployment pipeline triggered on master branch changes.
+**Purpose**: Guards our codebase by validating all pull requests before they are merged.
 
-**Triggers**: Push to `master` branch
-**Process**:
+- **Triggers**: Activates on pull request creation or updates.
+- **Process**: Leverages the `build-and-test` workflow for a thorough check.
+- **Focus**: Ensures code quality, maintains test coverage, and validates integration.
 
-```mermaid
-flowchart TD
-    subgraph "Triggers"
-        Merge(Push to master)
-        Dispatch(Manual dispatch)
-    end
+### `build-release`
 
-    subgraph "CI/CD Pipeline"
-        direction LR
-        BuildRelease["[build-release]"]
-        Deploy["[deploy]"]
-        SmokeTests["[run-smoketests]"]
-    end
+**Purpose**: Handles the deployment to production when changes are pushed to the `master` branch.
 
-    Merge --> BuildRelease
-    Dispatch --> BuildRelease
-    BuildRelease --> Deploy
-    Deploy --> SmokeTests
-```
+- **Triggers**: Activates on a push to the `master` branch.
+- **Process**:
+  ```mermaid
+  flowchart TD
+      subgraph "Triggers"
+          Merge(Push to master)
+          Dispatch(Manual dispatch)
+      end
 
-**Integration**:
+      subgraph "CI/CD Pipeline"
+          direction LR
+          BuildRelease["[build-release]"]
+          Deploy["[deploy]"]
+          SmokeTests["[run-smoketests]"]
+      end
 
-### [build-regular](../.github/workflows/build-regular.yml)
+      Merge --> BuildRelease
+      Dispatch --> BuildRelease
+      BuildRelease --> Deploy
+      Deploy --> SmokeTests
+  ```
 
-- **Purpose**: Scheduled health checks and continuous quality monitoring.
-- **Triggers**: Regular schedule (daily)
-- **Process**: Uses [build-and-test](#build-and-test) for routine verification
-- **Benefits**: Early detection of environmental issues and dependency problems
+### `build-regular`
+
+- **Purpose**: Performs scheduled health checks to monitor the application's stability over time.
+- **Triggers**: Runs on a daily schedule.
+- **Process**: Uses the `build-and-test` workflow for routine verification.
+- **Benefits**: Helps in early detection of environmental issues or problems with dependencies.
 
 ## Deployment & Testing
 
-### [deploy](../.github/workflows/deploy.yml)
-**Purpose**: Azure deployment with integrated smoke testing.
+### 🚢 `deploy`
 
-**Responsibilities:**
-- 🌐 Azure infrastructure deployment
-- 🧪 Post-deployment smoke test execution
-- 🔗 Environment validation
+**Purpose**: Manages the deployment to Azure and kicks off initial smoke tests.
 
-**Integration**: Called by [build-release](#build-release), triggers [run-smoketests](#run-smoketests)
+**Responsibilities**:
 
-#### [run-smoketests](../.github/workflows/run-smoketests.yml)
-**Purpose**: End-to-end validation of deployed application functionality.
+- **Infrastructure Deployment**: Deploys the necessary Azure infrastructure.
+- **Smoke Test Execution**: Runs post-deployment smoke tests to ensure basic functionality.
+- **Environment Validation**: Validates the deployed environment.
 
-**Features:**
-- 🎯 Critical path testing
-- 🌐 Production environment validation
-- 📊 Deployment health verification
+**Integration**: Called by `build-release` and triggers `run-smoketests`.
 
-**Usage**: 
-- Automated: Called by [deploy](#deploy) workflow
-- Manual: Regular scheduled runs for ongoing monitoring
+#### 🧪 `run-smoketests`
+
+**Purpose**: Conducts end-to-end tests to validate the deployed application's core functionality.
+
+**Features**:
+
+- **Critical Path Testing**: Focuses on the most critical application paths.
+- **Production Validation**: Validates the application in a production-like environment.
+- **Health Verification**: Provides a clear signal on the health of the deployment.
+
+**Usage**:
+
+- **Automated**: Triggered by the `deploy` workflow.
+- **Manual**: Can be run manually for ongoing monitoring.
 
 ## Security & Quality
 
-### [codeql](../.github/workflows/codeql.yml)
-**Purpose**: GitHub's semantic code analysis for security vulnerability detection.
+### 🛡️ `codeql`
+
+**Purpose**: Uses GitHub's semantic code analysis to detect security vulnerabilities.
 
 ## Test Execution Flow
+
+This diagram illustrates how different types of tests are executed based on the trigger.
 
 ```mermaid
 flowchart TD
@@ -95,6 +105,14 @@ flowchart TD
     end
 
     subgraph "On Code Change"
+        direction LR
+        A[Code Change] --> B([build-verification])
+        B --> C{Merge to Master}
+        C --> D("[build-release]<br/>All Tests")
+        D --> E("[deploy]<br/>Smoke Tests")
+    end
+    
+    subgraph "Deploy"
         direction LR
         A[Code Change] --> B([build-verification])
         B --> C{Merge to Master}
