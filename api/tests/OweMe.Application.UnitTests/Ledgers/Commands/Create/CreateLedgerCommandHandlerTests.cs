@@ -28,7 +28,8 @@ public class CreateLedgerCommandHandlerTests : BaseCommandTest
         };
 
         // Act
-        var result = await CreateLedgerCommandHandler.Handle(command, _ledgerContextMock.Object);
+        var result = await CreateLedgerCommandHandler.Handle(command, _ledgerContextMock.Object,
+            TestContext.Current.CancellationToken);
 
         // Assert
         var addedLedger = _ledgerContextMock.Object.Ledgers

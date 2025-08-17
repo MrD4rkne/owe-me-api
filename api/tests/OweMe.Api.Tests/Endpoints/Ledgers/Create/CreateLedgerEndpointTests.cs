@@ -29,7 +29,9 @@ public class CreateLedgerEndpointTests
             .ReturnsAsync(ledgerCreated);
 
         // Act
-        var result = await CreateLedgerEndpoint.CreateLedger(request, messageBusMock.Object);
+        var result =
+            await CreateLedgerEndpoint.CreateLedger(request, messageBusMock.Object,
+                TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldBeOfType<Created>();
