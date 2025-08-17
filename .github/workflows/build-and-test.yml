@@ -145,29 +145,17 @@ jobs:
             --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
-      - name: Set publish directory
-        id: set_publish_dir
-        if: ${{ inputs.publish == true }}
-        run: |
-          # Get full path to the publish directory and set as environment variable
-          echo "PUBLISH_DIR=$(realpath ${{ env.PUBLISH_DIR }})" >> $GITHUB_ENV
-
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
         run: |
           dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
-        
-      - name: Set artifact name
-        if: ${{ inputs.publish == true }}
-        run: echo "artifact_name=${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}" >> $GITHUB_OUTPUT
-        id: set_artifact_name
 
       - name: Upload publish artifacts
         if: ${{ inputs.publish == true }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.set_artifact_name.outputs.artifact_name }}
-          path: '${{ env.PUBLISH_DIR }}'
+          name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
+          path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       
       - name: Create Release
         id: create_release
