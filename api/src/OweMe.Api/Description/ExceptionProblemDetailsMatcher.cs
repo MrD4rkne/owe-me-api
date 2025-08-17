@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Domain.Common.Exceptions;
 
@@ -6,7 +7,7 @@ namespace OweMe.Api.Description;
 
 public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(
+    public ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
@@ -25,14 +26,14 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
             _ => new ProblemDetails
             {
                 Title = "An unexpected error occurred",
-                Detail = exception.Message,
+                Detail = "An unexpected error occurred while processing your request.",
                 Status = StatusCodes.Status500InternalServerError
             }
         };
 
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
-        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        return problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
             Exception = exception,
             HttpContext = httpContext,
@@ -48,10 +49,10 @@ public sealed class ExceptionProblemDetailsMatcher(IProblemDetailsService proble
             Title = "Validation error",
             Detail = exception.Message,
             Errors = exception.Errors
-                .GroupBy(pair => pair.Key)
+                .GroupBy(error => error.PropertyName)
                 .ToDictionary(
                     group => group.Key,
-                    group => group.Select(pair => pair.Value).ToArray())
+                    group => group.Select(error => error.ErrorMessage).ToArray())
         };
     }
 

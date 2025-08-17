@@ -25,6 +25,15 @@ OweMe.Api/
 └── docs/                      # Documentation
 ```
 
+## Technologies
+
+- **.NET 9.0**: Core framework for building the API.
+- **PostgreSQL**: Database for data persistence.
+- **Docker**: Containerization for development and deployment.
+- **GitHub Actions**: CI/CD pipeline for automated builds and tests.
+- **OpenApi 3.0, Scalar, NSWag**: API documentation and client code generation.
+- **Wolverine**: as mediator (and in the future as messaging framework).
+
 ## Development
 
 ### Prerequisites

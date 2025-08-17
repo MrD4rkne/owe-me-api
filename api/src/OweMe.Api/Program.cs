@@ -1,3 +1,5 @@
+using JasperFx;
+using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using OweMe.Api.Description;
@@ -47,6 +49,8 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireClaim("scope", Constants.POLICY_API_SCOPE_CLAIM);
     });
 
+builder.Services.AddResourceSetupOnStartup();
+
 builder.AddApplication();
 builder.AddInfrastructure();
 
@@ -92,4 +96,4 @@ app.MapEndpoints();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-await app.RunAsync();
+return await app.RunJasperFxCommands(args);

@@ -1,21 +1,24 @@
-﻿using MediatR;
-using OweMe.Domain.Ledgers;
+﻿using OweMe.Domain.Ledgers;
 
 namespace OweMe.Application.Ledgers.Commands.Create;
 
-public class CreateLedgerCommandHandler(ILedgerContext context) : IRequestHandler<CreateLedgerCommand, Guid>
+public static class CreateLedgerCommandHandler
 {
-    public async Task<Guid> Handle(CreateLedgerCommand request, CancellationToken cancellationToken)
+    public static async Task<LedgerCreated> Handle(CreateLedgerCommand message, ILedgerContext context,
+        CancellationToken cancellationToken = default)
     {
         var ledger = new Ledger
         {
-            Name = request.Name,
-            Description = request.Description
+            Name = message.Name,
+            Description = message.Description
         };
 
         context.Ledgers.Add(ledger);
         _ = await context.SaveChangesAsync(cancellationToken);
-
-        return ledger.Id;
+        return new LedgerCreated(
+            ledger.Id
+        );
     }
+
+    public sealed record LedgerCreated(Guid Id);
 }

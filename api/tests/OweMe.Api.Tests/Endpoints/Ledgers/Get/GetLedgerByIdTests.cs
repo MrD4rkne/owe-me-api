@@ -1,11 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using OweMe.Api.Endpoints.Ledgers.Get;
-using OweMe.Application.Ledgers;
 using OweMe.Application.Ledgers.Queries.Get;
 using OweMe.Domain.Common.Exceptions;
 using Shouldly;
+using Wolverine;
 
 namespace OweMe.Api.Tests.Endpoints.Ledgers.Get;
 
@@ -15,28 +14,21 @@ public class GetLedgerByIdTests
     public async Task GetLedger_ReturnsOk_WhenSuccess()
     {
         // Arrange
-        var mediatorMock = new Mock<IMediator>();
-        var expectedValue = new LedgerDto
-        {
-            Id = Guid.NewGuid(),
-            Name = "Test Ledger",
-            Description = "This is a test ledger.",
-            CreatedBy = Guid.NewGuid(),
-            CreatedAt = DateTimeOffset.UtcNow,
-            UpdatedBy = Guid.NewGuid(),
-            UpdatedAt = DateTimeOffset.UtcNow
-        };
+        var messageBusMock = new Mock<IMessageBus>();
+        var expectedValue = new GetLedgerResult(Guid.NewGuid(), "Test Ledger", "This is a test ledger.",
+            DateTimeOffset.UtcNow, Guid.NewGuid(), DateTimeOffset.UtcNow, Guid.NewGuid());
 
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>()))
+        messageBusMock.Setup(m =>
+                m.InvokeAsync<GetLedgerResult>(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>(), null))
             .ReturnsAsync(expectedValue);
 
         // Act
-        var result = await GetLedgerByIdEndpoint.GetLedger(expectedValue.Id, mediatorMock.Object);
+        var result = await GetLedgerByIdEndpoint.GetLedger(expectedValue.Id, messageBusMock.Object);
 
         // Assert
-        result.ShouldBeOfType<Ok<GetLedgerResponse>>();
+        result.ShouldBeOfType<Ok<GetLedgerResult>>();
 
-        var okResult = result as Ok<GetLedgerResponse>;
+        var okResult = result as Ok<GetLedgerResult>;
         okResult.ShouldNotBeNull();
         okResult.Value.ShouldNotBeNull();
 
@@ -53,16 +45,17 @@ public class GetLedgerByIdTests
     public async Task GetLedger_ReturnsNotFound_WhenLedgerNotFound()
     {
         // Arrange
-        var mediatorMock = new Mock<IMediator>();
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NotFoundException("Ledger not found."));
+        var messageBusMock = new Mock<IMessageBus>();
+        messageBusMock.Setup(m =>
+                m.InvokeAsync<GetLedgerResult>(It.IsAny<GetLedgerQuery>(), It.IsAny<CancellationToken>(), null))
+            .Throws(new NotFoundException("Ledger not found."));
 
         var ledgerId = Guid.NewGuid();
 
         // Act & Assert
         await Should.ThrowAsync<NotFoundException>(async () =>
         {
-            await GetLedgerByIdEndpoint.GetLedger(ledgerId, mediatorMock.Object);
+            await GetLedgerByIdEndpoint.GetLedger(ledgerId, messageBusMock.Object);
         });
     }
 }

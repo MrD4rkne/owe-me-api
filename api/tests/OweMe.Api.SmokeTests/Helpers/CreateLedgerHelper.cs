@@ -6,7 +6,7 @@ namespace OweMe.Api.SmokeTests.Helpers;
 public static class CreateLedgerHelper
 {
     public static async Task<Guid> CreateLedger(OweMeApiClient client,
-        CreateLedgerRequest createLedgerRequest,
+        CreateLedgerCommand createLedgerRequest,
         CancellationToken cancellationToken = default)
     {
         var response = await client.CreateLedgerAsync(createLedgerRequest, cancellationToken);

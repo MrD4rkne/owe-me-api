@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers.Commands.Create;
+using Wolverine;
 
 namespace OweMe.Api.Endpoints.Ledgers.Create;
 
@@ -16,7 +16,6 @@ public sealed class CreateLedgerEndpoint : IEndpoint
             .WithName("CreateLedger")
             .WithDescription("Create a new ledger that groups expenses and payments between users.")
             .WithTags(Tags.Ledger)
-            .Accepts<CreateLedgerRequest>("application/json")
             .Produces(StatusCodes.Status201Created)
             .ProducesExtendedProblem(StatusCodes.Status400BadRequest)
             .WithStandardProblems()
@@ -24,8 +23,9 @@ public sealed class CreateLedgerEndpoint : IEndpoint
     }
 
     public static async Task<IResult> CreateLedger(
-        [FromBody] CreateLedgerRequest createLedgerRequest,
-        IMediator mediator)
+        [FromBody] CreateLedgerCommand createLedgerRequest,
+        IMessageBus messageBus,
+        CancellationToken cancellationToken = default)
     {
         var createLedgerCommand = new CreateLedgerCommand
         {
@@ -33,7 +33,9 @@ public sealed class CreateLedgerEndpoint : IEndpoint
             Description = createLedgerRequest.Description
         };
 
-        var ledgerId = await mediator.Send(createLedgerCommand);
-        return Results.Created($"/api/ledgers/{ledgerId}", null);
+        var ledger =
+            await messageBus.InvokeAsync<CreateLedgerCommandHandler.LedgerCreated>(createLedgerCommand,
+                cancellationToken);
+        return Results.Created($"/api/ledgers/{ledger.Id}", null);
     }
 }
