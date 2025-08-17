@@ -21,14 +21,10 @@ public class PerformanceMiddlewareBenchmarks
     }
 
     [Benchmark]
-    public void PerformanceMiddleware_Before()
+    public void PerformanceMiddleware_FullFlow()
     {
-        CreateMiddleware().Before(_context);
-    }
-
-    [Benchmark]
-    public void PerformanceMiddleware_Finally()
-    {
-        CreateMiddleware().Finally(_context);
+        var middleware = CreateMiddleware();
+        middleware.Before(_context);
+        middleware.Finally(_context);
     }
 }
