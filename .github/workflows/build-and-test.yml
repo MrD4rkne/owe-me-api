@@ -160,6 +160,7 @@ jobs:
 
       - name: Set artifact ID
         id: set_artifact_id
+        if: ${{ inputs.publish == true }}
         run: echo "artifact_id=${{ steps.upload_artifacts.outputs.artifact-id }}" >> $GITHUB_OUTPUT
       
       - name: Create Release
