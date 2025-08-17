@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Wolverine.Runtime;
+using Wolverine;
 
-namespace OweMe.Application.Common.Behaviours;
+namespace OweMe.Application.Common.Middlewares;
 
 public class PerformancePipelineBehavior(
     ILogger<PerformancePipelineBehavior> logger,
@@ -16,15 +16,27 @@ public class PerformancePipelineBehavior(
             ? options.Value.TooLongRequestThresholdMs
             : 500; // Default threshold if not set
 
-    public void Before(MessageContext context)
+    public void Before(IMessageContext context)
     {
+        if (_stopwatch.IsRunning)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(PerformancePipelineBehavior)} is already running. Ensure that {nameof(Before)} is called only once per request.");
+        }
+        
         _stopwatch.Start();
         string? requestName = context.Envelope.MessageType;
         logger.LogInformation("Started processing {RequestName}.", requestName);
     }
 
-    public void Finally(MessageContext context)
+    public void Finally(IMessageContext context)
     {
+        if (!_stopwatch.IsRunning)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(PerformancePipelineBehavior)} has not been started. Ensure that {nameof(Before)} is called before {nameof(Finally)}.");
+        }
+        
         _stopwatch.Stop();
         string? requestName = context.Envelope.MessageType;
         logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms.", requestName,

@@ -4,7 +4,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OweMe.Application.Common;
-using OweMe.Application.Common.Behaviours;
+using OweMe.Application.Common.Middlewares;
 using Wolverine;
 using Wolverine.FluentValidation;
 
