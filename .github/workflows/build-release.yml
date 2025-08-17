@@ -17,6 +17,7 @@ jobs:
     uses: ./.github/workflows/build-and-test.yml
     with:
       publish: true
+      release: ${{ github.ref == 'refs/heads/master' }}
     secrets: inherit
   deploy:
     needs: build
