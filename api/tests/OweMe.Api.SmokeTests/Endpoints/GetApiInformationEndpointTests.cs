@@ -2,7 +2,7 @@
 
 namespace OweMe.Api.SmokeTests.Endpoints;
 
-public sealed class GetApiInformationEndpointTests(OweMeClientFixture fixture) : IClassFixture<OweMeClientFixture>
+public sealed class GetApiInformationEndpointTests(OweMeClientFixture fixture)
 {
     [Theory]
     [InlineData(OweMeClientFixture.AuthenticatedClientKey, Label = "Authenticated Client")]

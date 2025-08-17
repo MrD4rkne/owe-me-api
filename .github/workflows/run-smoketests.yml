@@ -4,6 +4,20 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *' # Every day at midnight
+  workflow_call:
+    secrets:
+      SMOKETESTS_APISETTINGS_BASEURL:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_ADDRESS:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTID:
+        required: true
+      SMOKETESTS_IDENTITYPROVIDERSETTINGS_CLIENTSECRET:
+        required: true
+      SMOKETESTS_USERSETTINGS_USERNAME:
+        required: true
+      SMOKETESTS_USERSETTINGS_PASSWORD:
+        required: true
 
 permissions:
   contents: read
@@ -21,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Full history for Nbgv versioning
 
