@@ -6,7 +6,7 @@ namespace OweMe.Api.SmokeTests.Endpoints.Ledgers;
 
 public class CreateLedgerEndpointTests(OweMeClientFixture fixture)
 {
-    private readonly CreateLedgerRequest _validCreateLedgerRequest = new()
+    private readonly CreateLedgerCommand _validCreateLedgerRequest = new()
     {
         Name = "Test Ledger",
         Description = "This is a test ledger."
@@ -44,7 +44,7 @@ public class CreateLedgerEndpointTests(OweMeClientFixture fixture)
         // Arrange
         var client = fixture.GetClient(OweMeClientFixture.AuthenticatedClientKey);
 
-        var invalidCreateLedgerRequest = new CreateLedgerRequest
+        var invalidCreateLedgerRequest = new CreateLedgerCommand
         {
             Name = "", // Invalid: Name cannot be empty
             Description = "This is an invalid test ledger."
