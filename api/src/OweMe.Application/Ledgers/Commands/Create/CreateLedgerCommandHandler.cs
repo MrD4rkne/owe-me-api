@@ -2,7 +2,7 @@
 
 namespace OweMe.Application.Ledgers.Commands.Create;
 
-public sealed class CreateLedgerCommandHandler
+public static class CreateLedgerCommandHandler
 {
     public static async Task<LedgerCreated> Handle(CreateLedgerCommand message, ILedgerContext context,
         CancellationToken cancellationToken = default)
