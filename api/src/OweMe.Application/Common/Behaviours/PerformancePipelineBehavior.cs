@@ -1,14 +1,20 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Wolverine.Runtime;
 
 namespace OweMe.Application.Common.Behaviours;
 
 public class PerformancePipelineBehavior(
     ILogger<PerformancePipelineBehavior> logger,
-    int maximumElapsedMilliseconds = 500)
+    IOptions<ApplicationOptions> options)
 {
     private readonly Stopwatch _stopwatch = new();
+
+    private long maximumElapsedMilliseconds =>
+        options.Value.TooLongRequestThresholdMs > 0
+            ? options.Value.TooLongRequestThresholdMs
+            : 500; // Default threshold if not set
 
     public void Before(MessageContext context)
     {
