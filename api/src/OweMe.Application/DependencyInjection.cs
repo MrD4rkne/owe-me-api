@@ -21,7 +21,7 @@ public static class DependencyInjection
         {
             opts.Discovery.IncludeAssembly(typeof(DependencyInjection).Assembly);
 
-            opts.Policies.AddMiddleware<PerformancePipelineBehavior>();
+            opts.Policies.AddMiddleware<PerformanceMiddleware>();
 
             opts.UseFluentValidation(RegistrationBehavior.ExplicitRegistration);
 

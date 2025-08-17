@@ -5,11 +5,11 @@ using Wolverine;
 
 namespace OweMe.Application.Common.Middlewares;
 
-public class PerformancePipelineBehavior(
-    ILogger<PerformancePipelineBehavior> logger,
+public class PerformanceMiddleware(
+    ILogger<PerformanceMiddleware> logger,
     IOptions<ApplicationOptions> options)
 {
-    private readonly Stopwatch _stopwatch = new();
+    private long? _startTime;
 
     private long maximumElapsedMilliseconds =>
         options.Value.TooLongRequestThresholdMs > 0
@@ -18,35 +18,35 @@ public class PerformancePipelineBehavior(
 
     public void Before(IMessageContext context)
     {
-        if (_stopwatch.IsRunning)
+        if (_startTime is not null)
         {
             throw new InvalidOperationException(
-                $"{nameof(PerformancePipelineBehavior)} is already running. Ensure that {nameof(Before)} is called only once per request.");
+                $"{nameof(PerformanceMiddleware)} is already running. Ensure that {nameof(Before)} is called only once per request.");
         }
-        
-        _stopwatch.Start();
+
+        _startTime = Stopwatch.GetTimestamp();
         string? requestName = context.Envelope.MessageType;
         logger.LogInformation("Started processing {RequestName}.", requestName);
     }
 
     public void Finally(IMessageContext context)
     {
-        if (!_stopwatch.IsRunning)
+        if (_startTime is null)
         {
             throw new InvalidOperationException(
-                $"{nameof(PerformancePipelineBehavior)} has not been started. Ensure that {nameof(Before)} is called before {nameof(Finally)}.");
+                $"{nameof(PerformanceMiddleware)} has not been started. Ensure that {nameof(Before)} is called before {nameof(Finally)}.");
         }
-        
-        _stopwatch.Stop();
+
+        var elapsed = Stopwatch.GetElapsedTime(_startTime.Value);
         string? requestName = context.Envelope.MessageType;
         logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms.", requestName,
-            _stopwatch.ElapsedMilliseconds);
+            elapsed.Milliseconds);
 
-        if (_stopwatch.ElapsedMilliseconds > maximumElapsedMilliseconds)
+        if (elapsed.Milliseconds > maximumElapsedMilliseconds)
         {
             logger.LogWarning(
                 "Performance warning: {RequestName} took {ElapsedMilliseconds} ms, exceeding the threshold of {Threshold} ms",
-                requestName, _stopwatch.ElapsedMilliseconds, maximumElapsedMilliseconds);
+                requestName, elapsed.Milliseconds, maximumElapsedMilliseconds);
         }
     }
 }

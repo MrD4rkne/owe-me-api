@@ -9,9 +9,9 @@ using Wolverine;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-public sealed class PerformancePipelineBehaviorTests
+public sealed class PerformanceMiddlewareTests
 {
-    private readonly Mock<ILogger<PerformancePipelineBehavior>> _logger = new();
+    private readonly Mock<ILogger<PerformanceMiddleware>> _logger = new();
 
     private readonly IOptions<ApplicationOptions> _options = Options.Create(new ApplicationOptions
     {
@@ -24,9 +24,9 @@ public sealed class PerformancePipelineBehaviorTests
     public void On_BeforeRunTwice_Should_ThrowInvalidOperationException()
     {
         // Arrange
-        var logger = new Mock<ILogger<PerformancePipelineBehavior>>();
+        var logger = new Mock<ILogger<PerformanceMiddleware>>();
         var options = Options.Create(new ApplicationOptions { TooLongRequestThresholdMs = 500 });
-        var sut = new PerformancePipelineBehavior(logger.Object, options);
+        var sut = new PerformanceMiddleware(logger.Object, options);
 
         // Act
         sut.Before(_context);
@@ -39,9 +39,9 @@ public sealed class PerformancePipelineBehaviorTests
     public void On_FinallyRunWithoutBefore_Should_ThrowInvalidOperationException()
     {
         // Arrange
-        var logger = new Mock<ILogger<PerformancePipelineBehavior>>();
+        var logger = new Mock<ILogger<PerformanceMiddleware>>();
         var options = Options.Create(new ApplicationOptions { TooLongRequestThresholdMs = 500 });
-        var sut = new PerformancePipelineBehavior(logger.Object, options);
+        var sut = new PerformanceMiddleware(logger.Object, options);
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() => sut.Finally(_context));
@@ -54,7 +54,7 @@ public sealed class PerformancePipelineBehaviorTests
         const string requestName = "TestRequest";
         _context.Envelope.MessageType = requestName;
 
-        var sut = new PerformancePipelineBehavior(_logger.Object, _options);
+        var sut = new PerformanceMiddleware(_logger.Object, _options);
 
         // Act
         sut.Before(_context);
