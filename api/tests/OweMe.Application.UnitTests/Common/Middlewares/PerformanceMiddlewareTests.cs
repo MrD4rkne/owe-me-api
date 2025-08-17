@@ -21,7 +21,7 @@ public sealed partial class PerformanceMiddlewareTests
     [GeneratedRegex(@"Handled TestRequest in (\d+) ms", RegexOptions.Compiled)]
     private static partial Regex HandledRequestRegex();
 
-    private readonly IMessageContext _context = new TestMessageContext();
+    private readonly TestMessageContext _context = new();
 
     [Fact]
     public void On_BeforeRunTwice_Should_ThrowInvalidOperationException()
@@ -55,7 +55,7 @@ public sealed partial class PerformanceMiddlewareTests
     {
         // Arrange
         const string requestName = "TestRequest";
-        _context.Envelope.MessageType = requestName;
+        _context.Envelope!.MessageType = requestName;
 
         var sut = new PerformanceMiddleware(_logger.Object, _options);
 
@@ -79,6 +79,7 @@ public sealed partial class PerformanceMiddlewareTests
         var endLogMessage = _logger.Invocations
             .FirstOrDefault(i => i.Method.Name == "Log"
                                  && i.Arguments[0].Equals(LogLevel.Information)
+                                 && i.Arguments[2].ToString() is not null
                                  && i.Arguments[2].ToString().Contains("Handled")
             )?
             .Arguments[2]?.ToString();
