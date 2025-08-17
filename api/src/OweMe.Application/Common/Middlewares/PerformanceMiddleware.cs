@@ -40,13 +40,13 @@ public class PerformanceMiddleware(
         var elapsed = Stopwatch.GetElapsedTime(_startTime.Value);
         string? requestName = context.Envelope?.MessageType;
         logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms.", requestName,
-            elapsed.Milliseconds);
+            elapsed.TotalMilliseconds);
 
-        if (elapsed.Milliseconds > maximumElapsedMilliseconds)
+        if (elapsed.TotalMilliseconds > maximumElapsedMilliseconds)
         {
             logger.LogWarning(
                 "Performance warning: {RequestName} took {ElapsedMilliseconds} ms, exceeding the threshold of {Threshold} ms",
-                requestName, elapsed.Milliseconds, maximumElapsedMilliseconds);
+                requestName, elapsed.TotalMilliseconds, maximumElapsedMilliseconds);
         }
     }
 }
