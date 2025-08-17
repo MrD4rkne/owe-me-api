@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using OweMe.Api.Endpoints.Ledgers.Create;
 using OweMe.Application.Ledgers.Commands.Create;
 using Shouldly;
+using Wolverine;
 
 namespace OweMe.Api.Tests.Endpoints.Ledgers.Create;
 
@@ -13,19 +13,20 @@ public class CreateLedgerEndpointTests
     public async Task CreateLedger_ReturnsCreatedResult()
     {
         // Arrange
-        var mediatorMock = new Mock<IMediator>();
-        var request = new CreateLedgerRequest
+        var messageBusMock = new Mock<IMessageBus>();
+        var request = new CreateLedgerCommand
         {
             Name = "Test Ledger",
             Description = "This is a test ledger."
         };
 
         var ledgerId = Guid.NewGuid();
-        mediatorMock.Setup(m => m.Send(It.IsAny<CreateLedgerCommand>(), It.IsAny<CancellationToken>()))
+        messageBusMock.Setup(m =>
+                m.InvokeAsync<Guid>(It.IsAny<CreateLedgerCommand>(), It.IsAny<CancellationToken>(), null))
             .ReturnsAsync(ledgerId);
 
         // Act
-        var result = await CreateLedgerEndpoint.CreateLedger(request, mediatorMock.Object);
+        var result = await CreateLedgerEndpoint.CreateLedger(request, messageBusMock.Object);
 
         // Assert
         result.ShouldBeOfType<Created>();
@@ -34,10 +35,10 @@ public class CreateLedgerEndpointTests
         createdResult.ShouldNotBeNull();
         createdResult.Location.ShouldBe($"/api/ledgers/{ledgerId}");
 
-        mediatorMock.Verify(m =>
-            m.Send(
+        messageBusMock.Verify(m =>
+            m.InvokeAsync<Guid>(
                 It.Is<CreateLedgerCommand>(command =>
                     command.Name == request.Name && command.Description == request.Description),
-                It.IsAny<CancellationToken>()), Times.Once);
+                It.IsAny<CancellationToken>(), null), Times.Once);
     }
 }

@@ -145,7 +145,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response<GetLedgerResponse>> GetLedgerAsync(System.Guid ledgerId)
+        public virtual System.Threading.Tasks.Task<Response<GetLedgerResult>> GetLedgerAsync(System.Guid ledgerId)
         {
             return GetLedgerAsync(ledgerId, System.Threading.CancellationToken.None);
         }
@@ -156,7 +156,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response<GetLedgerResponse>> GetLedgerAsync(System.Guid ledgerId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response<GetLedgerResult>> GetLedgerAsync(System.Guid ledgerId, System.Threading.CancellationToken cancellationToken)
         {
             if (ledgerId == null)
                 throw new System.ArgumentNullException("ledgerId");
@@ -201,12 +201,12 @@ namespace OweMe.Api.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<GetLedgerResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetLedgerResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return new Response<GetLedgerResponse>(status_, headers_, objectResponse_.Object);
+                            return new Response<GetLedgerResult>(status_, headers_, objectResponse_.Object);
                         }
                         else
                         if (status_ == 404)
@@ -253,7 +253,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerRequest body)
+        public virtual System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerCommand body)
         {
             return CreateLedgerAsync(body, System.Threading.CancellationToken.None);
         }
@@ -264,7 +264,7 @@ namespace OweMe.Api.Client
         /// </remarks>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Response> CreateLedgerAsync(CreateLedgerCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -517,22 +517,14 @@ namespace OweMe.Api.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CreateLedgerRequest
+    public partial class CreateLedgerCommand
     {
 
-        /// <summary>
-        /// The name of the ledger.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.StringLength(100, MinimumLength = 1)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }
 
-        /// <summary>
-        /// A description of the ledger.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(500)]
         public string Description { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
@@ -586,51 +578,31 @@ namespace OweMe.Api.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.5.0.0 (NJsonSchema v11.4.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GetLedgerResponse
+    public partial class GetLedgerResult
     {
 
-        /// <summary>
-        /// Unique identifier of the ledger.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid Id { get; set; }
 
-        /// <summary>
-        /// Name of the ledger.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Description of the ledger.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
 
-        /// <summary>
-        /// Date and time when the entity was created. UTC format.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset CreatedAt { get; set; }
 
-        /// <summary>
-        /// Date and time when the entity was last updated. UTC format.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("updatedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? UpdatedAt { get; set; }
 
-        /// <summary>
-        /// Unique identifier of the user who created the entity.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("createdBy", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid CreatedBy { get; set; }
 
-        /// <summary>
-        /// Unique identifier of the user who last updated the entity.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("updatedBy", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid? UpdatedBy { get; set; }
 

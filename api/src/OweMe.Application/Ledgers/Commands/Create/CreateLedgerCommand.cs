@@ -1,8 +1,6 @@
-﻿using MediatR;
+﻿namespace OweMe.Application.Ledgers.Commands.Create;
 
-namespace OweMe.Application.Ledgers.Commands.Create;
-
-public record CreateLedgerCommand : IRequest<Guid>
+public record CreateLedgerCommand
 {
     public required string Name { get; init; }
 

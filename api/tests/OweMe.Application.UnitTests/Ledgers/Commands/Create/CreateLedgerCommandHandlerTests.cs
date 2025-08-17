@@ -8,18 +8,11 @@ public class CreateLedgerCommandHandlerTests : BaseCommandTest
 {
     private readonly DateTimeOffset _currentTime = DateTimeOffset.UtcNow;
     private readonly Guid _currentUserId = Guid.NewGuid();
-    private CreateLedgerCommandHandler _sut = null!;
 
     public CreateLedgerCommandHandlerTests()
     {
         _userContextMock.Setup(x => x.Id).Returns(_currentUserId);
         _timeProvider.Setup(x => x.GetUtcNow()).Returns(_currentTime);
-    }
-
-    public override async ValueTask InitializeAsync()
-    {
-        await base.InitializeAsync();
-        _sut = new CreateLedgerCommandHandler(_ledgerContextMock.Object);
     }
 
     [Fact]
@@ -35,13 +28,14 @@ public class CreateLedgerCommandHandlerTests : BaseCommandTest
         };
 
         // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
+        var result = await CreateLedgerCommandHandler.Handle(command, _ledgerContextMock.Object);
 
         // Assert
         var addedLedger = _ledgerContextMock.Object.Ledgers
             .FirstOrDefault(x => x.Name == ledgerName && x.Description == ledgerDescription);
         addedLedger.ShouldNotBeNull();
-        result.ShouldBe(addedLedger.Id);
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(addedLedger.Id);
 
         addedLedger.Name.ShouldBe(command.Name);
         addedLedger.Description.ShouldBe(command.Description);

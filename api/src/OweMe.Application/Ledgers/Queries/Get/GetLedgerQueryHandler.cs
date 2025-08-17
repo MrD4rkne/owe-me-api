@@ -1,20 +1,22 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OweMe.Domain.Common.Exceptions;
 
 namespace OweMe.Application.Ledgers.Queries.Get;
 
-public class GetLedgerQueryHandler(ILedgerContext context, IUserContext userContext)
-    : IRequestHandler<GetLedgerQuery, LedgerDto>
+public static class GetLedgerQueryHandler
 {
-    public async Task<LedgerDto> Handle(GetLedgerQuery request, CancellationToken cancellationToken)
+    public static async Task<GetLedgerResult> HandleAsync(
+        GetLedgerQuery query,
+        ILedgerContext context,
+        IUserContext userContext,
+        CancellationToken cancellationToken)
     {
-        var ledger = await context.Ledgers.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        var ledger = await context.Ledgers.FirstOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
         if (ledger is null || !ledger.CanUserAccess(userContext.Id))
         {
-            throw new NotFoundException($"Ledger with id {request.Id} not found.");
+            throw new NotFoundException($"Ledger with id {query.Id} not found.");
         }
 
-        return LedgerDto.FromDomain(ledger);
+        return GetLedgerResult.FromDomain(ledger);
     }
 }
