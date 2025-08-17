@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.OpenApi;
+﻿using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;

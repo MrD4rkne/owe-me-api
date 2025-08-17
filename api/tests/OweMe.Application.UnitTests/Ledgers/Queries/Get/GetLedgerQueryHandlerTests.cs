@@ -9,14 +9,6 @@ namespace OweMe.Application.UnitTests.Ledgers.Queries.Get;
 
 public class GetLedgerQueryHandlerTests : BaseCommandTest
 {
-    private GetLedgerQueryHandler _sut = null!;
-
-    public override async ValueTask InitializeAsync()
-    {
-        await base.InitializeAsync();
-        _sut = new GetLedgerQueryHandler(_ledgerContextMock.Object, _userContextMock.Object);
-    }
-
     [Fact]
     public async Task Handle_ShouldReturnLedger_WhenLedgerExistsAndUserHasAccess()
     {
@@ -35,7 +27,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        var result = await _sut.Handle(query, CancellationToken.None);
+        var result = await GetLedgerQueryHandler.HandleAsync(query,
+            _ledgerContextMock.Object, _userContextMock.Object,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -56,7 +50,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        await Assert.ThrowsAsync<NotFoundException>(async () => { await _sut.Handle(query, CancellationToken.None); });
+        await Assert.ThrowsAsync<NotFoundException>(() => GetLedgerQueryHandler.HandleAsync(query,
+            _ledgerContextMock.Object, _userContextMock.Object,
+            TestContext.Current.CancellationToken));
 
         _userContextMock.Verify(x => x.Id, Times.AtMostOnce);
     }
@@ -84,7 +80,9 @@ public class GetLedgerQueryHandlerTests : BaseCommandTest
         var query = new GetLedgerQuery(ledgerId);
 
         // Act
-        await Assert.ThrowsAsync<NotFoundException>(async () => { await _sut.Handle(query, CancellationToken.None); });
+        await Assert.ThrowsAsync<NotFoundException>(() => GetLedgerQueryHandler.HandleAsync(query,
+            _ledgerContextMock.Object, _userContextMock.Object,
+            TestContext.Current.CancellationToken));
 
         _userContextMock.Verify(x => x.Id, Times.Once);
     }

@@ -1,10 +1,10 @@
-﻿using OweMe.Application.Ledgers;
+﻿using OweMe.Application.Ledgers.Queries.Get;
 using OweMe.Domain.Ledgers;
 using Shouldly;
 
 namespace OweMe.Application.UnitTests.Ledgers;
 
-public class LedgerDtoTests
+public class GetLedgerResultTests
 {
     public static TheoryData<Guid?, DateTimeOffset?> ModifiedByAndAtData => new()
     {
@@ -29,7 +29,7 @@ public class LedgerDtoTests
         };
 
         // Act
-        var dto = LedgerDto.FromDomain(ledger);
+        var dto = GetLedgerResult.FromDomain(ledger);
 
         // Assert
         dto.Id.ShouldBe(ledger.Id);
