@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using OweMe.Api.Description;
 using OweMe.Domain.Common.Exceptions;
@@ -28,11 +30,11 @@ public class ExceptionProblemDetailsMatcherTests
     public async Task TryHandleAsync_WithValidationException_ShouldReturnCorrectProblemDetails()
     {
         // Arrange
-        var errors = new Dictionary<string, string> 
-        {
-            { "Field1", "Error1" },
-            { "Field2", "Error2" }
-        };
+        ValidationFailure[] errors =
+        [
+            new("Field1", "Error1"),
+            new("Field2", "Error2")
+        ];
         var exception = new ValidationException("Validation failed", errors);
         ProblemDetailsContext? capturedContext = null;
 
@@ -152,7 +154,10 @@ public class ExceptionProblemDetailsMatcherTests
     public async Task TryHandleAsync_WithGenericException_ShouldReturnDefaultProblemDetails()
     {
         // Arrange
-        var exception = new InvalidOperationException("Something went wrong");
+        const string defaultErrorMessage = "An unexpected error occurred while processing your request.";
+        const string defaultTitle = "An unexpected error occurred";
+        const string errorMessage = "Something went wrong";
+        var exception = new InvalidOperationException(errorMessage);
         ProblemDetailsContext? capturedContext = null;
 
         _mockProblemDetailsService
@@ -169,8 +174,9 @@ public class ExceptionProblemDetailsMatcherTests
         
         var problemDetails = capturedContext.ProblemDetails;
         problemDetails.ShouldNotBeNull();
-        problemDetails.Title.ShouldBe("An unexpected error occurred");
-        problemDetails.Detail.ShouldBe("Something went wrong");
+        problemDetails.Title.ShouldBe(defaultTitle);
+        problemDetails.Detail.ShouldNotBe(errorMessage, "Inner exception message should not be exposed");
+        problemDetails.Detail.ShouldBe(defaultErrorMessage);
         problemDetails.Status.ShouldBe(StatusCodes.Status500InternalServerError);
         _httpContext.Response.StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
     }
