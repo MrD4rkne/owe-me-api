@@ -21,9 +21,12 @@ public class CreateLedgerEndpointTests
         };
 
         var ledgerId = Guid.NewGuid();
+        var ledgerCreated = new CreateLedgerCommandHandler.LedgerCreated(ledgerId);
+        
         messageBusMock.Setup(m =>
-                m.InvokeAsync<Guid>(It.IsAny<CreateLedgerCommand>(), It.IsAny<CancellationToken>(), null))
-            .ReturnsAsync(ledgerId);
+                m.InvokeAsync<CreateLedgerCommandHandler.LedgerCreated>(It.IsAny<CreateLedgerCommand>(),
+                    It.IsAny<CancellationToken>(), null))
+            .ReturnsAsync(ledgerCreated);
 
         // Act
         var result = await CreateLedgerEndpoint.CreateLedger(request, messageBusMock.Object);
