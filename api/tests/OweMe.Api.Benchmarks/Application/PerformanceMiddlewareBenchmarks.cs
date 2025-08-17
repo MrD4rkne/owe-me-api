@@ -11,7 +11,7 @@ namespace OweMe.Api.Benchmarks.Application;
 [MemoryDiagnoser]
 public class PerformanceMiddlewareBenchmarks
 {
-    private readonly IMessageContext _context = new TestMessageContext();
+    private readonly TestMessageContext _context = new();
 
     private static PerformanceMiddleware CreateMiddleware()
     {

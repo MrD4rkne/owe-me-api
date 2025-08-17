@@ -25,7 +25,7 @@ public class PerformanceMiddleware(
         }
 
         _startTime = Stopwatch.GetTimestamp();
-        string? requestName = context.Envelope.MessageType;
+        string? requestName = context.Envelope?.MessageType;
         logger.LogInformation("Started processing {RequestName}.", requestName);
     }
 
@@ -38,7 +38,7 @@ public class PerformanceMiddleware(
         }
 
         var elapsed = Stopwatch.GetElapsedTime(_startTime.Value);
-        string? requestName = context.Envelope.MessageType;
+        string? requestName = context.Envelope?.MessageType;
         logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds} ms.", requestName,
             elapsed.Milliseconds);
 

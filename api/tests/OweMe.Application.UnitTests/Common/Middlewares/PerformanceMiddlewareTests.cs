@@ -9,7 +9,7 @@ using Wolverine;
 
 namespace OweMe.Application.UnitTests.Common.Behaviours;
 
-public sealed class PerformanceMiddlewareTests
+public sealed partial class PerformanceMiddlewareTests
 {
     private readonly Mock<ILogger<PerformanceMiddleware>> _logger = new();
 
@@ -17,6 +17,9 @@ public sealed class PerformanceMiddlewareTests
     {
         TooLongRequestThresholdMs = 500 // Set a threshold for testing
     });
+
+    [GeneratedRegex(@"Handled TestRequest in (\d+) ms", RegexOptions.Compiled)]
+    private static partial Regex HandledRequestRegex();
 
     private readonly IMessageContext _context = new TestMessageContext();
 
@@ -61,20 +64,11 @@ public sealed class PerformanceMiddlewareTests
         sut.Finally(_context);
 
         // Assert
-        _logger.Verify(x => x.Log(
-            LogLevel.Information,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Started processing {requestName}.")),
-            null,
-            It.IsAny<Func<It.IsAnyType, Exception, string>>())
-        );
-        _logger.Verify(x => x.Log(
-            LogLevel.Information,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Handled {requestName} in")),
-            null,
-            It.IsAny<Func<It.IsAnyType, Exception, string>>())
-        );
+        _logger.Invocations.Count.ShouldBe(2);
+        _logger.Invocations.All(invocation => invocation.Method.Name == "Log")
+            .ShouldBeTrue("All invocations should be Log method calls.");
+        _logger.Invocations.All(invocation => invocation.Arguments[0].Equals(LogLevel.Information))
+            .ShouldBeTrue("All invocations should log at Information level.");
 
         var startLogMessage = _logger.Invocations
             .FirstOrDefault(i => i.Method.Name == "Log" && i.Arguments[0].Equals(LogLevel.Information))?
@@ -90,7 +84,7 @@ public sealed class PerformanceMiddlewareTests
             .Arguments[2]?.ToString();
         endLogMessage.ShouldNotBeNull();
 
-        Regex regex = new(@$"Handled {requestName} in (\d+) ms", RegexOptions.Compiled);
-        regex.IsMatch(endLogMessage).ShouldBeTrue("End log message should match the expected format.");
+        HandledRequestRegex().IsMatch(endLogMessage)
+            .ShouldBeTrue("End log message should match the expected format.");
     }
 }
