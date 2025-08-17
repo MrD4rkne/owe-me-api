@@ -80,7 +80,7 @@ public sealed partial class PerformanceMiddlewareTests
             .FirstOrDefault(i => i.Method.Name == "Log"
                                  && i.Arguments[0].Equals(LogLevel.Information)
                                  && i.Arguments[2].ToString() is not null
-                                 && i.Arguments[2].ToString().Contains("Handled")
+                                 && i.Arguments[2].ToString()!.Contains("Handled")
             )?
             .Arguments[2]?.ToString();
         endLogMessage.ShouldNotBeNull();
