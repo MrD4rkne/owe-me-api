@@ -39,7 +39,7 @@ public class CreateLedgerEndpointTests
         createdResult.Location.ShouldBe($"/api/ledgers/{ledgerId}");
 
         messageBusMock.Verify(m =>
-            m.InvokeAsync<Guid>(
+            m.InvokeAsync<CreateLedgerCommandHandler.LedgerCreated>(
                 It.Is<CreateLedgerCommand>(command =>
                     command.Name == request.Name && command.Description == request.Description),
                 It.IsAny<CancellationToken>(), null), Times.Once);

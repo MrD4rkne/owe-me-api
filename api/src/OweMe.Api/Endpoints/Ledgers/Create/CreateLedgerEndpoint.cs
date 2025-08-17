@@ -36,6 +36,6 @@ public sealed class CreateLedgerEndpoint : IEndpoint
         var ledger =
             await messageBus.InvokeAsync<CreateLedgerCommandHandler.LedgerCreated>(createLedgerCommand,
                 cancellationToken);
-        return Results.Created($"/api/ledgers/{ledger.Id}", ledger);
+        return Results.Created($"/api/ledgers/{ledger.Id}", null);
     }
 }
