@@ -3,15 +3,15 @@ name: deploy
 on:
   workflow_dispatch:
     inputs:
-      artifact_name:
-        description: 'Name of the artifact to deploy'
+      artifact_id:
+        description: 'Id of the artifact to deploy'
         required: false
         default: ''
         type: string
   workflow_call:
     inputs:
-      artifact_name:
-        description: 'Name of the artifact to deploy'
+      artifact_id:
+        description: 'Id of the artifact to deploy'
         required: false
         default: ''
         type: string
@@ -29,7 +29,6 @@ permissions:
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
-  PUBLISH_ARTIFACT: "oweme-api"
 
 jobs:
   deploy:
@@ -45,7 +44,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact_name || env.PUBLISH_ARTIFACT }}
+          artifact-ids: ${{ inputs.artifact_id }}
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy
