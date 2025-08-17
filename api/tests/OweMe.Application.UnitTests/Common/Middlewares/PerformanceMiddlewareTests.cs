@@ -18,7 +18,7 @@ public sealed partial class PerformanceMiddlewareTests
         TooLongRequestThresholdMs = 500 // Set a threshold for testing
     });
 
-    [GeneratedRegex(@"Handled TestRequest in (\d+) ms", RegexOptions.Compiled)]
+    [GeneratedRegex(@"Handled TestRequest in (\d+(\.\d+)?) ms", RegexOptions.Compiled)]
     private static partial Regex HandledRequestRegex();
 
     private readonly TestMessageContext _context = new();
