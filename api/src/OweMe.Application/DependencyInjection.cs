@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using FluentValidation;
+using JasperFx;
+using JasperFx.CodeGeneration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OweMe.Application.Common;
@@ -25,7 +27,15 @@ public static class DependencyInjection
 
             opts.UseFluentValidation(RegistrationBehavior.ExplicitRegistration);
 
-            // TODO: use static code in prod.
+            if (builder.Environment.IsProduction())
+            {
+                opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Static;
+                opts.Services.CritterStackDefaults(cr =>
+                {
+                    // I'm only going to care about this in production
+                    cr.Production.AssertAllPreGeneratedTypesExist = true;
+                });
+            }
         });
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
