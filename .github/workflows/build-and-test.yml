@@ -8,6 +8,11 @@ on:
         required: false
         default: false
         type: boolean
+      release:
+        description: 'Create a release after build'
+        required: false
+        default: false
+        type: boolean
     secrets:
       SONAR_TOKEN:
           required: true
@@ -26,6 +31,11 @@ on:
     inputs:
       publish:
         description: 'Publish artifacts after build'
+        required: false
+        default: false
+        type: boolean
+      release:
+        description: 'Create a release after build'
         required: false
         default: false
         type: boolean
@@ -135,37 +145,31 @@ jobs:
             --Output=dotCover.Output.html \
           -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
-      - name: ReportGenerator
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.4.12
-        with:
-          reports: 'dotCover.Output.html'
-          targetdir: 'coveragereport'
-          reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
-          toolpath: 'reportgeneratortool'
-          tag: '${{ github.run_number }}_${{ github.run_id }}'
-
-      - name: Upload coverage report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: CoverageReport
-          path: coveragereport
-
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
-        run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
-        
-      - name: Set output for release tag
+        run: |
+          dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --property:PublishDir=${{ env.PUBLISH_DIR }}
+
+      - name: Upload publish artifacts
+        id: upload_artifacts
         if: ${{ inputs.publish == true }}
-        run: echo "tag_name=${{ steps.nbgv.outputs.SemVer2 }}" >> $GITHUB_OUTPUT
-        id: set_release_tag
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
+          path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+      - name: Set artifact ID
+        id: set_artifact_id
+        if: ${{ inputs.publish == true }}
+        run: echo "artifact_id=${{ steps.upload_artifacts.outputs.artifact-id }}" >> $GITHUB_OUTPUT
       
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        if: ${{ inputs.publish == true }}
+        if: ${{ inputs.release == true }}
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
-          tag_name: ${{ steps.set_release_tag.outputs.tag_name }}
+          tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
           target_commitish: ${{ github.ref }}
           generate_release_notes: true
           files: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/**

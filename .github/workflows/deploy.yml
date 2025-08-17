@@ -3,15 +3,15 @@ name: deploy
 on:
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: 'Release tag to deploy (empty for latest)'
+      artifact_id:
+        description: 'Id of the artifact to deploy'
         required: false
         default: ''
         type: string
   workflow_call:
     inputs:
-      release_tag:
-        description: 'Release tag to deploy (empty for latest)'
+      artifact_id:
+        description: 'Id of the artifact to deploy'
         required: false
         default: ''
         type: string
@@ -29,14 +29,11 @@ permissions:
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
-  PUBLISH_ARTIFACT: "oweme-api"
 
 jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TAG: ${{ inputs.release_tag != '' && inputs.release_tag || 'latest' }}
 
     steps:
       - name: Checkout repository
@@ -44,12 +41,11 @@ jobs:
         with:
           fetch-depth: 0  # Full history for Nbgv versioning
 
-      - name: Download release asset
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release download --repo ${{ github.repository }} ${{ env.RELEASE_TAG }} \
-            --dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ inputs.artifact_id }}
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy
         uses: azure/webapps-deploy@v3
