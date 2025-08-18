@@ -18,10 +18,6 @@ on:
         required: true
       SMOKETESTS_USERSETTINGS_PASSWORD:
         required: true
-  workflow_run:
-    workflows: [ "deploy" ]
-    types:
-      - completed
 
 permissions:
   contents: read
