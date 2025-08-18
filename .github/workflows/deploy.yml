@@ -27,9 +27,6 @@ permissions:
   checks: write
   pull-requests: write
 
-concurrency: production-deploy
-environment: production
-
 env:
   AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
 
@@ -37,6 +34,8 @@ jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
+    concurrency: production-deploy
+    environment: production
 
     steps:
       - name: Checkout repository
