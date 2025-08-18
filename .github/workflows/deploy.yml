@@ -1,4 +1,4 @@
-name: deploy
+name: Deploy to Azure
 
 on:
   workflow_dispatch:
@@ -34,6 +34,8 @@ jobs:
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
+    concurrency: production-deploy
+    environment: production
 
     steps:
       - name: Checkout repository
