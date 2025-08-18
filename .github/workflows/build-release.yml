@@ -12,6 +12,8 @@ permissions:
   checks: write
   pull-requests: write
 
+environment: production
+
 jobs:
   build:
     uses: ./.github/workflows/build-and-test.yml
