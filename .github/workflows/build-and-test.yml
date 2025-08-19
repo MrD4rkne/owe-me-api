@@ -59,24 +59,24 @@ jobs:
           java-version: '${{ env.JDK_VERSION }}'
           distribution: 'zulu'
 
-      # Cache SonarQube Cloud packages and scanner together
       - name: Cache SonarQube Cloud tools
         uses: actions/cache@v4
+        id: cache-sonar-scanner
         with:
           path: |
-            ${{ env.CACHE_DIR }}/cache
             ${{ env.CACHE_DIR }}/scanner
-          key: ${{ runner.os }}-sonar-tools
-          restore-keys: ${{ runner.os }}-sonar-tools
+            ${{ env.CACHE_DIR }}/dotcover
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
 
       - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonarqube-cloud-tools.outputs.cache-hit != 'true'
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ${{ env.CACHE_DIR }}/scanner
 
       - name: Install dotcover
-        run: dotnet tool install JetBrains.dotCover.CommandLineTools --create-manifest-if-needed
+        run: dotnet tool install JetBrains.dotCover.CommandLineTools --tool-path ${{ env.CACHE_DIR }}/dotcover
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
@@ -112,7 +112,12 @@ jobs:
 
       - name: Test with coverage
         run: |
-          dotCover cover-dotnet \
+          dotCoverPath="${{ env.CACHE_DIR }}/dotcover/dotCover"
+            if [ ! -f "$dotCoverPath" ]; then
+                echo "dotCover not found at $dotCoverPath. Please ensure dotCover is installed correctly."
+                exit 1
+            fi
+          "${dotCoverPath}" cover-dotnet \
             --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
             --Output="${{ env.COVERAGE_FILE }}" \
