@@ -30,53 +30,61 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  PUBLISH_ARTIFACT: "oweme-api"
+  SOLUTION_PATH: "./OweMe.Api.sln"
+  API_PROJECT_PATH: "./api/src/OweMe.Api"
+  PUBLISH_DIR: "./publish"
+  CACHE_DIR: "$HOME/.sonar"
+
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
-    env:
-      PUBLISH_ARTIFACT: "oweme-api"
-      SOLUTION_PATH: "./OweMe.Api.sln"
-      API_PROJECT_PATH: "./api/src/OweMe.Api"
-      PUBLISH_DIR: "./publish"
-      CACHE_DIR: "$HOME/.sonar"
-      JDK_VERSION: "17"
-      COVERAGE_FILE: "dotCover.Output.html"
     steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ vars.DOTNET_VERSION }}
+      - name: Define Cache Directory Variable
+        run: echo "CACHE_DIR=$HOME/.sonar" >> $GITHUB_ENV
 
-      - name: Set up JDK ${{ env.JDK_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: '${{ env.JDK_VERSION }}'
-          distribution: 'zulu'
-
-      - name: Cache SonarQube Cloud tools
+      - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
-        id: cache-sonar-scanner
         with:
-          path: |
-            ${{ env.CACHE_DIR }}/scanner
-            ${{ env.CACHE_DIR }}/dotcover
+          path: ${{ env.CACHE_DIR }}/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CACHE_DIR }}/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
+          # Create the cache directory if it doesn't exist
           mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ${{ env.CACHE_DIR }}/scanner
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
       - name: Install dotcover
-        run: dotnet tool install JetBrains.dotCover.CommandLineTools --tool-path ${{ env.CACHE_DIR }}/dotcover
+        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
@@ -95,11 +103,13 @@ jobs:
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
+
+          # Run SonarScanner Begin with quality gate waiting enabled
           "$scannerPath" begin /k:"$SONAR_PROJECT_KEY" \
             /o:"$SONAR_ORG" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="$SONAR_HOST_URL" \
-            /d:sonar.cs.dotcover.reportsPaths="${{ env.COVERAGE_FILE }}" \
+            /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html \
             /d:sonar.scanner.scanAll=false \
             /d:sonar.qualitygate.wait=true \
             /d:sonar.qualitygate.timeout=300
@@ -112,16 +122,11 @@ jobs:
 
       - name: Test with coverage
         run: |
-          dotCoverPath="${{ env.CACHE_DIR }}/dotcover/dotCover"
-            if [ ! -f "$dotCoverPath" ]; then
-                echo "dotCover not found at $dotCoverPath. Please ensure dotCover is installed correctly."
-                exit 1
-            fi
-          "${dotCoverPath}" cover-dotnet \
+          dotCover cover-dotnet \
             --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
-            --Output="${{ env.COVERAGE_FILE }}" \
-            -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
+            --Output=dotCover.Output.html \
+          -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
@@ -149,4 +154,6 @@ jobs:
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
+          
+          # Run SonarScanner End securely
           "$scannerPath" end /d:sonar.token="$SONAR_TOKEN"
