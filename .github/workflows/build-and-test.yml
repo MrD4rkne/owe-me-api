@@ -10,13 +10,13 @@ on:
         type: boolean
     secrets:
       SONAR_TOKEN:
-          required: true
+        required: true
       SONAR_HOST_URL:
-          required: true
+        required: true
       SONAR_PROJECT_KEY:
-          required: true
+        required: true
       SONAR_ORG:
-          required: true
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -27,26 +27,26 @@ on:
         type: boolean
 
 permissions:
-    contents: write
-    pull-requests: write
+  contents: write
+  pull-requests: write
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
   PUBLISH_ARTIFACT: "oweme-api"
   SOLUTION_PATH: "./OweMe.Api.sln"
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   CACHE_DIR: "$HOME/.sonar"
+  JAVA_VERSION: "17"
 
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
-      - name: Set up JDK 17
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'zulu'
 
       - name: Checkout repository
@@ -89,10 +89,10 @@ jobs:
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
-        
+
       - uses: dotnet/nbgv@master
         id: nbgv
-        
+      
       - name: Get version
         run: echo "${{ steps.nbgv.outputs.SemVer2 }}"
 
@@ -140,7 +140,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
-          path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+          path: '${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Set artifact ID
         id: set_artifact_id
