@@ -84,11 +84,8 @@ jobs:
           mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ${{ env.CACHE_DIR }}/scanner
 
-      - name: Init dotnet managed tool cache
-        run: dotnet new tool-manifest --force
-
       - name: Install dotcover
-        run: dotnet tool install JetBrains.dotCover.CommandLineTools
+        run: dotnet tool install JetBrains.dotCover.CommandLineTools --create-manifest-if-needed
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
