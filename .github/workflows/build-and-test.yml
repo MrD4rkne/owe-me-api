@@ -40,17 +40,34 @@ jobs:
       API_PROJECT_PATH: "./api/src/OweMe.Api"
       PUBLISH_DIR: "./publish"
       CACHE_DIR: "$HOME/.sonar"
+      JDK_VERSION: "17"
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'zulu'
-
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+          cache: true
+
+      - name: Cache JDK ${{ env.JDK_VERSION }}
+        uses: actions/cache@v4
+        id: cache-jdk
+        with:
+          path: |
+            ~/.sdkman/candidates/java/17.0.*/zulu
+          key: ${{ runner.os }}-jdk-17-zulu
+
+      - name: Set up JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v4
+        if: steps.cache-jdk.outputs.cache-hit != 'true'
+        with:
+          java-version: '${{ env.JDK_VERSION }}'
+          distribution: 'zulu'
+          cache: 'gradle'
 
       # Cache SonarQube Cloud packages and scanner together
       - name: Cache SonarQube Cloud tools
@@ -68,14 +85,11 @@ jobs:
           mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ${{ env.CACHE_DIR }}/scanner
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ vars.DOTNET_VERSION }}
-          cache: true
+      - name: Init dotnet managed tool cache
+        run: dotnet new tool-manifest --force
 
       - name: Install dotcover
-        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
+        run: dotnet tool install JetBrains.dotCover.CommandLineTools
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
