@@ -31,7 +31,6 @@ permissions:
     pull-requests: write
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: "./api/src/OweMe.Api/publish"
   PUBLISH_ARTIFACT: "oweme-api"
   SOLUTION_PATH: "./OweMe.Api.sln"
   API_PROJECT_PATH: "./api/src/OweMe.Api"
@@ -140,7 +139,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
-          path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+          path: '${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Set artifact ID
         id: set_artifact_id
