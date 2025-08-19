@@ -10,13 +10,13 @@ on:
         type: boolean
     secrets:
       SONAR_TOKEN:
-          required: true
+        required: true
       SONAR_HOST_URL:
-          required: true
+        required: true
       SONAR_PROJECT_KEY:
-          required: true
+        required: true
       SONAR_ORG:
-          required: true
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -27,20 +27,19 @@ on:
         type: boolean
 
 permissions:
-    contents: write
-    pull-requests: write
-
-env:
-  PUBLISH_ARTIFACT: "oweme-api"
-  SOLUTION_PATH: "./OweMe.Api.sln"
-  API_PROJECT_PATH: "./api/src/OweMe.Api"
-  PUBLISH_DIR: "./publish"
-  CACHE_DIR: "$HOME/.sonar"
+  contents: write
+  pull-requests: write
 
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    env:
+      PUBLISH_ARTIFACT: "oweme-api"
+      SOLUTION_PATH: "./OweMe.Api.sln"
+      API_PROJECT_PATH: "./api/src/OweMe.Api"
+      PUBLISH_DIR: "./publish"
+      CACHE_DIR: "$HOME/.sonar"
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -53,28 +52,19 @@ jobs:
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
 
-      - name: Define Cache Directory Variable
-        run: echo "CACHE_DIR=$HOME/.sonar" >> $GITHUB_ENV
-
-      - name: Cache SonarQube Cloud packages
+      # Cache SonarQube Cloud packages and scanner together
+      - name: Cache SonarQube Cloud tools
         uses: actions/cache@v4
         with:
-          path: ${{ env.CACHE_DIR }}/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Cache SonarQube Cloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.CACHE_DIR }}/scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
+          path: |
+            ${{ env.CACHE_DIR }}/cache
+            ${{ env.CACHE_DIR }}/scanner
+          key: ${{ runner.os }}-sonar-tools
+          restore-keys: ${{ runner.os }}-sonar-tools
 
       - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        if: steps.cache-sonarqube-cloud-tools.outputs.cache-hit != 'true'
         run: |
-          # Create the cache directory if it doesn't exist
           mkdir -p ${{ env.CACHE_DIR }}/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ${{ env.CACHE_DIR }}/scanner
 
@@ -82,16 +72,17 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
+          cache: true
 
       - name: Install dotcover
         run: dotnet tool install --global JetBrains.dotCover.CommandLineTools
 
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
-        
+
       - uses: dotnet/nbgv@master
         id: nbgv
-        
+
       - name: Get version
         run: echo "${{ steps.nbgv.outputs.SemVer2 }}"
 
@@ -103,8 +94,6 @@ jobs:
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
-
-          # Run SonarScanner Begin with quality gate waiting enabled
           "$scannerPath" begin /k:"$SONAR_PROJECT_KEY" \
             /o:"$SONAR_ORG" \
             /d:sonar.token="$SONAR_TOKEN" \
@@ -126,7 +115,7 @@ jobs:
             --reportType=HTML \
             --AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute \
             --Output=dotCover.Output.html \
-          -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
+            -- test --configuration Release --no-restore --no-build --verbosity normal --filter "FullyQualifiedName!~SmokeTests"
 
       - name: Dotnet publish
         if: ${{ inputs.publish == true }}
@@ -154,6 +143,4 @@ jobs:
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
         run: |
           scannerPath="$CACHE_DIR/scanner/dotnet-sonarscanner"
-          
-          # Run SonarScanner End securely
           "$scannerPath" end /d:sonar.token="$SONAR_TOKEN"
