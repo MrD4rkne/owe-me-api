@@ -48,6 +48,15 @@ jobs:
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
 
+      - name: Cache dotnet ${{ vars.DOTNET_VERSION }}
+        id: cache-dotnet-core
+        uses: actions/cache@v4
+        if: steps.cache-dotnet-core.outputs.cache-hit != 'true'
+        with:
+          path: '.\.dotnet'
+          key: ${{ runner.os }}-dotnet
+          restore-keys: ${{ runner.os }}-dotnet
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
