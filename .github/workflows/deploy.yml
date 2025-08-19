@@ -52,4 +52,5 @@ jobs:
     needs: deploy
     uses: ./.github/workflows/run-smoketests.yml
     secrets: inherit
-    environment: production
+    environment:
+      name: production
