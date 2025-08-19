@@ -36,16 +36,17 @@ env:
   API_PROJECT_PATH: "./api/src/OweMe.Api"
   PUBLISH_DIR: "./publish"
   CACHE_DIR: "$HOME/.sonar"
+  JAVA_VERSION: "17"
 
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
-      - name: Set up JDK 17
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'zulu'
 
       - name: Checkout repository
