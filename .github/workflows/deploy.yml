@@ -8,6 +8,7 @@ on:
         required: false
         default: ''
         type: string
+  
   workflow_call:
     inputs:
       artifact_id:
@@ -29,7 +30,6 @@ jobs:
     concurrency: production-deploy
     environment:
       name: production
-    environment: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
