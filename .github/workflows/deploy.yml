@@ -5,16 +5,14 @@ on:
     inputs:
       artifact_id:
         description: 'Id of the artifact to deploy'
-        required: false
-        default: ''
+        required: true
         type: string
-  
+
   workflow_call:
     inputs:
       artifact_id:
         description: 'Id of the artifact to deploy'
-        required: false
-        default: ''
+        required: true
         type: string
 
 permissions:
