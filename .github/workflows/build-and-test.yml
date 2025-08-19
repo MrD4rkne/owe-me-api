@@ -76,7 +76,6 @@ jobs:
         with:
           java-version: '${{ env.JDK_VERSION }}'
           distribution: 'zulu'
-          cache: 'gradle'
 
       # Cache SonarQube Cloud packages and scanner together
       - name: Cache SonarQube Cloud tools
