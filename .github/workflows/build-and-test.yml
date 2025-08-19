@@ -48,31 +48,13 @@ jobs:
         with:
           fetch-depth: 0  # Full history for SonarCloud analysis and Nbgv versioning
 
-      - name: Cache dotnet ${{ vars.DOTNET_VERSION }}
-        id: cache-dotnet-core
-        uses: actions/cache@v4
-        if: steps.cache-dotnet-core.outputs.cache-hit != 'true'
-        with:
-          path: '.\.dotnet'
-          key: ${{ runner.os }}-dotnet
-          restore-keys: ${{ runner.os }}-dotnet
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - name: Cache JDK ${{ env.JDK_VERSION }}
-        uses: actions/cache@v4
-        id: cache-jdk
-        with:
-          path: |
-            ~/.sdkman/candidates/java/17.0.*/zulu
-          key: ${{ runner.os }}-jdk-17-zulu
-
       - name: Set up JDK ${{ env.JDK_VERSION }}
         uses: actions/setup-java@v4
-        if: steps.cache-jdk.outputs.cache-hit != 'true'
         with:
           java-version: '${{ env.JDK_VERSION }}'
           distribution: 'zulu'
