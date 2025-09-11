@@ -1,0 +1,23 @@
+﻿services:
+  oweme.api:
+    image: oweme.api
+    container_name: OweMeApi
+    build:
+      context: .
+      dockerfile: api/src/OweMe.Api/Dockerfile
+    environment:
+      - Serilog__WriteTo__0__Name=Console
+      - Serilog__Enrich__0=WithSpan
+      - Database__ConnectionString=Server=oweme.api.database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
+      - Database__RunMigrations=true
+    depends_on:
+      - oweme.api.database
+
+  oweme.api.database:
+    image: "postgres:15.3"
+    ports:
+      - "5442:5432"
+    environment:
+      - POSTGRES_DB=OweMe.Api
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=Password123
