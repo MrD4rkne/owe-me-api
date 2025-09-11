@@ -20,12 +20,12 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
 });
 
-var logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateBootstrapLogger();
 
-builder.Host.UseSerilog(logger);
-builder.Services.AddSerilog(logger);
+builder.Host.UseSerilog();
+builder.Services.AddSerilog();
 
 builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
