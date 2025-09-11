@@ -22,7 +22,7 @@ builder.Services.AddOpenApi(options =>
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+    .CreateBootstrapLogger();
 
 builder.Host.UseSerilog(logger);
 builder.Services.AddSerilog(logger);

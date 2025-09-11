@@ -24,7 +24,8 @@
     <PackageReference Include="Serilog.Enrichers.Span" />
     <PackageReference Include="Serilog.Settings.Configuration" />
     <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights"/>
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" />
     <!-- Other -->
   </ItemGroup>
   <ItemGroup>
