@@ -5,9 +5,11 @@
     build:
       context: .
       dockerfile: api/src/OweMe.Api/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
     environment:
       - Serilog__WriteTo__0__Name=Console
-      - Serilog__Enrich__0=WithSpan
       - Database__ConnectionString=Server=oweme.api.database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
       - Database__RunMigrations=true
     depends_on:
