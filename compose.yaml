@@ -12,6 +12,9 @@
       - Serilog__WriteTo__0__Name=Console
       - Database__ConnectionString=Server=oweme.api.database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
       - Database__RunMigrations=true
+      - IdentityServer__Authority=http://oweme.identity:8080
+      - IdentityServer__ValidateAudience=false
+      - IdentityServer__RequireHttpsMetadata=false
     depends_on:
       oweme.api.database:
         condition: service_healthy
