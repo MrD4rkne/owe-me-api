@@ -1,11 +1,9 @@
-﻿services:
-  
+﻿name: oweme-system
+
+services:
   oweme.api:
     image: oweme.api
     container_name: OweMeApi
-    build:
-      context: .
-      dockerfile: api/src/OweMe.Api/Dockerfile
     ports:
       - "5000:8080"
       - "5001:8081"
