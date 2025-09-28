@@ -14,8 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		api\src\.dockerignore = api\src\.dockerignore
 		version.json = version.json
-		api\src\compose.yaml = api\src\compose.yaml
-		api\src\compose.debug.yaml = api\src\compose.debug.yaml
+		compose.yaml = compose.yaml
+		compose.override.yaml = compose.override.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B1927411-9F58-4045-963F-FEACC0733129}"
@@ -167,5 +167,7 @@ Global
 		{4F7639E7-2658-40DA-95D0-0B6A8A8F116E} = {40644AF3-CF30-4931-B88D-D001C86FAA1F}
 		{DB4E8173-5440-4013-8BCE-B2633ABCBC65} = {4F7639E7-2658-40DA-95D0-0B6A8A8F116E}
 		{90CD9594-D35E-485F-8DAB-2D42407E63C3} = {4F7639E7-2658-40DA-95D0-0B6A8A8F116E}
+	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
 	EndGlobalSection
 EndGlobal
