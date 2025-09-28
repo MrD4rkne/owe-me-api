@@ -2,6 +2,7 @@
   <configuration default="false" name="API debug" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
     <deployment type="docker-compose.yml">
       <settings>
+        <option name="commandLineOptions" value="--build" />
         <option name="secondarySourceFiles">
           <list>
             <option value="compose.override.yaml" />
