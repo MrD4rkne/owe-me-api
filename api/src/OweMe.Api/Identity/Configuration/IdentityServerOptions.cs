@@ -11,4 +11,6 @@ public class IdentityServerOptions
     public string? Audience { get; set; }
 
     public string? ValidIssuer { get; set; }
+    
+    public bool? RequireHttpsMetadata { get; set; }
 }

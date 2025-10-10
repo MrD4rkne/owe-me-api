@@ -19,9 +19,9 @@ public class ConfigureJwtBearerOptionsTests
             Audience = "audience",
             ValidIssuer = "issuer"
         };
-        var environment = new Mock<IHostEnvironment>();
+
         var configureJwtBearerOptions =
-            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions));
 
         var options = new JwtBearerOptions();
 
@@ -47,9 +47,9 @@ public class ConfigureJwtBearerOptionsTests
             Audience = null,
             ValidIssuer = "issuer"
         };
-        var environment = new Mock<IHostEnvironment>();
+
         var configureJwtBearerOptions =
-            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions));
 
         var options = new JwtBearerOptions();
 
@@ -70,9 +70,8 @@ public class ConfigureJwtBearerOptionsTests
             Audience = "audience",
             ValidIssuer = null
         };
-        var environment = new Mock<IHostEnvironment>();
         var configureJwtBearerOptions =
-            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions));
 
         var options = new JwtBearerOptions();
 
@@ -83,20 +82,23 @@ public class ConfigureJwtBearerOptionsTests
         options.TokenValidationParameters.ValidIssuer.ShouldBeNull("ValidIssuer should not be set");
     }
 
-    [Fact]
-    public void Configure_Should_Disable_RequireHttpsMetadata_In_Development()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    [InlineData(null)]
+    public void Configure_Should_Set_RequireHttpsMetadata(bool? requireHttpsMetadata = true)
     {
         var identityServerOptions = new IdentityServerOptions
         {
             Authority = "https://example.com",
             ValidateAudience = true,
             Audience = "audience",
-            ValidIssuer = "issuer"
+            ValidIssuer = "issuer",
+            RequireHttpsMetadata = requireHttpsMetadata
         };
-        var environment = new Mock<IHostEnvironment>();
-        environment.Setup(e => e.EnvironmentName).Returns(Environments.Development);
+
         var configureJwtBearerOptions =
-            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions), environment.Object);
+            new ConfigureJwtBearerOptions(Options.Create(identityServerOptions));
 
         var options = new JwtBearerOptions();
 
@@ -104,6 +106,6 @@ public class ConfigureJwtBearerOptionsTests
         configureJwtBearerOptions.Configure(options);
 
         // Assert
-        options.RequireHttpsMetadata.ShouldBeFalse("RequireHttpsMetadata should be false in development");
+        options.RequireHttpsMetadata.ShouldBe(requireHttpsMetadata ?? true);
     }
 }

@@ -5,8 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace OweMe.Api.Identity.Configuration;
 
 public class ConfigureJwtBearerOptions(
-    IOptions<IdentityServerOptions> identityServerOptions,
-    IHostEnvironment environment) : IConfigureNamedOptions<JwtBearerOptions>
+    IOptions<IdentityServerOptions> identityServerOptions) : IConfigureNamedOptions<JwtBearerOptions>
 {
     public void Configure(JwtBearerOptions options)
     {
@@ -25,11 +24,10 @@ public class ConfigureJwtBearerOptions(
         {
             options.TokenValidationParameters.ValidIssuer = identityServerOptions.Value.ValidIssuer;
         }
+        
+        options.TokenValidationParameters.ValidTypes = ["at+jwt"];
 
-        if (environment.IsDevelopment())
-        {
-            options.RequireHttpsMetadata = false;
-        }
+        options.RequireHttpsMetadata = identityServerOptions.Value.RequireHttpsMetadata ?? true;
     }
 
     public void Configure(string? name, JwtBearerOptions options)

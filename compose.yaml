@@ -1,0 +1,43 @@
+﻿name: oweme-system
+
+services:
+  oweme.api:
+    image: oweme.api
+    container_name: oweme.api
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - Serilog__WriteTo__0__Name=Console
+      - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
+      - Serilog__WriteTo__1__Args__Endpoint=http://seq:5341/ingest/otlp/v1/logs
+      - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
+      - Serilog__WriteTo__1__Name=OpenTelemetry
+
+      - Database__ConnectionString=Server=oweme.api.database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
+      - Database__RunMigrations=true
+      
+      - IdentityServer__Authority=http://oweme.identity:8080
+      - IdentityServer__ValidateAudience=false
+      - IdentityServer__RequireHttpsMetadata=false
+    depends_on:
+      oweme.identity:
+        condition: service_started
+      oweme.api.database:
+        condition: service_healthy
+      seq:
+        condition: service_started
+
+  oweme.api.database:
+    image: "postgres:15.3"
+    ports:
+      - "5442:5432"
+    environment:
+      - POSTGRES_DB=OweMe.Api
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=Password123
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

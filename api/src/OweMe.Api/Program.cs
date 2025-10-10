@@ -2,6 +2,8 @@ using JasperFx;
 using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
 using OweMe.Api.Identity;
@@ -11,21 +13,37 @@ using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
 using Serilog;
+using Serilog.Enrichers.Span;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .Enrich.WithSpan()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateBootstrapLogger();
+
+builder.Host.UseSerilog();
+builder.Services.AddSerilog();
+
+builder.Services.AddOpenTelemetry()
+    .WithLogging()
+    .WithTracing(b =>
+    {
+        b.AddAspNetCoreInstrumentation();
+        b.AddHttpClientInstrumentation();
+    })
+    .WithMetrics(b =>
+    {
+        b.AddAspNetCoreInstrumentation();
+        b.AddHttpClientInstrumentation();
+    });
 
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
     options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
 });
-
-var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-
-builder.Host.UseSerilog(logger);
-builder.Services.AddSerilog(logger);
 
 builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
