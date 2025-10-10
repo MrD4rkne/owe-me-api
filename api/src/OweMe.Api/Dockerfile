@@ -7,10 +7,16 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
-COPY . /src
-WORKDIR "/src/api/src/OweMe.Api"
-RUN ls -la
-RUN dotnet restore
+COPY ./api/ /api
+COPY ./client/ /client
+COPY ./Directory.Build.props /
+COPY ./Directory.Packages.props /
+COPY OweMe.Api.sln /
+COPY version.json /
+
+WORKDIR /
+RUN dotnet restore OweMe.Api.sln
+WORKDIR /api/src/OweMe.Api
 RUN dotnet build -c "$BUILD_CONFIGURATION" --no-restore -o /app/build
 
 FROM build AS publish
