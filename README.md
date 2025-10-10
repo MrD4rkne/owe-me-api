@@ -49,7 +49,7 @@ git clone https://github.com/MrD4rkne/oweme-ecosystem/
 cd owe-me-api
 
 # Start
-docker-compose -f ../compose.yaml -f compose.override.yaml up --build
+docker compose -f ../compose.yaml -f compose.override.yaml up --build
 ```
 
 #### Side-note
