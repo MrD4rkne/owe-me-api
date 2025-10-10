@@ -38,6 +38,7 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "OweMe.Api.csproj" -c "$BUILD_CONFIGURATION" --no-restore -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "OweMe.Api.dll"]
