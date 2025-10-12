@@ -22,8 +22,9 @@ COPY api/src/OweMe.Infrastructure/*.csproj ./api/src/OweMe.Infrastructure/
 COPY api/src/OweMe.Persistence/*.csproj ./api/src/OweMe.Persistence/
 COPY client/OweMe.Api.Client/*.csproj ./client/OweMe.Api.Client/
 
-# Restore dependencies (cached layer unless csproj changes)
-RUN dotnet restore OweMe.Api.sln
+# Restore only the main project dependencies (excluding test projects)
+RUN dotnet restore ./api/src/OweMe.Api/OweMe.Api.csproj
+RUN dotnet restore ./client/OweMe.Api.Client/OweMe.Api.Client.csproj
 
 # Copy remaining source files
 COPY api/ ./api/
