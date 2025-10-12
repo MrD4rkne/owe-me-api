@@ -7,7 +7,7 @@ using OweMe.Persistence.Ledgers;
 
 namespace OweMe.Api.HealthChecks;
 
-internal static class HealthCheckRegistration
+internal static class HealthChecksRegistration
 {
     private static class Tags
     {
@@ -22,23 +22,23 @@ internal static class HealthCheckRegistration
             .AddDbContextCheck<LedgerDbContext>(
                 "db_connection_check",
                 failureStatus: HealthStatus.Unhealthy,
-                tags: [ Tags.Database ],
+                tags: [Tags.Database],
                 customTestQuery: async (db, token) => await db.Ledgers.CountAsync(token) >= 0)
             .AddCheck<IdentityServerHealthCheck>(
                 "identity_server_discovery",
-                failureStatus: HealthStatus.Degraded,
-                tags: [ Tags.IdentityServer ]);
+                HealthStatus.Degraded,
+                [Tags.IdentityServer]);
         
         return builder;
     }
     
-    public static IApplicationBuilder UseOweMeHealthChecks(this IApplicationBuilder app)
+    public static WebApplication UseOweMeHealthChecks(this WebApplication app)
     {
         var healthCheckOptions = new HealthCheckOptions
         {
             ResponseWriter = WriteAction
         };
-        app.UseHealthChecks("/health", healthCheckOptions);
+        app.MapHealthChecks("/health", healthCheckOptions);
         return app;
     }
     
