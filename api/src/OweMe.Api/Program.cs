@@ -2,6 +2,7 @@ using JasperFx;
 using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using OweMe.Api.Description;
@@ -11,6 +12,7 @@ using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
 using OweMe.Infrastructure;
 using OweMe.Persistence;
+using OweMe.Persistence.Ledgers;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Enrichers.Span;
@@ -91,6 +93,11 @@ builder.Services.AddProblemDetails(options =>
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<LedgerDbContext>(
+        "ledger check",
+        customTestQuery: async (db, token) => await db.Ledgers.CountAsync(token) >= 0);
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -106,6 +113,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHealthChecks("/health");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
