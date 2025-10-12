@@ -27,6 +27,11 @@ services:
         condition: service_healthy
       seq:
         condition: service_started
+    healthcheck:
+        test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
   oweme.api.database:
     image: "postgres:15.3"
