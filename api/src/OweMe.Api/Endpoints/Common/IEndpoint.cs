@@ -1,4 +1,4 @@
-﻿namespace OweMe.Api.Endpoints;
+﻿namespace OweMe.Api.Endpoints.Common;
 
 public interface IEndpoint
 {

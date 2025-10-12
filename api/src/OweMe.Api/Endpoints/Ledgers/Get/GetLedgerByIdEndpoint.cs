@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using OweMe.Api.Description;
+using OweMe.Api.Endpoints.Common;
 using OweMe.Api.Identity;
 using OweMe.Application.Ledgers.Queries.Get;
 using Wolverine;

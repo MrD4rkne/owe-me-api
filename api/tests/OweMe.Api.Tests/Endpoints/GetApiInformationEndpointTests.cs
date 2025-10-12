@@ -2,6 +2,7 @@
 using Moq;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
+using OweMe.Api.Endpoints.Common;
 using Shouldly;
 
 namespace OweMe.Api.Tests.Endpoints;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OweMe.Api.Endpoints;
+using OweMe.Api.Endpoints.Common;
 using Shouldly;
 
 namespace OweMe.Api.Tests.Endpoints;
