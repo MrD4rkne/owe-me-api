@@ -12,7 +12,7 @@ public sealed class IdentityServerHealthCheck(
 {
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
-        if (identityServerOptions?.Value == null || string.IsNullOrWhiteSpace(identityServerOptions.Value.Authority))
+        if (identityServerOptions.Value == null || string.IsNullOrWhiteSpace(identityServerOptions.Value.Authority))
         {
             return HealthCheckResult.Unhealthy("IdentityServer authority is not configured.");
         }
@@ -20,12 +20,24 @@ public sealed class IdentityServerHealthCheck(
         using var httpClient = httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(identityServerOptions.Value.Authority);
 
-        var discoveryResponse = await httpClient.GetDiscoveryDocumentAsync(cancellationToken: cancellationToken);
+        var discoveryResponse = await httpClient.GetDiscoveryDocumentAsync(CreateDiscoveryDocumentRequest(identityServerOptions.Value), cancellationToken: cancellationToken);
         if (discoveryResponse.IsError)
         {
             return HealthCheckResult.Unhealthy("Failed to retrieve discovery document.", discoveryResponse.Exception);
         }
         
         return HealthCheckResult.Healthy("IdentityServer is healthy.");
+    }
+
+    private static DiscoveryDocumentRequest CreateDiscoveryDocumentRequest(IdentityServerOptions options)
+    {
+        return new DiscoveryDocumentRequest
+        {
+            Address = options.Authority,
+            Policy = new DiscoveryPolicy
+            {
+                RequireHttps = options.RequireHttpsMetadata ?? true,
+            }
+        };
     }
 }
