@@ -1,12 +1,17 @@
 using JasperFx;
 using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
+using OweMe.Api.Endpoints.Common;
+using OweMe.Api.HealthChecks;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
 using OweMe.Application;
@@ -93,10 +98,10 @@ builder.Services.AddProblemDetails(options =>
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<LedgerDbContext>(
-        "ledger check",
-        customTestQuery: async (db, token) => await db.Ledgers.CountAsync(token) >= 0);
+    .AddOweMeHealthChecks();
 
 var app = builder.Build();
 
@@ -114,7 +119,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseHealthChecks("/health");
+app.UseOweMeHealthChecks();
 
 app.UseAuthentication();
 app.UseAuthorization();
