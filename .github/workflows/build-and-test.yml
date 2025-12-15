@@ -137,7 +137,7 @@ jobs:
       - name: Upload publish artifacts
         id: upload_artifacts
         if: ${{ inputs.publish == true }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.PUBLISH_ARTIFACT }}-${{ steps.nbgv.outputs.SemVer2 }}
           path: '${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}'
