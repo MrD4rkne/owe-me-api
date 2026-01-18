@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Moq;
 using OweMe.Api.Identity.Configuration;
 
@@ -34,6 +34,7 @@ public class BearerSecuritySchemeTransformerTests
 
         // Assert
         Assert.NotNull(document.Components);
+        Assert.NotNull(document.Components.SecuritySchemes);
         Assert.True(document.Components.SecuritySchemes.ContainsKey("Bearer"));
         Assert.Equal(SecuritySchemeType.Http, document.Components.SecuritySchemes["Bearer"].Type);
     }
