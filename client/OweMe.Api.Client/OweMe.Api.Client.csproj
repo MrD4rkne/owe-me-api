@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <Target Name="GenerateOpenApiClient" BeforeTargets="CoreBuild">
-    <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
+    <Exec Command="$(NSwagExe_Net100) run nswag.json /variables:Configuration=$(Configuration),NoBuild=False" />
   </Target>
 
 </Project>

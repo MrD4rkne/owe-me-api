@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Interfaces;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Moq;
 using OweMe.Api.Description;
 using Shouldly;
@@ -39,9 +37,10 @@ public class ApiVersionOpenApiDocumentTransformerTests
                 Version = "1.0.0",
                 Extensions = new Dictionary<string, IOpenApiExtension>
                 {
-                    { "x-version", new OpenApiString("5.0.0") }
+                    { "x-version", new JsonNodeExtension("5.0.0")
                 }
             }
+        }
         };
         
         var context = new OpenApiDocumentTransformerContext()
@@ -63,10 +62,10 @@ public class ApiVersionOpenApiDocumentTransformerTests
         document.Info.Extensions.ShouldContain(
             ext => ext.Key == "x-version", "Transformer should not remove existing extensions");
         
-        document.Info.Extensions["x-version"].ShouldBeOfType<OpenApiString>();
-        var versionExtension = document.Info.Extensions["x-version"] as OpenApiString;
+        document.Info.Extensions["x-version"].ShouldBeOfType<JsonNodeExtension>();
+        var versionExtension = document.Info.Extensions["x-version"] as JsonNodeExtension;
         versionExtension.ShouldNotBeNull();
-        versionExtension!.Value.ShouldBe("5.0.0");
+        versionExtension!.Node.ShouldBe("5.0.0");
         
         _apiInformationProviderMock.Verify(provider => provider.GetApiInfo(), Times.AtLeastOnce,
             "ApiInformationProvider should be called to get API information"); 
