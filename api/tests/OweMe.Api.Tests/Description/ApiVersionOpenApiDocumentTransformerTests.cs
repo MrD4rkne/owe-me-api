@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.OpenApi;
+﻿using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 using Moq;
 using OweMe.Api.Description;
@@ -65,7 +66,7 @@ public class ApiVersionOpenApiDocumentTransformerTests
         document.Info.Extensions["x-version"].ShouldBeOfType<JsonNodeExtension>();
         var versionExtension = document.Info.Extensions["x-version"] as JsonNodeExtension;
         versionExtension.ShouldNotBeNull();
-        versionExtension!.Node.ShouldBe("5.0.0");
+        versionExtension!.Node.ToString().ShouldBe("5.0.0", "Transformer should preserve existing extension value");
         
         _apiInformationProviderMock.Verify(provider => provider.GetApiInfo(), Times.AtLeastOnce,
             "ApiInformationProvider should be called to get API information"); 
