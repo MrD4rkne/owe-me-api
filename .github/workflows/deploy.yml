@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 0  # Full history for Nbgv versioning
 
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           artifact-ids: ${{ inputs.artifact_id }}
           path: ${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}
