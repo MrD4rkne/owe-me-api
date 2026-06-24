@@ -2,6 +2,7 @@ using JasperFx;
 using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using OweMe.Api.Description;
@@ -17,11 +18,15 @@ using Serilog.Enrichers.Span;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithSpan()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateBootstrapLogger();
+if (Log.Logger.GetType().FullName == "Serilog.Core.Pipeline.SilentLogger")
+{
+    Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .Enrich.WithSpan()
+        .ReadFrom.Configuration(builder.Configuration)
+        .WriteTo.Console()
+        .CreateBootstrapLogger();
+}
 
 builder.Host.UseSerilog();
 builder.Services.AddSerilog();
@@ -114,4 +119,16 @@ app.MapEndpoints();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-return await app.RunJasperFxCommands(args);
+try
+{
+    return await app.RunJasperFxCommands(args);
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Unhandled exception during application startup");
+    throw;
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
