@@ -1,3 +1,4 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using JasperFx;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -33,7 +34,7 @@ builder.Logging.AddOpenTelemetry(logging =>
     logging.AddOtlpExporter();
 });
 
-builder.Services.AddOpenTelemetry()
+var otel = builder.Services.AddOpenTelemetry()
     .WithLogging()
     .WithTracing(b =>
     {
@@ -45,6 +46,10 @@ builder.Services.AddOpenTelemetry()
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
     });
+if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+{
+    otel.UseAzureMonitor();
+}
 
 builder.Services.AddOpenApi(options =>
 {
