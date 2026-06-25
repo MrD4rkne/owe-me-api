@@ -1,5 +1,4 @@
 using JasperFx;
-using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using OpenTelemetry.Metrics;
@@ -12,19 +11,26 @@ using OweMe.Application;
 using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
-using Serilog;
-using Serilog.Enrichers.Span;
+using OpenTelemetry.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithSpan()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateBootstrapLogger();
+builder.Logging.ClearProviders();
 
-builder.Host.UseSerilog();
-builder.Services.AddSerilog();
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.IncludeScopes = true;
+    options.SingleLine = true;
+    options.TimestampFormat = "HH:mm:ss ";
+});
+
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeScopes = true;
+    logging.IncludeFormattedMessage = true;
+    logging.AddOtlpExporter();
+});
+
 
 builder.Services.AddOpenTelemetry()
     .WithLogging()
@@ -67,8 +73,6 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireClaim("scope", Constants.POLICY_API_SCOPE_CLAIM);
     });
 
-builder.Services.AddResourceSetupOnStartup();
-
 builder.AddApplication();
 builder.AddInfrastructure();
 
@@ -93,15 +97,17 @@ builder.Services.AddEndpoints(typeof(Program).Assembly);
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference(opt =>
     {
-        opt.Servers = []; // Clear the default servers so it shows only the one the browser is running on,
+        opt.AddPreferredSecuritySchemes("OAuth2")
+        .AddPasswordFlow("OAuth2", flow =>
+        {
+            flow.SelectedScopes = [Constants.POLICY_API_SCOPE_CLAIM];
+        });
     });
 }
 

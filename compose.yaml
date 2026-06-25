@@ -8,12 +8,6 @@ services:
       - "5000:8080"
       - "5001:8081"
     environment:
-      - Serilog__WriteTo__0__Name=Console
-      - Serilog__WriteTo__1__Args__ResourceAttributes__service.name=OweMe.Api
-      - Serilog__WriteTo__1__Args__Endpoint=http://seq:5341/ingest/otlp/v1/logs
-      - Serilog__WriteTo__1__Args__Protocol=HttpProtobuf
-      - Serilog__WriteTo__1__Name=OpenTelemetry
-
       - Database__ConnectionString=Server=oweme.api.database;Database=OweMe.Api;Username=sa;Password=Password123;TrustServerCertificate=True;
       - Database__RunMigrations=true
       

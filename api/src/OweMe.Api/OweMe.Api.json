@@ -24,12 +24,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/api/ledgers/{ledgerId}": {
@@ -81,12 +76,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/api/ledgers": {
@@ -130,12 +120,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     }
   },
@@ -267,13 +252,27 @@
       }
     },
     "securitySchemes": {
-      "Bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "Json Web Token"
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "IdentityServer OpenID Connect Password Flow",
+        "flows": {
+          "password": {
+            "tokenUrl": "file:///connect/token",
+            "scopes": {
+              "oweme-api": "Access to the API endpoints"
+            }
+          }
+        }
       }
     }
   },
+  "security": [
+    {
+      "OAuth2": [
+        "oweme-api"
+      ]
+    }
+  ],
   "tags": [
     {
       "name": "Api Information"
