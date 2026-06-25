@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OweMe.Domain.Common.Exceptions;
+using OweMe.Application.Common.Exceptions;
 
 namespace OweMe.Application.Ledgers.Queries.Get;
 

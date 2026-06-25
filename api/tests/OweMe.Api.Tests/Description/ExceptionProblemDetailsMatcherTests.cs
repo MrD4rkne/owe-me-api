@@ -3,7 +3,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using OweMe.Api.Description;
-using OweMe.Domain.Common.Exceptions;
+using OweMe.Application.Common.Exceptions;
 using Shouldly;
 
 namespace OweMe.Api.Tests.Description;

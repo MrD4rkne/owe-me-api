@@ -1,6 +1,6 @@
 ﻿using Moq;
+using OweMe.Application.Common.Exceptions;
 using OweMe.Application.Ledgers.Queries.Get;
-using OweMe.Domain.Common.Exceptions;
 using OweMe.Domain.Ledgers;
 using OweMe.Domain.Users;
 using Shouldly;
