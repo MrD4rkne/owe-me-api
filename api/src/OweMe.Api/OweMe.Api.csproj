@@ -46,4 +46,10 @@
       <Value>**/Program.cs, **/Migrations/**.cs</Value>
     </SonarQubeSetting>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="OweMe.Api.Tests" />
+  </ItemGroup>
 </Project>

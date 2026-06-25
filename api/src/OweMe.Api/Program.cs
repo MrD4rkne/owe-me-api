@@ -12,6 +12,7 @@ using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
 using OpenTelemetry.Logs;
+using OweMe.Api.Identity.Description;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,11 +48,13 @@ builder.Services.AddOpenTelemetry()
 
 builder.Services.AddOpenApi(options =>
 {
-    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>();
     options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
 });
 
-builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
+builder.Services.AddOptions<IdentityServerOptions>()
+    .Bind(builder.Configuration.GetSection(IdentityServerOptions.SectionName))
+    .ValidateOnStart();
 
 builder.Services.AddAuthentication(options =>
 {
