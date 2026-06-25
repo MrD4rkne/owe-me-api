@@ -5,7 +5,7 @@
         <option name="commandLineOptions" value="--build" />
         <option name="secondarySourceFiles">
           <list>
-            <option value="compose.override.yaml" />
+            <option value="compose.yaml" />
           </list>
         </option>
         <option name="services">
@@ -13,7 +13,7 @@
             <option value="oweme.api" />
           </list>
         </option>
-        <option name="sourceFilePath" value="../compose.yaml" />
+        <option name="sourceFilePath" value="compose.override.yaml" />
       </settings>
     </deployment>
     <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
