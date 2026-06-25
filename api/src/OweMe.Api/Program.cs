@@ -1,18 +1,19 @@
 using JasperFx;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using OweMe.Api.Configuration;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
+using OweMe.Api.Identity.Description;
 using OweMe.Application;
 using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
-using OpenTelemetry.Logs;
-using OweMe.Api.Identity.Description;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,6 @@ builder.Logging.AddOpenTelemetry(logging =>
     logging.IncludeFormattedMessage = true;
     logging.AddOtlpExporter();
 });
-
 
 builder.Services.AddOpenTelemetry()
     .WithLogging()
@@ -52,9 +52,8 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
 });
 
-builder.Services.AddOptions<IdentityServerOptions>()
-    .Bind(builder.Configuration.GetSection(IdentityServerOptions.SectionName))
-    .ValidateOnStart();
+var identityOptions = builder.Services.AddOptions<IdentityServerOptions>()
+    .Bind(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -97,6 +96,15 @@ builder.Services.AddProblemDetails(options =>
 });
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
+
+if (!CodeGeneration.IsRunningGeneration())
+{
+    // Some actions like validating application options must not be run during codegen activities, like OpenApi spec
+    // generation or managing Entity Framework Core migrations.
+    identityOptions
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+}
 
 var app = builder.Build();
 
