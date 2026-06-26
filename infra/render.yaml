@@ -1,20 +1,16 @@
 services:
-  - type: web
-    name: owe-me-api
-    runtime: docker
-    plan: free
-    # # This runs BEFORE the new version goes live—perfect for migrations
-    # preDeployCommand: dotnet ef database update 
+  - type: image
+    name: owe-me-p-api
+    image:
+      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:latest # Default image
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: owe-me-db
+          name: owe-me-p-db
           property: connectionString
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
 
 databases:
-  - name: owe-me-db
+  - name: owe-me-p-db
     plan: free
     databaseName: owemedb
     user: owemeuser
