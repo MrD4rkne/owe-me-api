@@ -1,8 +1,9 @@
 services:
-  - type: image
+  - type: web
     name: owe-me-p-api
+    runtime: docker
     image:
-      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:latest # Default image
+      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:latest
     envVars:
       - key: DATABASE_URL
         fromDatabase:
