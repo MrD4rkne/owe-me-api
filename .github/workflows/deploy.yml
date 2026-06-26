@@ -1,17 +1,17 @@
-name: Deploy to Azure
+name: Deploy to Render
 
 on:
   workflow_dispatch:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_tag:
+        description: 'The Docker image tag to deploy'
         required: true
         type: string
 
   workflow_call:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_tag:
+        description: 'The Docker image tag to deploy'
         required: true
         type: string
 
@@ -24,17 +24,11 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - uses: actions/checkout@v6
-      
       - name: Deploy to Render
-        uses: JorgeLNJunior/render-deploy@v1.5.0
-        with:
-          service_id: ${{ secrets.RENDER_SERVICE_ID }}
-          api_key: ${{ secrets.RENDER_API_KEY }}
-          wait_deploy: true
-
-  smoke-tests:
-    needs: deploy
-    uses: ./.github/workflows/run-smoketests.yml
-    secrets: inherit
+        run: |
+          FULL_IMAGE="ghcr.io/${{ github.repository }}/owe-me-api:${{ inputs.image_tag }}"
+          # URL-encode the image URL for the Render hook
+          ENCODED_URL=$(echo "$FULL_IMAGE" | sed 's/:/%3A/g; s/\//%2F/g')
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}?imgURL=$ENCODED_URL"
