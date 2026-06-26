@@ -166,6 +166,7 @@ jobs:
       name: Push Docker Image to GHCR
       needs: build
       runs-on: ubuntu-latest
+      if: ${{ inputs.publish == true }}
       permissions:
         packages: write
         contents: read
@@ -186,4 +187,4 @@ jobs:
             context: .
             push: true
             tags: |
-              ghcr.io/${{ github.repository | downcase }}/owe-me-api:${{ needs.build.outputs.semver }}
+              ghcr.io/${{ github.repository.toLowerCase() }}/owe-me-api:${{ needs.build.outputs.semver }}
