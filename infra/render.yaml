@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: owe-me-p-api
+    name: oweme-p-api
     runtime: docker
     image:
       url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:latest
@@ -11,7 +11,7 @@ services:
           property: connectionString
 
 databases:
-  - name: owe-me-p-db
+  - name: oweme-p-db
     plan: free
     databaseName: owemedb
     user: owemeuser
