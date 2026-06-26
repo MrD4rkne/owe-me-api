@@ -3,7 +3,7 @@ services:
     name: oweme-p-api
     runtime: docker
     image:
-      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:latest
+      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:1.0.39-g7924b3ee19
     envVars:
       - key: DATABASE_URL
         fromDatabase:
