@@ -11,6 +11,7 @@ permissions:
   deployments: write
   checks: write
   pull-requests: write
+  packages: write
 
 jobs:
   build:
