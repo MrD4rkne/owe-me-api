@@ -29,6 +29,18 @@ jobs:
       - name: Deploy to Render
         run: |
           FULL_IMAGE="ghcr.io/${{ github.repository }}/owe-me-api:${{ inputs.image_tag }}"
-          # URL-encode the image URL for the Render hook
-          ENCODED_URL=$(echo "$FULL_IMAGE" | sed 's/:/%3A/g; s/\//%2F/g')
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}?imgURL=$ENCODED_URL"
+          
+          # URL-encode the image URL safely
+          ENCODED_URL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$FULL_IMAGE', safe=''))")
+          
+          # Extract the Base URL and the Key if they exist
+          HOOK_BASE="${{ secrets.RENDER_DEPLOY_HOOK }}"
+          
+          # If the secret already has '?', we append with '&', otherwise '?'
+          if [[ "$HOOK_BASE" == *"?"* ]]; then
+            TARGET_URL="${HOOK_BASE}&imgURL=${ENCODED_URL}"
+          else
+            TARGET_URL="${HOOK_BASE}?imgURL=${ENCODED_URL}"
+          fi
+          
+          curl -X POST "$TARGET_URL"
