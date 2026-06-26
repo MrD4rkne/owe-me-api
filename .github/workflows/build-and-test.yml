@@ -186,4 +186,4 @@ jobs:
             context: .
             push: true
             tags: |
-              ghcr.io/${{ github.repository }}/owe-me-api:${{ needs.build.outputs.semver }}
+              ghcr.io/${{ github.repository | downcase }}/owe-me-api:${{ needs.build.outputs.semver }}
