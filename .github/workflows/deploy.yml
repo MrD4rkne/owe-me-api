@@ -28,21 +28,16 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Deploy to Render
-        run: |
-          FULL_IMAGE="ghcr.io/${{ github.repository }}/owe-me-api:${{ inputs.image_tag }}"
-          ENCODED=$(jq -rn --arg v "$FULL_IMAGE" '$v|@uri')
-          curl -f "${DEPLOY_HOOK}&imgURL=${ENCODED}"
-
       - name: Install Render CLI
         run: curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
       - name: Deploy and wait for result
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          IMAGE_REF: ghcr.io/${{ github.repository_owner }}/oweme-api:${{ inputs.image_tag }}
         run: |
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "ghcr.io/yourorg/owe-me-identity@${{ steps.push.outputs.digest }}" \
+            --image "${{ env.IMAGE_REF }}" \
             --wait \
             --confirm \
             --output json
