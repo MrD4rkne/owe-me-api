@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace OweMe.Api.Identity.Configuration;
 
-public class ConfigureJwtBearerOptions(
+internal sealed class ConfigureJwtBearerOptions(
     IOptions<IdentityServerOptions> identityServerOptions) : IConfigureNamedOptions<JwtBearerOptions>
 {
     public void Configure(JwtBearerOptions options)
@@ -12,22 +12,22 @@ public class ConfigureJwtBearerOptions(
         options.Authority = identityServerOptions.Value.Authority;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = identityServerOptions.Value.ValidateAudience
+            ValidateIssuer = true,
+            ValidIssuer = identityServerOptions.Value.ValidIssuer,
+            ValidateAudience = identityServerOptions.Value.ValidateAudience,
+            ValidateLifetime = true,
         };
 
-        if (!string.IsNullOrWhiteSpace(identityServerOptions.Value.Audience))
-        {
-            options.Audience = identityServerOptions.Value.Audience;
-        }
+        options.Audience = identityServerOptions.Value.Audience;
 
-        if (!string.IsNullOrWhiteSpace(identityServerOptions.Value.ValidIssuer))
-        {
-            options.TokenValidationParameters.ValidIssuer = identityServerOptions.Value.ValidIssuer;
-        }
-        
+        options.TokenValidationParameters.ValidIssuer = identityServerOptions.Value.ValidIssuer;
         options.TokenValidationParameters.ValidTypes = ["at+jwt"];
-
-        options.RequireHttpsMetadata = identityServerOptions.Value.RequireHttpsMetadata ?? true;
+        
+        if (!string.IsNullOrEmpty(identityServerOptions.Value.MetadataAddress))
+        {
+            options.MetadataAddress = identityServerOptions.Value.MetadataAddress;
+        }
+        options.RequireHttpsMetadata = identityServerOptions.Value.RequireHttpsMetadata;
     }
 
     public void Configure(string? name, JwtBearerOptions options)
