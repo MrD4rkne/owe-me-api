@@ -16,12 +16,12 @@ services:
         fromService:
           type: web
           name: owe-me-identity
-          property: url
+          property: hostport
       - key: IdentityServer__Authority
         fromService:
           type: web
           name: owe-me-identity
-          property: internalUrl
+          property: hostport
       - key: RequireHttpsMetadata
         value: "false"
       - key: IdentityServer__ValidIssuer
