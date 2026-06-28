@@ -1,7 +1,7 @@
 services:
   - type: web
     name: owe-me-api
-    runtime: docker
+    runtime: image
     region: frankfurt
     plan: free
     image:
