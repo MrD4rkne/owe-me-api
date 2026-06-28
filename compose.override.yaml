@@ -6,5 +6,5 @@ name: oweme-system
 services:
   oweme.api:
     build:
-      context: ./owe-me-api
+      context: .
       dockerfile: api/src/OweMe.Api/Dockerfile

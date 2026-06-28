@@ -2,11 +2,6 @@
 
 public readonly record struct UserId(Guid Id)
 {
-    [Obsolete("Do not use the default constructor. Use UserId.New() or UserId.Empty instead.", true)]
-    public UserId() : this(Guid.Empty)
-    {
-    }
-
     public static UserId Empty => new(Guid.Empty);
 
     public override string ToString()

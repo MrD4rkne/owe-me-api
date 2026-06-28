@@ -1,32 +1,40 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using JasperFx;
-using JasperFx.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using OweMe.Api.Configuration;
 using OweMe.Api.Description;
 using OweMe.Api.Endpoints;
 using OweMe.Api.Identity;
 using OweMe.Api.Identity.Configuration;
+using OweMe.Api.Identity.Description;
 using OweMe.Application;
 using OweMe.Infrastructure;
 using OweMe.Persistence;
 using Scalar.AspNetCore;
-using Serilog;
-using Serilog.Enrichers.Span;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithSpan()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateBootstrapLogger();
+builder.Logging.ClearProviders();
 
-builder.Host.UseSerilog();
-builder.Services.AddSerilog();
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.IncludeScopes = true;
+    options.SingleLine = true;
+    options.TimestampFormat = "HH:mm:ss ";
+});
 
-builder.Services.AddOpenTelemetry()
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeScopes = true;
+    logging.IncludeFormattedMessage = true;
+    logging.AddOtlpExporter();
+});
+
+var otel = builder.Services.AddOpenTelemetry()
     .WithLogging()
     .WithTracing(b =>
     {
@@ -38,14 +46,19 @@ builder.Services.AddOpenTelemetry()
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
     });
+if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+{
+    otel.UseAzureMonitor();
+}
 
 builder.Services.AddOpenApi(options =>
 {
-    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>();
     options.AddDocumentTransformer<ApiVersionOpenApiDocumentTransformer>();
 });
 
-builder.Services.Configure<IdentityServerOptions>(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
+var identityOptions = builder.Services.AddOptions<IdentityServerOptions>()
+    .Bind(builder.Configuration.GetSection(IdentityServerOptions.SectionName));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -66,8 +79,6 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", Constants.POLICY_API_SCOPE_CLAIM);
     });
-
-builder.Services.AddResourceSetupOnStartup();
 
 builder.AddApplication();
 builder.AddInfrastructure();
@@ -91,9 +102,16 @@ builder.Services.AddProblemDetails(options =>
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 
-var app = builder.Build();
+if (!CodeGeneration.IsRunningGeneration())
+{
+    // Some actions like validating application options must not be run during codegen activities, like OpenApi spec
+    // generation or managing Entity Framework Core migrations.
+    identityOptions
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+}
 
-app.UseSerilogRequestLogging();
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -101,7 +119,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference(opt =>
     {
-        opt.Servers = []; // Clear the default servers so it shows only the one the browser is running on,
+        opt.AddPreferredSecuritySchemes("OAuth2")
+        .AddPasswordFlow("OAuth2", flow =>
+        {
+            flow.SelectedScopes = [Constants.POLICY_API_SCOPE_CLAIM];
+        });
     });
 }
 

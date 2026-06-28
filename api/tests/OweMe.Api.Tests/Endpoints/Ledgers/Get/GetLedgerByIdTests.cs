@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using OweMe.Api.Endpoints.Ledgers.Get;
+using OweMe.Application.Common.Exceptions;
 using OweMe.Application.Ledgers.Queries.Get;
-using OweMe.Domain.Common.Exceptions;
 using Shouldly;
 using Wolverine;
 
