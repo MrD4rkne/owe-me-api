@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OweMe.Domain.Common.Exceptions;
+using OweMe.Application.Common.Exceptions;
 
 namespace OweMe.Api.Description;
 

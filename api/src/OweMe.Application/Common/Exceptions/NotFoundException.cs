@@ -1,4 +1,4 @@
-﻿namespace OweMe.Domain.Common.Exceptions;
+﻿namespace OweMe.Application.Common.Exceptions;
 
 public class NotFoundException : Exception
 {
