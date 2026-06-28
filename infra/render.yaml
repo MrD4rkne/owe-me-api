@@ -13,10 +13,7 @@ services:
         value: "true"
       - fromGroup: dotnet-app-defaults
       - key: IdentityServer__Authority
-        fromService:
-          type: web
-          name: owe-me-identity
-          property: hostport
+        value: "http://owe-me-identity:8080"
       - key: RequireHttpsMetadata
         value: "false"
       - key: IdentityServer__ValidIssuer
