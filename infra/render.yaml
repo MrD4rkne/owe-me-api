@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: owe-me-api
+    runtime: docker
+    region: frankfurt
+    plan: free
+    image:
+      url: ghcr.io/yourorg/owe-me-api:latest
+    envVars:
+      - key: Database__ConnectionString
+        fromDatabase:
+          name: owe-me-db
+          property: connectionString
+      - key: Database__RunMigrations
+        value: "true"
+      - fromGroup: dotnet-app-defaults
+
+databases:
+  - name: owe-me-db
+    region: frankfurt
+    plan: free
