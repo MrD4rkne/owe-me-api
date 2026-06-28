@@ -1,9 +1,13 @@
 ﻿namespace OweMe.Api.Identity.Configuration;
 
-public class IdentityServerOptions
+using System.ComponentModel.DataAnnotations;
+
+public sealed record IdentityServerOptions
 {
     public const string SectionName = "IdentityServer";
 
+    [Required(ErrorMessage = "The IdentityServer Authority URL is required.")]
+    [Url(ErrorMessage = "The Authority must be a valid URL.")]
     public string? Authority { get; set; }
 
     public bool ValidateAudience { get; set; } = true;

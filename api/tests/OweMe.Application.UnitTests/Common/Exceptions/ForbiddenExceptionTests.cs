@@ -1,6 +1,6 @@
-﻿using OweMe.Domain.Common.Exceptions;
+﻿using OweMe.Application.Common.Exceptions;
 using OweMe.Tests.Common;
 
-namespace OweMe.Domain.UnitTests.Common.Exceptions;
+namespace OweMe.Application.UnitTests.Common.Exceptions;
 
 public class ForbiddenExceptionTests : BaseExceptionTest<ForbiddenException>;
