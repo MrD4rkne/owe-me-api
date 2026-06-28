@@ -7,15 +7,8 @@ services:
     image:
       url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:1.0.28-g3ef66ae218
     envVars:
-      - key: Database__ConnectionString
-        fromDatabase:
-          name: owe-me-db
-          property: connectionString
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
       - key: Database__RunMigrations
         value: "true"
       - fromGroup: dotnet-app-defaults
-
-databases:
-  - name: owe-me-db
-    region: frankfurt
-    plan: free
