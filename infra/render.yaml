@@ -5,7 +5,7 @@ services:
     region: frankfurt
     plan: free
     image:
-      url: ghcr.io/mrd4rkne/owe-me-api:latest
+      url: ghcr.io/mrd4rkne/owe-me-api:1.0.28-g3ef66ae218
     envVars:
       - key: Database__ConnectionString
         fromDatabase:
