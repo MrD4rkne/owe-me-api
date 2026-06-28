@@ -12,3 +12,17 @@ services:
       - key: Database__RunMigrations
         value: "true"
       - fromGroup: dotnet-app-defaults
+      - key: IdentityServer__Authority
+        fromService:
+          type: web
+          name: owe-me-identity
+          property: url
+      - key: IdentityServer__Authority
+        fromService:
+          type: web
+          name: owe-me-identity
+          property: internalUrl
+      - key: RequireHttpsMetadata
+        value: "false"
+      - key: IdentityServer__ValidIssuer
+        value: "https://owe-me-identity.onrender.com"
