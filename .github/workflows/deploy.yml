@@ -1,17 +1,17 @@
-name: Deploy to Azure
+name: Deploy to Render
 
 on:
   workflow_dispatch:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_tag:
+        description: 'The Docker image tag to deploy'
         required: true
         type: string
 
   workflow_call:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_tag:
+        description: 'The Docker image tag to deploy'
         required: true
         type: string
 
@@ -23,29 +23,29 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to Azure
     runs-on: ubuntu-latest
-    concurrency: production-deploy
-    environment:
-      name: production
+    environment: production
+    permissions:
+      contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0  # Full history for Nbgv versioning
+      - name: Deploy to Render
+        run: |
+          FULL_IMAGE="ghcr.io/${{ github.repository }}/owe-me-api:${{ inputs.image_tag }}"
+          ENCODED=$(jq -rn --arg v "$FULL_IMAGE" '$v|@uri')
+          curl -f "${DEPLOY_HOOK}&imgURL=${ENCODED}"
 
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          artifact-ids: ${{ inputs.artifact_id }}
-          path: ${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}
+      - name: Install Render CLI
+        run: curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
-      - name: Deploy
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: "${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}"
+      - name: Deploy and wait for result
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
+            --image "ghcr.io/yourorg/owe-me-identity@${{ steps.push.outputs.digest }}" \
+            --wait \
+            --confirm \
+            --output json
 
   smoke-tests:
     needs: deploy
