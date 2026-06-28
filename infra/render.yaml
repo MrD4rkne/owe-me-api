@@ -7,7 +7,7 @@ services:
     image:
       url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:1.0.28-g3ef66ae218
     envVars:
-      - key: ConnectionStrings__DefaultConnection
+      - key: Database__ConnectionString
         sync: false
       - key: Database__RunMigrations
         value: "true"
