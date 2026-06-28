@@ -14,7 +14,7 @@ services:
       - fromGroup: dotnet-app-defaults
       - key: IdentityServer__Authority
         value: "http://owe-me-identity:8080"
-      - key: RequireHttpsMetadata
+      - key: IdentityServer__RequireHttpsMetadata
         value: "false"
       - key: IdentityServer__ValidIssuer
         value: "https://owe-me-identity.onrender.com"
