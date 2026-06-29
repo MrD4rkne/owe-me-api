@@ -30,11 +30,10 @@ jobs:
     steps:
       - name: Install Render CLI
         run: curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
-
       - name: Deploy and wait for result
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          IMAGE_REF: ghcr.io/${{ github.repository_owner }}/oweme-api:${{ inputs.image_tag }}
+          IMAGE_REF: ghcr.io/${{ github.repository_owner | lower }}/oweme-api:${{ inputs.image_tag }}
         run: |
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
             --image "${{ env.IMAGE_REF }}" \
