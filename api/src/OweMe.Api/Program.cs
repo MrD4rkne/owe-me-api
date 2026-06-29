@@ -40,11 +40,13 @@ var otel = builder.Services.AddOpenTelemetry()
     {
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
+        b.AddOtlpExporter();
     })
     .WithMetrics(b =>
     {
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
+        b.AddOtlpExporter();
     });
 if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
 {
