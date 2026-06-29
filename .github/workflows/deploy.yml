@@ -35,11 +35,18 @@ jobs:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "$IMAGE_TAG" \
-            --wait \
-            --confirm \
-            --output json
+                  # Ensure REPO_OWNER is lowercase
+                  LOWER_REPO_OWNER=${{ github.repository_owner | lower }}
+                  # Construct the FULL canonical path
+                  FULL_IMAGE_REF="ghcr.io/$LOWER_REPO_OWNER/oweme-api:${{ inputs.image_tag }}"
+                  
+                  echo "Deploying canonical image: $FULL_IMAGE_REF"
+                  
+                  render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
+                    --image "$FULL_IMAGE_REF" \
+                    --wait \
+                    --confirm \
+                    --output json
 
   smoke-tests:
     needs: deploy
