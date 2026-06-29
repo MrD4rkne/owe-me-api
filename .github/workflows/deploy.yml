@@ -33,20 +33,20 @@ jobs:
       - name: Deploy and wait for result
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RAW_OWNER: ${{ github.repository_owner }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-            # Ensure REPO_OWNER is lowercase
-            LOWER_REPO_OWNER=${{ github.repository_owner | lower }}
-            # Construct the FULL canonical path
-            FULL_IMAGE_REF="ghcr.io/$LOWER_REPO_OWNER/oweme-api:${{ inputs.image_tag }}"
-            
-            echo "Deploying canonical image: $FULL_IMAGE_REF"
-            
-            render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-              --image "$FULL_IMAGE_REF" \
-              --wait \
-              --confirm \
-              --output json
+          # Use Bash parameter expansion to lowercase the owner
+          LOWER_OWNER=${RAW_OWNER,,}
+          FULL_IMAGE_REF="ghcr.io/$LOWER_OWNER/oweme-api:$IMAGE_TAG"
+          
+          echo "Deploying canonical image: $FULL_IMAGE_REF"
+          
+          render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
+            --image "$FULL_IMAGE_REF" \
+            --wait \
+            --confirm \
+            --output json
 
   smoke-tests:
     needs: deploy
