@@ -33,10 +33,18 @@ jobs:
       - name: Deploy and wait for result
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          IMAGE_REF: ghcr.io/${{ github.repository_owner | lower }}/oweme-api:${{ inputs.image_tag }}
+          # Keep the original casing here to avoid expression errors
+          REPO_OWNER: ${{ github.repository_owner }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
+          # Convert REPO_OWNER to lowercase
+          LOWER_REPO_OWNER=${REPO_OWNER,,}
+          IMAGE_REF="ghcr.io/$LOWER_REPO_OWNER/oweme-api:$IMAGE_TAG"
+          
+          echo "Deploying image: $IMAGE_REF"
+          
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "${{ env.IMAGE_REF }}" \
+            --image "$IMAGE_REF" \
             --wait \
             --confirm \
             --output json
