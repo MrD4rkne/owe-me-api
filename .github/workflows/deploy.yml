@@ -30,19 +30,21 @@ jobs:
     steps:
       - name: Install Render CLI
         run: curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
+
+      - name: Set variables
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+          echo "FULL_IMAGE_REF=ghcr.io/$REPO_LOWER/owe-me-api:${{ inputs.image_tag }}" >> ${GITHUB_ENV}
+
       - name: Deploy and wait for result
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          RAW_OWNER: ${{ github.repository_owner }}
-          IMAGE_TAG: ${{ inputs.image_tag }}
+          FULL_IMAGE_REF: ${{ env.FULL_IMAGE_REF }}
         run: |
-          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
-          echo "IMAGE_TAG=ghcr.io/$REPO_LOWER/owe-me-api:$IMAGE_TAG" >> ${GITHUB_ENV}
-          
-          echo "Deploying canonical image: $IMAGE_TAG"
+          echo "Deploying canonical image: $FULL_IMAGE_REF"
           
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "$IMAGE_TAG" \
+            --image "$FULL_IMAGE_REF" \
             --wait \
             --confirm \
             --output json
