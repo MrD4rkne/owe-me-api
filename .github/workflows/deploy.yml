@@ -36,10 +36,11 @@ jobs:
           RAW_OWNER: ${{ github.repository_owner }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          echo "Deploying canonical image: $IMAGE_TAG"
+          IMAGE_URL="ghcr.io/${RAW_OWNER}/oweme-api:${IMAGE_TAG}"
+          echo "Deploying canonical image: $IMAGE_URL"
           
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "$IMAGE_TAG" \
+            --image "$IMAGE_URL" \
             --wait \
             --confirm \
             --output json
