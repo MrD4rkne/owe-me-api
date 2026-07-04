@@ -36,9 +36,8 @@ jobs:
           RAW_OWNER: ${{ github.repository_owner }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          # Use Bash parameter expansion to lowercase the owner
-          LOWER_OWNER=${RAW_OWNER,,}
-          FULL_IMAGE_REF="ghcr.io/$LOWER_OWNER/oweme-api:$IMAGE_TAG"
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+          echo "IMAGE_TAG=ghcr.io/$REPO_LOWER/owe-me-api:$IMAGE_TAG" >> ${GITHUB_ENV}
           
           echo "Deploying canonical image: $IMAGE_TAG"
           
