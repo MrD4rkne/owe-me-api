@@ -36,14 +36,10 @@ jobs:
           RAW_OWNER: ${{ github.repository_owner }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          # Use Bash parameter expansion to lowercase the owner
-          LOWER_OWNER=${RAW_OWNER,,}
-          FULL_IMAGE_REF="ghcr.io/$LOWER_OWNER/oweme-api:$IMAGE_TAG"
-          
-          echo "Deploying canonical image: $FULL_IMAGE_REF"
+          echo "Deploying canonical image: $IMAGE_TAG"
           
           render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
-            --image "$FULL_IMAGE_REF" \
+            --image "$IMAGE_TAG" \
             --wait \
             --confirm \
             --output json
