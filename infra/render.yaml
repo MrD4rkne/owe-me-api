@@ -18,3 +18,5 @@ services:
         value: "false"
       - key: IdentityServer__ValidIssuer
         value: "https://owe-me-identity.onrender.com"
+      - key: IdentityServer__Audience
+        value: "https://owe-me-identity.onrender.com/resources"
