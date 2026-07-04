@@ -3,15 +3,15 @@ name: Deploy to Render
 on:
   workflow_dispatch:
     inputs:
-      image_tag:
-        description: 'The Docker image tag to deploy'
+      image_ref:
+        description: 'The full Docker image reference to deploy'
         required: true
         type: string
 
   workflow_call:
     inputs:
-      image_tag:
-        description: 'The Docker image tag to deploy'
+      image_ref:
+        description: 'The full Docker image reference to deploy'
         required: true
         type: string
 
@@ -33,8 +33,7 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
-          echo "FULL_IMAGE_REF=ghcr.io/$REPO_LOWER/owe-me-api:${{ inputs.image_tag }}" >> ${GITHUB_ENV}
+          echo "FULL_IMAGE_REF=${{ inputs.image_ref }}" >> ${GITHUB_ENV}
 
       - name: Deploy and wait for result
         env:
