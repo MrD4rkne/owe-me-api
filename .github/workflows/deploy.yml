@@ -1,17 +1,17 @@
-name: Deploy to Azure
+name: Deploy to Render
 
 on:
   workflow_dispatch:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_ref:
+        description: 'The full Docker image reference to deploy'
         required: true
         type: string
 
   workflow_call:
     inputs:
-      artifact_id:
-        description: 'Id of the artifact to deploy'
+      image_ref:
+        description: 'The full Docker image reference to deploy'
         required: true
         type: string
 
@@ -23,29 +23,30 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to Azure
     runs-on: ubuntu-latest
-    concurrency: production-deploy
-    environment:
-      name: production
+    environment: production
+    permissions:
+      contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0  # Full history for Nbgv versioning
+      - name: Install Render CLI
+        run: curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          artifact-ids: ${{ inputs.artifact_id }}
-          path: ${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}
+      - name: Set variables
+        run: |
+          echo "FULL_IMAGE_REF=${{ inputs.image_ref }}" >> ${GITHUB_ENV}
 
-      - name: Deploy
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: "${{ vars.AZURE_WEBAPP_PACKAGE_PATH }}"
+      - name: Deploy and wait for result
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          FULL_IMAGE_REF: ${{ env.FULL_IMAGE_REF }}
+        run: |
+          echo "Deploying canonical image: $FULL_IMAGE_REF"
+          
+          render deploys create "${{ secrets.RENDER_SERVICE_ID_IDENTITY }}" \
+            --image "$FULL_IMAGE_REF" \
+            --wait \
+            --confirm \
+            --output json
 
   smoke-tests:
     needs: deploy

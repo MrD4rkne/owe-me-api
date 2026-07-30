@@ -31,6 +31,7 @@ consistency.
 
 - **Triggers**: Activates on a push to the `master` branch.
 - **Process**:
+
   ```mermaid
   flowchart TD
       subgraph "Triggers"
@@ -62,7 +63,7 @@ consistency.
 
 ### 🚢 `deploy`
 
-**Purpose**: Manages the deployment to Azure and kicks off initial smoke tests.
+**Purpose**: Manages the deployment and kicks off initial smoke tests.
 
 **Responsibilities**:
 

@@ -35,16 +35,21 @@ builder.Logging.AddOpenTelemetry(logging =>
 });
 
 var otel = builder.Services.AddOpenTelemetry()
-    .WithLogging()
+    .WithLogging(b =>
+    {
+        b.AddOtlpExporter();
+    })
     .WithTracing(b =>
     {
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
+        b.AddOtlpExporter();
     })
     .WithMetrics(b =>
     {
         b.AddAspNetCoreInstrumentation();
         b.AddHttpClientInstrumentation();
+        b.AddOtlpExporter();
     });
 if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
 {

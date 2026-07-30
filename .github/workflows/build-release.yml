@@ -11,6 +11,7 @@ permissions:
   deployments: write
   checks: write
   pull-requests: write
+  packages: write
 
 jobs:
   build:
@@ -23,4 +24,4 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
-      artifact_id: ${{ needs.build.outputs.artifact_id }}
+      image_ref: ${{ needs.build.outputs.image_ref }}

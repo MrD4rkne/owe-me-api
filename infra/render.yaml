@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: owe-me-api
+    runtime: image
+    region: frankfurt
+    plan: free
+    image:
+      url: ghcr.io/mrd4rkne/owe-me-api/owe-me-api:1.0.41-gc1ae267e77
+    envVars:
+      - key: Database__ConnectionString
+        sync: false
+      - key: Database__RunMigrations
+        value: "true"
+      - fromGroup: dotnet-app-defaults
+      - key: IdentityServer__Authority
+        value: "https://owe-me-identity.onrender.com"
+      - key: IdentityServer__MetadataAddress
+        value: "http://owe-me-identity:8080"
+      - key: IdentityServer__RequireHttpsMetadata
+        value: "false"
+      - key: IdentityServer__ValidIssuer
+        value: "https://owe-me-identity.onrender.com"
+      - key: IdentityServer__Audience
+        value: "https://owe-me-identity.onrender.com/resources"
